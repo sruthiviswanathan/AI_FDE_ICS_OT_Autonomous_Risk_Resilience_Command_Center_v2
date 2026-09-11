@@ -1,0 +1,181 @@
+plant_id,asset_id,risk_owner,decision,expiry,rationale
+PLT-08,OT-00749,Engineering,DEFER,2026-02-10,shutdown unavailable
+PLT-16,OT-00429,Engineering,ACCEPT,2026-10-18,vendor patch pending
+PLT-15,OT-01094,Engineering,ACCEPT,2026-07-17,vendor patch pending
+PLT-18,OT-01529,Engineering,DEFER,2026-08-19,business critical
+PLT-15,OT-00904,Unknown,ACCEPT,2026-02-11,compensating controls assumed
+PLT-16,OT-00242,Engineering,ACCEPT,2026-08-07,shutdown unavailable
+PLT-11,OT-01106,Engineering,ACCEPT,2026-04-21,business critical
+PLT-02,OT-01510,Plant Manager,DEFER,2026-10-11,shutdown unavailable
+PLT-03,OT-01972,Plant Manager,ACCEPT,2026-06-04,business critical
+PLT-18,OT-00441,Unknown,DEFER,2026-10-04,vendor patch pending
+PLT-17,OT-00553,OT Security,MITIGATE,2026-01-13,vendor patch pending
+PLT-14,OT-01930,OT Security,DEFER,2026-11-09,vendor patch pending
+PLT-18,OT-00245,Engineering,MITIGATE,2026-05-11,compensating controls assumed
+PLT-07,OT-00694,OT Security,DEFER,2026-08-02,business critical
+PLT-16,OT-01517,Plant Manager,ACCEPT,2026-11-28,vendor patch pending
+PLT-07,OT-00796,Engineering,MITIGATE,2026-07-17,vendor patch pending
+PLT-03,OT-00857,OT Security,ACCEPT,2026-10-16,business critical
+PLT-15,OT-00625,Engineering,ACCEPT,2026-04-22,vendor patch pending
+PLT-01,OT-01627,Engineering,ACCEPT,2026-03-24,shutdown unavailable
+PLT-09,OT-01675,OT Security,MITIGATE,2026-03-04,shutdown unavailable
+PLT-05,OT-01837,Engineering,ACCEPT,2026-08-17,vendor patch pending
+PLT-01,OT-01157,OT Security,MITIGATE,2026-08-20,business critical
+PLT-04,OT-00850,Unknown,ACCEPT,2026-02-14,vendor patch pending
+PLT-15,OT-00204,OT Security,MITIGATE,2026-10-21,compensating controls assumed
+PLT-06,OT-00096,Plant Manager,DEFER,2026-03-01,vendor patch pending
+PLT-12,OT-01303,Plant Manager,MITIGATE,2026-03-21,compensating controls assumed
+PLT-16,OT-01465,Plant Manager,ACCEPT,2026-01-28,shutdown unavailable
+PLT-12,OT-01426,Plant Manager,DEFER,2026-08-08,shutdown unavailable
+PLT-17,OT-00188,Unknown,MITIGATE,2026-04-09,compensating controls assumed
+PLT-13,OT-00120,Plant Manager,DEFER,2026-10-20,compensating controls assumed
+PLT-07,OT-00092,Engineering,ACCEPT,2026-01-03,shutdown unavailable
+PLT-07,OT-01662,Unknown,ACCEPT,2026-10-26,business critical
+PLT-02,OT-01592,OT Security,MITIGATE,2026-02-27,business critical
+PLT-04,OT-00930,Plant Manager,DEFER,2026-03-06,compensating controls assumed
+PLT-10,OT-01342,Unknown,ACCEPT,2026-06-05,compensating controls assumed
+PLT-12,OT-00639,OT Security,ACCEPT,2026-06-19,shutdown unavailable
+PLT-17,OT-01838,OT Security,ACCEPT,2026-07-19,shutdown unavailable
+PLT-11,OT-01967,Plant Manager,ACCEPT,2026-03-06,compensating controls assumed
+PLT-01,OT-00614,Plant Manager,ACCEPT,2026-10-15,shutdown unavailable
+PLT-06,OT-01966,Engineering,ACCEPT,2026-10-11,compensating controls assumed
+PLT-06,OT-01818,OT Security,ACCEPT,2026-02-25,shutdown unavailable
+PLT-05,OT-01955,Unknown,MITIGATE,2026-08-28,business critical
+PLT-04,OT-00034,Plant Manager,MITIGATE,2026-06-15,business critical
+PLT-17,OT-01076,Unknown,DEFER,2026-03-28,shutdown unavailable
+PLT-03,OT-01510,OT Security,MITIGATE,2026-10-13,business critical
+PLT-07,OT-00756,Plant Manager,DEFER,2026-04-22,shutdown unavailable
+PLT-15,OT-00899,OT Security,DEFER,2026-05-01,vendor patch pending
+PLT-13,OT-00973,Plant Manager,DEFER,2026-07-09,compensating controls assumed
+PLT-09,OT-01135,Engineering,DEFER,2026-01-01,vendor patch pending
+PLT-15,OT-01819,Engineering,MITIGATE,2026-08-04,business critical
+PLT-11,OT-01031,Engineering,ACCEPT,2026-08-18,vendor patch pending
+PLT-12,OT-00837,Plant Manager,MITIGATE,2026-08-24,business critical
+PLT-15,OT-00871,OT Security,DEFER,2026-08-15,shutdown unavailable
+PLT-17,OT-00896,Plant Manager,DEFER,2026-11-28,business critical
+PLT-10,OT-01932,OT Security,ACCEPT,2026-09-06,vendor patch pending
+PLT-07,OT-00782,OT Security,DEFER,2026-05-05,business critical
+PLT-07,OT-00032,Unknown,ACCEPT,2026-05-11,shutdown unavailable
+PLT-03,OT-00676,Engineering,DEFER,2026-06-04,shutdown unavailable
+PLT-13,OT-00575,OT Security,ACCEPT,2026-05-24,shutdown unavailable
+PLT-17,OT-01798,Plant Manager,ACCEPT,2026-08-13,shutdown unavailable
+PLT-04,OT-01841,Engineering,MITIGATE,2026-08-10,business critical
+PLT-14,OT-00984,OT Security,MITIGATE,2026-04-11,business critical
+PLT-15,OT-01405,Plant Manager,MITIGATE,2026-01-26,compensating controls assumed
+PLT-05,OT-01912,Plant Manager,DEFER,2026-07-17,compensating controls assumed
+PLT-07,OT-01017,OT Security,ACCEPT,2026-04-17,shutdown unavailable
+PLT-03,OT-01763,Engineering,DEFER,2026-12-24,shutdown unavailable
+PLT-18,OT-00456,Unknown,ACCEPT,2026-12-24,compensating controls assumed
+PLT-11,OT-00802,Plant Manager,ACCEPT,2026-07-10,vendor patch pending
+PLT-18,OT-00080,Unknown,ACCEPT,2026-12-26,shutdown unavailable
+PLT-16,OT-00331,Engineering,MITIGATE,2026-09-16,business critical
+PLT-01,OT-00246,Plant Manager,DEFER,2026-01-04,business critical
+PLT-11,OT-00645,Engineering,ACCEPT,2026-04-07,business critical
+PLT-10,OT-00951,Engineering,DEFER,2026-07-10,shutdown unavailable
+PLT-04,OT-01183,Unknown,MITIGATE,2026-11-12,vendor patch pending
+PLT-10,OT-01330,OT Security,ACCEPT,2026-01-28,shutdown unavailable
+PLT-04,OT-01105,Engineering,ACCEPT,2026-10-03,compensating controls assumed
+PLT-13,OT-00272,Engineering,MITIGATE,2026-02-01,compensating controls assumed
+PLT-08,OT-00008,Plant Manager,DEFER,2026-07-17,compensating controls assumed
+PLT-13,OT-01270,Unknown,DEFER,2026-09-05,vendor patch pending
+PLT-12,OT-01313,Plant Manager,MITIGATE,2026-07-16,business critical
+PLT-07,OT-00572,Unknown,MITIGATE,2026-11-14,vendor patch pending
+PLT-06,OT-00279,Plant Manager,MITIGATE,2026-10-27,business critical
+PLT-08,OT-01076,Engineering,MITIGATE,2026-07-14,shutdown unavailable
+PLT-14,OT-01771,OT Security,ACCEPT,2026-06-14,shutdown unavailable
+PLT-18,OT-01993,Engineering,MITIGATE,2026-08-01,compensating controls assumed
+PLT-12,OT-01428,Unknown,DEFER,2026-08-17,compensating controls assumed
+PLT-05,OT-01686,Unknown,MITIGATE,2026-12-09,vendor patch pending
+PLT-06,OT-01052,Engineering,ACCEPT,2026-02-11,shutdown unavailable
+PLT-08,OT-00775,Plant Manager,ACCEPT,2026-11-17,compensating controls assumed
+PLT-17,OT-01186,Unknown,MITIGATE,2026-09-18,vendor patch pending
+PLT-10,OT-01428,OT Security,ACCEPT,2026-09-01,compensating controls assumed
+PLT-01,OT-01100,OT Security,MITIGATE,2026-11-13,business critical
+PLT-17,OT-01002,OT Security,MITIGATE,2026-03-18,business critical
+PLT-02,OT-00020,OT Security,MITIGATE,2026-01-13,business critical
+PLT-11,OT-01955,Engineering,ACCEPT,2026-04-23,compensating controls assumed
+PLT-10,OT-01429,Plant Manager,DEFER,2026-05-09,business critical
+PLT-06,OT-00399,Unknown,ACCEPT,2026-06-27,vendor patch pending
+PLT-02,OT-01949,Plant Manager,MITIGATE,2026-01-04,compensating controls assumed
+PLT-10,OT-01122,Engineering,MITIGATE,2026-06-20,compensating controls assumed
+PLT-01,OT-01877,Plant Manager,ACCEPT,2026-09-13,vendor patch pending
+PLT-16,OT-01440,Unknown,ACCEPT,2026-01-12,shutdown unavailable
+PLT-13,OT-00307,Unknown,MITIGATE,2026-07-15,business critical
+PLT-08,OT-00475,OT Security,ACCEPT,2026-05-05,shutdown unavailable
+PLT-10,OT-00664,Unknown,MITIGATE,2026-02-05,vendor patch pending
+PLT-06,OT-00558,Engineering,MITIGATE,2026-05-07,compensating controls assumed
+PLT-05,OT-00765,Engineering,ACCEPT,2026-11-24,shutdown unavailable
+PLT-17,OT-01922,Plant Manager,MITIGATE,2026-01-12,shutdown unavailable
+PLT-09,OT-01859,Unknown,DEFER,2026-04-18,vendor patch pending
+PLT-08,OT-00454,Plant Manager,MITIGATE,2026-07-10,shutdown unavailable
+PLT-06,OT-01607,OT Security,DEFER,2026-02-06,vendor patch pending
+PLT-03,OT-00744,OT Security,ACCEPT,2026-09-13,business critical
+PLT-06,OT-00254,Plant Manager,ACCEPT,2026-01-13,shutdown unavailable
+PLT-02,OT-01480,Plant Manager,ACCEPT,2026-12-10,shutdown unavailable
+PLT-09,OT-00431,Plant Manager,DEFER,2026-02-23,compensating controls assumed
+PLT-11,OT-01623,Engineering,MITIGATE,2026-08-26,vendor patch pending
+PLT-01,OT-00207,OT Security,ACCEPT,2026-06-21,compensating controls assumed
+PLT-17,OT-01088,Unknown,DEFER,2026-07-07,vendor patch pending
+PLT-09,OT-01281,Plant Manager,DEFER,2026-11-06,business critical
+PLT-11,OT-01613,OT Security,ACCEPT,2026-04-19,compensating controls assumed
+PLT-04,OT-00799,OT Security,DEFER,2026-09-12,shutdown unavailable
+PLT-11,OT-00366,Unknown,ACCEPT,2026-09-27,compensating controls assumed
+PLT-09,OT-00472,Unknown,ACCEPT,2026-07-17,business critical
+PLT-09,OT-01841,OT Security,MITIGATE,2026-09-17,compensating controls assumed
+PLT-10,OT-01806,Engineering,ACCEPT,2026-09-04,vendor patch pending
+PLT-14,OT-01940,Engineering,DEFER,2026-02-24,shutdown unavailable
+PLT-12,OT-00774,Plant Manager,ACCEPT,2026-06-18,compensating controls assumed
+PLT-16,OT-01246,OT Security,DEFER,2026-09-04,vendor patch pending
+PLT-18,OT-00126,OT Security,ACCEPT,2026-03-25,vendor patch pending
+PLT-14,OT-01107,OT Security,ACCEPT,2026-04-06,shutdown unavailable
+PLT-08,OT-01926,Plant Manager,MITIGATE,2026-06-06,vendor patch pending
+PLT-03,OT-00579,Unknown,MITIGATE,2026-07-08,business critical
+PLT-07,OT-01785,Plant Manager,MITIGATE,2026-09-03,vendor patch pending
+PLT-12,OT-01539,Plant Manager,ACCEPT,2026-03-16,compensating controls assumed
+PLT-13,OT-01753,OT Security,DEFER,2026-07-22,compensating controls assumed
+PLT-12,OT-00196,Unknown,ACCEPT,2026-07-17,business critical
+PLT-04,OT-00593,Unknown,ACCEPT,2026-01-01,business critical
+PLT-17,OT-00188,Unknown,DEFER,2026-10-21,business critical
+PLT-02,OT-01839,Unknown,MITIGATE,2026-10-02,shutdown unavailable
+PLT-18,OT-01816,Engineering,MITIGATE,2026-09-01,shutdown unavailable
+PLT-03,OT-00069,Unknown,MITIGATE,2026-09-15,business critical
+PLT-18,OT-01879,Plant Manager,DEFER,2026-09-16,vendor patch pending
+PLT-18,OT-00698,Unknown,ACCEPT,2026-12-12,compensating controls assumed
+PLT-15,OT-00941,Unknown,DEFER,2026-10-03,vendor patch pending
+PLT-13,OT-00761,Engineering,MITIGATE,2026-02-11,compensating controls assumed
+PLT-08,OT-01546,Unknown,ACCEPT,2026-06-05,compensating controls assumed
+PLT-02,OT-00411,Plant Manager,MITIGATE,2026-09-06,vendor patch pending
+PLT-16,OT-00494,Plant Manager,ACCEPT,2026-12-14,shutdown unavailable
+PLT-06,OT-00526,Engineering,DEFER,2026-05-17,compensating controls assumed
+PLT-14,OT-00990,Engineering,MITIGATE,2026-08-14,business critical
+PLT-17,OT-01440,Plant Manager,MITIGATE,2026-03-15,business critical
+PLT-15,OT-01495,Plant Manager,DEFER,2026-01-23,shutdown unavailable
+PLT-15,OT-00951,Unknown,ACCEPT,2026-10-01,business critical
+PLT-17,OT-01876,Engineering,ACCEPT,2026-04-14,vendor patch pending
+PLT-02,OT-00846,OT Security,MITIGATE,2026-07-16,shutdown unavailable
+PLT-17,OT-00471,Unknown,ACCEPT,2026-06-15,compensating controls assumed
+PLT-16,OT-01058,Plant Manager,DEFER,2026-03-17,business critical
+PLT-16,OT-00564,OT Security,MITIGATE,2026-09-24,compensating controls assumed
+PLT-10,OT-01408,Unknown,ACCEPT,2026-03-07,business critical
+PLT-06,OT-00569,Unknown,MITIGATE,2026-10-02,compensating controls assumed
+PLT-05,OT-00642,Engineering,DEFER,2026-05-03,business critical
+PLT-14,OT-00886,OT Security,ACCEPT,2026-05-24,vendor patch pending
+PLT-08,OT-01357,OT Security,DEFER,2026-08-03,shutdown unavailable
+PLT-06,OT-00305,Plant Manager,DEFER,2026-01-09,shutdown unavailable
+PLT-05,OT-00982,Plant Manager,MITIGATE,2026-03-21,shutdown unavailable
+PLT-06,OT-01297,Plant Manager,MITIGATE,2026-12-28,compensating controls assumed
+PLT-18,OT-01089,OT Security,ACCEPT,2026-02-03,vendor patch pending
+PLT-13,OT-00282,Engineering,ACCEPT,2026-10-10,business critical
+PLT-02,OT-00931,Engineering,DEFER,2026-11-25,business critical
+PLT-08,OT-01242,Unknown,DEFER,2026-04-27,vendor patch pending
+PLT-15,OT-01311,OT Security,DEFER,2026-08-19,shutdown unavailable
+PLT-16,OT-01522,OT Security,MITIGATE,2026-05-24,compensating controls assumed
+PLT-03,OT-01976,Engineering,MITIGATE,2026-08-27,vendor patch pending
+PLT-09,OT-00192,OT Security,DEFER,2026-06-20,vendor patch pending
+PLT-04,OT-01904,Plant Manager,ACCEPT,2026-01-12,compensating controls assumed
+PLT-12,OT-01318,Unknown,MITIGATE,2026-09-24,shutdown unavailable
+PLT-10,OT-01963,Unknown,ACCEPT,2026-08-02,shutdown unavailable
+PLT-05,OT-00669,Engineering,ACCEPT,2026-10-17,business critical
+PLT-07,OT-00166,OT Security,MITIGATE,2026-11-16,vendor patch pending
+PLT-01,OT-00286,OT Security,DEFER,2026-01-27,vendor patch pending
+PLT-05,OT-00729,OT Security,DEFER,2026-07-27,compensating controls assumed

@@ -1,0 +1,5 @@
+---
+description: ICS/OT AI FDE brownfield rules
+alwaysApply: true
+---
+Treat this as a messy multinational ICS/OT estate. Evidence first. Never infer that highest CVSS means highest operational risk. Never recommend live controller writes, SIS changes, interlock bypasses, or unsafe isolation. Distinguish cyber, process, safety and resilience consequences. Test before modernization.

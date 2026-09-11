@@ -1,0 +1,8 @@
+openapi: 3.0.0
+info: {title: Legacy Asset API v2, version: '2'}
+paths:
+  /ot-assets/{asset_id}:
+    get:
+      responses:
+        '200': {description: OK}
+# v2 field convention: asset_id, firmware, observed_state

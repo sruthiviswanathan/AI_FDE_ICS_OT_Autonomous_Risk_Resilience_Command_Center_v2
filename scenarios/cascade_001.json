@@ -1,0 +1,46 @@
+{
+  "scenario_id": "CASCADE-001",
+  "title": "Cyber-physical ambiguity under degraded safety protection",
+  "timeline": [
+    {
+      "time": "08:01",
+      "event": "New firmware advisory affects a controller family"
+    },
+    {
+      "time": "08:07",
+      "event": "Inventory identifies 37 potentially affected controllers; 6 have unknown firmware"
+    },
+    {
+      "time": "08:19",
+      "event": "One controller shows an unexpected write alert"
+    },
+    {
+      "time": "08:24",
+      "event": "Associated engineering workstation has an active vendor session"
+    },
+    {
+      "time": "08:31",
+      "event": "Historian flow trend begins deviating"
+    },
+    {
+      "time": "08:34",
+      "event": "Operator acknowledges an unexpected alarm"
+    },
+    {
+      "time": "08:38",
+      "event": "Related safety barrier is recorded as bypassed"
+    },
+    {
+      "time": "08:47",
+      "event": "SOC recommends immediate isolation"
+    },
+    {
+      "time": "08:50",
+      "event": "Process engineer warns abrupt isolation may destabilize the unit"
+    },
+    {
+      "time": "08:55",
+      "event": "Command center must reconcile evidence and recommend a safe governed response"
+    }
+  ]
+}

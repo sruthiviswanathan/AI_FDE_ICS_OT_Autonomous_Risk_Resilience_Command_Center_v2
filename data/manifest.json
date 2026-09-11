@@ -1,0 +1,43 @@
+{
+  "name": "AI FDE ICS/OT Autonomous Risk & Resilience Command Center v1",
+  "seed": 20260910,
+  "generated": "2026-09-10",
+  "counts": {
+    "plants": 18,
+    "assets": 2016,
+    "asset_aliases": 6048,
+    "network_edges": 3780,
+    "process_units": 216,
+    "process_dependencies": 198,
+    "tags": 864,
+    "telemetry_records": 31224,
+    "vulnerability_findings": 1100,
+    "safety_barriers": 450,
+    "work_orders": 1250,
+    "remote_access_sessions": 700,
+    "cyber_alerts": 2800,
+    "recovery_records": 144,
+    "enterprise_events": 6500
+  },
+  "files": [
+    "data/reference/plants.csv",
+    "data/reference/vendors.csv",
+    "data/raw/assets.csv",
+    "data/raw/asset_aliases.csv",
+    "data/raw/network_edges.csv",
+    "data/raw/process_units.csv",
+    "data/raw/process_dependencies.csv",
+    "data/reference/tags.csv",
+    "data/telemetry/tag_telemetry.jsonl",
+    "data/raw/vulnerabilities.csv",
+    "data/raw/safety_barriers.csv",
+    "data/raw/work_orders.csv",
+    "data/raw/remote_access_sessions.csv",
+    "data/raw/recovery_readiness.csv",
+    "data/raw/cyber_alerts.csv",
+    "data/raw/enterprise_events.jsonl",
+    "data/ot_legacy.db"
+  ],
+  "notes": "All names, systems and records are synthetic. Deliberate inconsistencies are included for training.",
+  "repo_version": "2.0.0"
+}

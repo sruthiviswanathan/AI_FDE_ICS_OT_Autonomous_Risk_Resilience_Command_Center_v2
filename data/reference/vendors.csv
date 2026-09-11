@@ -1,0 +1,11 @@
+vendor_id,name,support_sla_hours,remote_access
+VEN-01,ControlWorks,24,jump_host
+VEN-02,ProcessSys,8,vendor_vpn
+VEN-03,LegacyPLC,24,none
+VEN-04,SafeLogic,4,jump_host
+VEN-05,HistorianX,8,vendor_vpn
+VEN-06,FieldLink,24,jump_host
+VEN-07,MotorDriveCo,8,service_laptop
+VEN-08,RemoteAssist,4,jump_host
+VEN-09,NetSwitchCo,4,jump_host
+VEN-10,SensorTech,8,service_laptop

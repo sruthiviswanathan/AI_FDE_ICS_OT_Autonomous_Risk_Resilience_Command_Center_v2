@@ -1,0 +1,36 @@
+{
+  "title": "TelemetryEvent",
+  "type": "object",
+  "required": [
+    "event_id",
+    "tag_id",
+    "event_time",
+    "value",
+    "unit",
+    "quality"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string"
+    },
+    "tag_id": {
+      "type": "string"
+    },
+    "event_time": {
+      "type": "string"
+    },
+    "value": {
+      "type": "number"
+    },
+    "unit": {
+      "type": "string"
+    },
+    "quality": {
+      "enum": [
+        "GOOD",
+        "UNCERTAIN",
+        "BAD"
+      ]
+    }
+  }
+}

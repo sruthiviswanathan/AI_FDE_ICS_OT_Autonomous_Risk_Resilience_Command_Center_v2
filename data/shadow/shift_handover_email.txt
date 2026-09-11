@@ -1,0 +1,7 @@
+Subject: Night shift handover — Unit 04 / remote vendor work
+
+- Vendor says firmware adjustment is complete; formal ticket not yet updated.
+- Safety bypass on U04 was still visible at 05:45; operations says it is temporary.
+- Historian tag pressure trend looked flat for ~20 min although HMI moved.
+- Do not isolate the controller without process engineering review; unit is running near minimum stable load.
+- Asset list in spreadsheet is newer than CMDB for the new gateway.
