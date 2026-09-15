@@ -82,3 +82,19 @@ OPEN-001…017 remain open. SDD-03 does not close them. Isolation execute remain
 | OPEN-023 | Workshop CTQ numeric improve targets (disagreement 9.92%, dirty telemetry 13.11%) | SDD-04 sets **visibility and forbidden-path** CTQs only; rate reductions without hiding aliases are not sponsor-signed | 12-month KPI contracts | OT-CISO + VP Ops |
 
 OPEN-001…021 remain open. OPEN-006 still covers clocks, actionable-incident definition, and AI cost (BASELINE_PENDING). No technology selected. Moonshot is not autonomous isolation.
+
+---
+
+## SDD-05 | OM-4 | 2026-09-15
+
+**Evidence used:** SDD-04 SCQA; `docs/06`; `policy.py`; `LICENSE.txt`; `requirements.txt`; EVAL-001…006.  
+**Assumptions:** Working class = industrial safety-related HITL decision support, no actuation.  
+**Unknowns:** below.  
+**Did not conclude:** certified EU AI Act class; production license opinion; AI control approval.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-002 | *(restated, not closed)* EU AI Act legal class and ISO/IEC 42001 certification | Working assumption recorded in USE_CASE.md §9; **no counsel sign-off** | Any customer-facing “high-risk system” claim | OT-CISO + counsel (not in repo) |
+| OPEN-024 | Production licensing/IP/SBOM and real-person data lawful basis | `LICENSE.txt` is workshop-only; FastAPI/Pydantic/pytest licenses not recopied; `api.py` has no authn; real IAM/session data would be personal data | Production deploy (already out of this repo) | Legal + FDE |
+
+**Qualification:** advisory use case **GO** with mandatory non-AI fallback. AI for consequential OT control remains **NO-GO**. OPEN-001 still blocks named-human execute.
