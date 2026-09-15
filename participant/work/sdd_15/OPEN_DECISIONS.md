@@ -28,3 +28,23 @@ UNKNOWN permission is not permission. Missing named authority, threshold, ADR, o
 | OPEN-011 | `specs/01_mandate.md` at repo root | OM map says SDD-01 produces `specs/01_mandate.md`; capstone SDD-15 **distills** it from this charter. Root spec deferred. | SDD-15 gate | FDE |
 
 **SDD-01 closure rule:** none of OPEN-001…011 is treated as approved permission, threshold, ADR, or architecture.
+
+---
+
+## SDD-02 | OM-2 | 2026-09-15
+
+**Evidence used:** `data/raw/enterprise_events.jsonl` (6500); `data/raw/cyber_alerts.csv` (2800); `data/raw/work_orders.csv` (1250); `data/shadow/shift_handover_email.txt`; `data/shadow/ot_asset_inventory_FINAL_v8.csv` (220); `src/ot_command/legacy/risk.py`; `src/ot_command/api.py`; `docs/03_current_state_architecture.md`.  
+**Assumptions:** SDD-01 OPEN items remain open; process mining describes files, not live shifts.  
+**Unknowns:** listed per new ID.  
+**Did not conclude:** system of record; future architecture; isolation authority.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-012 | Durable case / correlation key for alert → WO → session → barrier → recovery | `correlation_id` empty on **3251 / 6500** enterprise events; max non-empty reuse is 6; no foreign key from `cyber_alerts` to `work_orders` | End-to-end process cycle time; agent “incident object” | FDE + SOC mgr |
+| OPEN-013 | Semantic contract for `enterprise_events.event_type` vs `source` | HISTORIAN emits SESSION 122 and WORK_ORDER 88; IAM emits ALARM 109; CMMS is only 118/901 WORK_ORDER events | Enterprise integration design (SDD-10) | FDE |
+| OPEN-014 | Work-order clock vs status semantics | 133 CLOSED with empty `closed_at`; 489 not-CLOSED with `closed_at` set; `WO-000018` CLOSED + field ACTIVE + bypass YES + notes awaiting vendor | Maintenance value-stream Measure | Maint/CMMS owner |
+| OPEN-015 | Whether shadow spreadsheet is actually newer than CMDB | Handover email claims newer gateway inventory; `ot_asset_inventory_FINAL_v8.csv` vs `assets.csv`: **0** firmware diffs and **0** state-pair diffs on 220 overlapping IDs | Identity reconciliation (SDD-03 L4) | FDE; do not pick a winner |
+| OPEN-016 | `docs/03` Purdue-like boxes vs enforceable zones | `zone` is a CSV label (DMZ 377); 779 undocumented observed edges; no firewall policy table | Trust-boundary engineering | OT-CISO |
+| OPEN-017 | Meaning of SOC SUPPRESSED on HIGH/CRITICAL | 211 HIGH/CRIT `soc_status=SUPPRESSED` (e.g. `ALT-000040`); not an ACTION_TIERS action; not trip suppression in SIS | Alert-queue vs safety policy | SOC mgr + Safety/SIS |
+
+SDD-01 IDs OPEN-001…011 are **not** closed by SDD-02. Isolation execute remains forbidden. No KG/ADR invented.
