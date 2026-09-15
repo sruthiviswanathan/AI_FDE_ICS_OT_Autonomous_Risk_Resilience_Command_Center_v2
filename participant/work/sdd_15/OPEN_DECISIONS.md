@@ -66,3 +66,19 @@ SDD-01 IDs OPEN-001…011 are **not** closed by SDD-02. Isolation execute remain
 | OPEN-021 | Which clock is event order: telemetry ingest (never inverted, p50 120s) vs enterprise received (407 inversions) | TEL ingest−event neg=0; EVT-0000001 received before event; handover 20-min historian vs HMI not located as a tagged incident | EVAL-004 implementation | FDE |
 
 OPEN-001…017 remain open. SDD-03 does not close them. Isolation execute remains forbidden. No solution implemented.
+
+---
+
+## SDD-04 | OM-3 | 2026-09-15
+
+**Evidence used:** `docs/05_kpis_baseline.md`; `VERIFICATION.md`; SDD-03 cells; SDD-02 W1–W11.  
+**Assumptions:** Workshop CTQs in SCQA §7 are prompt-specified, not sponsor-signed.  
+**Unknowns:** below.  
+**Did not conclude:** architecture; legal class; dollar baseline.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-022 | Official formula and threshold for “stale configuration rate” | `docs/05` names the KPI; `assets.backup_age_days` p50=211 and >90d = 1581/2016 is a **proxy only**; 90 days is not in docs/05 | After-intervention configuration KPI | FDE + Maint/CMMS |
+| OPEN-023 | Workshop CTQ numeric improve targets (disagreement 9.92%, dirty telemetry 13.11%) | SDD-04 sets **visibility and forbidden-path** CTQs only; rate reductions without hiding aliases are not sponsor-signed | 12-month KPI contracts | OT-CISO + VP Ops |
+
+OPEN-001…021 remain open. OPEN-006 still covers clocks, actionable-incident definition, and AI cost (BASELINE_PENDING). No technology selected. Moonshot is not autonomous isolation.
