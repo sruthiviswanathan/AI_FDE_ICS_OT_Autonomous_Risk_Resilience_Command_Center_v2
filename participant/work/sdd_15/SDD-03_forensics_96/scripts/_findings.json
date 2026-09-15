@@ -1,0 +1,1412 @@
+{
+  "identity": {
+    "n_assets": 2016,
+    "n_aliases": 6048,
+    "alias_sources": {
+      "CMDB": 2016,
+      "PASSIVE": 2016,
+      "CMMS": 2016
+    },
+    "collisions": [
+      "PLT-01-DCS_CONTROLLER-105",
+      "PLT-01-ENG_WORKSTATION-244",
+      "PLT-13-PLC-850",
+      "PLT-14-GATEWAY-737",
+      "PLT-15-VFD-444"
+    ],
+    "collision_rows": [
+      {
+        "asset_id": "OT-00012",
+        "source": "PASSIVE",
+        "alias": "PLT-01-DCS_CONTROLLER-105"
+      },
+      {
+        "asset_id": "OT-00013",
+        "source": "PASSIVE",
+        "alias": "PLT-01-ENG_WORKSTATION-244"
+      },
+      {
+        "asset_id": "OT-00033",
+        "source": "PASSIVE",
+        "alias": "PLT-01-DCS_CONTROLLER-105"
+      },
+      {
+        "asset_id": "OT-00089",
+        "source": "PASSIVE",
+        "alias": "PLT-01-ENG_WORKSTATION-244"
+      },
+      {
+        "asset_id": "OT-01377",
+        "source": "PASSIVE",
+        "alias": "PLT-13-PLC-850"
+      },
+      {
+        "asset_id": "OT-01399",
+        "source": "PASSIVE",
+        "alias": "PLT-13-PLC-850"
+      },
+      {
+        "asset_id": "OT-01441",
+        "source": "PASSIVE",
+        "alias": "PLT-14-GATEWAY-737"
+      },
+      {
+        "asset_id": "OT-01476",
+        "source": "PASSIVE",
+        "alias": "PLT-14-GATEWAY-737"
+      },
+      {
+        "asset_id": "OT-01604",
+        "source": "PASSIVE",
+        "alias": "PLT-15-VFD-444"
+      },
+      {
+        "asset_id": "OT-01614",
+        "source": "PASSIVE",
+        "alias": "PLT-15-VFD-444"
+      }
+    ],
+    "owner": {
+      "Maintenance": 341,
+      "Engineering": 319,
+      "Unknown": 343,
+      "Operations": 331,
+      "OT Security": 349,
+      "Vendor": 333
+    },
+    "registered": {
+      "ACTIVE": 1776,
+      "UNKNOWN": 122,
+      "RETIRED": 118
+    },
+    "observed": {
+      "ONLINE": 1656,
+      "UNSEEN": 128,
+      "INTERMITTENT": 129,
+      "OFFLINE": 103
+    },
+    "state_conflicts_n": 200,
+    "state_conflict_ids": [
+      "OT-00020",
+      "OT-00036",
+      "OT-00042",
+      "OT-00044",
+      "OT-00072",
+      "OT-00075",
+      "OT-00076",
+      "OT-00089"
+    ],
+    "firmware_unique": 815,
+    "shadow_n": 220,
+    "shadow_not_in_assets": [],
+    "backup_age_days_p50": 211.0,
+    "backup_age_gt_90": 1581,
+    "shadow_firmware_diff": 0,
+    "shadow_observed_diff": 0
+  },
+  "topology": {
+    "asset_type": {
+      "PLC": 153,
+      "GATEWAY": 167,
+      "OPC_SERVER": 149,
+      "ENG_WORKSTATION": 164,
+      "IED": 151,
+      "RTU": 142,
+      "DCS_CONTROLLER": 176,
+      "VFD": 130,
+      "NETWORK_SWITCH": 172,
+      "SENSOR": 151,
+      "HMI": 149,
+      "HISTORIAN": 150,
+      "SAFETY_PLC": 162
+    },
+    "zone": {
+      "L2_SUPERVISORY": 376,
+      "L1_CONTROL": 417,
+      "L3_SITE_OPS": 426,
+      "DMZ": 377,
+      "L0_FIELD": 420
+    },
+    "protocol": {
+      "DNP3": 201,
+      "VendorSerial": 182,
+      "PROFINET": 204,
+      "PROFIBUS": 223,
+      "OPC_DA": 206,
+      "ModbusTCP": 199,
+      "OPC_UA": 181,
+      "EtherNetIP": 195,
+      "IEC104": 215,
+      "IEC61850": 210
+    },
+    "edges_n": 3780,
+    "undocumented_observed": 779,
+    "approved_unknown": 240,
+    "approved_no_observed_yes": 168,
+    "edge_protocol": {
+      "IEC61850": 369,
+      "EtherNetIP": 385,
+      "IEC104": 379,
+      "VendorSerial": 344,
+      "DNP3": 394,
+      "ModbusTCP": 393,
+      "OPC_UA": 385,
+      "PROFIBUS": 374,
+      "OPC_DA": 363,
+      "PROFINET": 394
+    },
+    "self_loops": 0,
+    "assets_as_src_or_tgt": 1963,
+    "assets_not_on_any_edge": 53
+  },
+  "telemetry": {
+    "n": 31224,
+    "quality": {
+      "GOOD": 27130,
+      "UNCERTAIN": 2743,
+      "BAD": 1351
+    },
+    "source": {
+      "HISTORIAN": 31224
+    },
+    "unit": {
+      "C": 7753,
+      "bar": 7813,
+      "m3_h": 7808,
+      "mm_s": 7803,
+      "F": 47
+    },
+    "dup_extra": 120,
+    "dup_groups": 120,
+    "temp_unit_mismatch": 47,
+    "temp_unit_mismatch_units": {
+      "F": 47
+    },
+    "temp_examples": [
+      {
+        "event_id": "TEL-00000288",
+        "tag_id": "PLT-01-U03_TEMP",
+        "unit": "F"
+      },
+      {
+        "event_id": "TEL-00000747",
+        "tag_id": "PLT-01-U06_TEMP",
+        "unit": "F"
+      },
+      {
+        "event_id": "TEL-00001763",
+        "tag_id": "PLT-02-U01_TEMP",
+        "unit": "F"
+      },
+      {
+        "event_id": "TEL-00002175",
+        "tag_id": "PLT-02-U04_TEMP",
+        "unit": "F"
+      },
+      {
+        "event_id": "TEL-00002333",
+        "tag_id": "PLT-02-U05_TEMP",
+        "unit": "F"
+      }
+    ],
+    "lag_n": 31224,
+    "lag_neg": 0,
+    "lag_min": 1.0,
+    "lag_p50": 120.0,
+    "lag_p90": 216.0,
+    "lag_max": 240.0,
+    "lag_gt_60": 23414,
+    "lag_gt_300": 0,
+    "missing_ingest": 0,
+    "order_invert_tags": 0,
+    "invert_examples": [],
+    "tags_in_tele_not_ref": 0,
+    "tags_in_ref_not_tele": 0,
+    "asset_id_in_tele": 31224,
+    "schema_required_missing_from_schema": [
+      "ingest_time",
+      "source",
+      "asset_id"
+    ],
+    "historian_enabled_no": 51
+  },
+  "process": {
+    "units_n": 216,
+    "unit_type": {
+      "TREATMENT": 25,
+      "FURNACE": 23,
+      "FILLING": 26,
+      "BOILER": 25,
+      "PUMP_TRAIN": 19,
+      "SEPARATION": 25,
+      "TURBINE": 28,
+      "REACTOR": 23,
+      "COMPRESSOR": 22
+    },
+    "production_criticality": {
+      "HIGH": 109,
+      "CRITICAL": 86,
+      "MEDIUM": 21
+    },
+    "safe_state": {
+      "STOPPED": 59,
+      "RECIRCULATE": 60,
+      "MIN_LOAD": 54,
+      "ISOLATED": 43
+    },
+    "manual_mode": {
+      "YES": 153,
+      "NO": 19,
+      "LIMITED": 44
+    },
+    "deps_n": 198,
+    "dep_type": {
+      "material_flow": 46,
+      "control": 37,
+      "safety": 49,
+      "utility": 33,
+      "data": 33
+    },
+    "dep_documented_no": 51,
+    "dep_critical_yes": 132,
+    "dep_critical_undocumented": 33,
+    "assets_with_tag": 182,
+    "assets_without_tag": 1834,
+    "min_load_units": [
+      "PLT-01-U03",
+      "PLT-01-U09",
+      "PLT-02-U01",
+      "PLT-02-U04",
+      "PLT-03-U01",
+      "PLT-03-U02",
+      "PLT-03-U05",
+      "PLT-03-U06",
+      "PLT-04-U03",
+      "PLT-04-U12",
+      "PLT-05-U01",
+      "PLT-05-U03"
+    ]
+  },
+  "cyber": {
+    "vuln_n": 1100,
+    "severity": {
+      "HIGH": 302,
+      "MEDIUM": 255,
+      "LOW": 288,
+      "CRITICAL": 255
+    },
+    "status": {
+      "MITIGATED": 166,
+      "OPEN": 799,
+      "ACCEPTED": 135
+    },
+    "reachable": {
+      "NO": 383,
+      "YES": 373,
+      "UNKNOWN": 344
+    },
+    "control": {
+      "ALLOWLIST": 217,
+      "MONITORED": 212,
+      "SEGMENTED": 214,
+      "UNKNOWN": 235,
+      "NONE": 222
+    },
+    "exploitability": {
+      "MEDIUM": 363,
+      "HIGH": 375,
+      "LOW": 362
+    },
+    "cvss_ge_9": 173,
+    "cvss_ge_9_reachable_no": 53,
+    "cvss_ge_9_reachable_unknown": 57,
+    "open_high_crit": 409,
+    "alerts_n": 2800,
+    "alert_type": {
+      "UNEXPECTED_WRITE": 404,
+      "MALWARE_SIGNAL": 418,
+      "PROTOCOL_ANOMALY": 362,
+      "AUTH_ANOMALY": 429,
+      "POLICY_VIOLATION": 400,
+      "NEW_DEVICE": 399,
+      "CONFIG_DRIFT": 388
+    },
+    "alert_sev": {
+      "MEDIUM": 1131,
+      "LOW": 809,
+      "HIGH": 661,
+      "CRITICAL": 199
+    },
+    "soc_status": {
+      "TRIAGED": 724,
+      "OPEN": 693,
+      "SUPPRESSED": 683,
+      "CLOSED": 700
+    },
+    "process_context": {
+      "NORMAL": 354,
+      "UNKNOWN": 1735,
+      "MAINTENANCE_WINDOW": 357,
+      "DEGRADED": 354
+    },
+    "high_crit": 860,
+    "high_crit_unknown_ctx": 525,
+    "access_n": 700,
+    "method": {
+      "remote_desktop": 179,
+      "local_service_laptop": 170,
+      "jump_host": 182,
+      "vendor_vpn": 169
+    },
+    "identity": {
+      "unknown": 140,
+      "vendor.engineer": 123,
+      "shared_support": 143,
+      "site.engineer": 158,
+      "contractor": 136
+    },
+    "approved": {
+      "YES": 563,
+      "NO": 61,
+      "UNKNOWN": 76
+    },
+    "mfa": {
+      "YES": 572,
+      "NO": 56,
+      "UNKNOWN": 72
+    }
+  },
+  "anti_cvss": {
+    "high_cvss_unreachable_low_asset_n": 5,
+    "high_cvss_unreachable_low_examples": [
+      {
+        "finding_id": "VUL-00531",
+        "asset_id": "OT-01264",
+        "cvss": 9.2,
+        "severity": "CRITICAL",
+        "reachable": "NO",
+        "control": "ALLOWLIST",
+        "status": "ACCEPTED",
+        "asset_crit": "LOW",
+        "asset_type": "IED",
+        "observed": "OFFLINE",
+        "plant_id": "PLT-12",
+        "units": [],
+        "unit_prod": [],
+        "safe_state": []
+      },
+      {
+        "finding_id": "VUL-00702",
+        "asset_id": "OT-01126",
+        "cvss": 9.3,
+        "severity": "LOW",
+        "reachable": "NO",
+        "control": "MONITORED",
+        "status": "OPEN",
+        "asset_crit": "LOW",
+        "asset_type": "SENSOR",
+        "observed": "ONLINE",
+        "plant_id": "PLT-11",
+        "units": [
+          "PLT-11-U02",
+          "PLT-11-U11"
+        ],
+        "unit_prod": [
+          "HIGH",
+          "CRITICAL"
+        ],
+        "safe_state": [
+          "RECIRCULATE",
+          "RECIRCULATE"
+        ]
+      },
+      {
+        "finding_id": "VUL-00706",
+        "asset_id": "OT-00654",
+        "cvss": 9.8,
+        "severity": "CRITICAL",
+        "reachable": "NO",
+        "control": "SEGMENTED",
+        "status": "OPEN",
+        "asset_crit": "LOW",
+        "asset_type": "NETWORK_SWITCH",
+        "observed": "INTERMITTENT",
+        "plant_id": "PLT-07",
+        "units": [],
+        "unit_prod": [],
+        "safe_state": []
+      },
+      {
+        "finding_id": "VUL-00732",
+        "asset_id": "OT-01159",
+        "cvss": 9.1,
+        "severity": "HIGH",
+        "reachable": "NO",
+        "control": "ALLOWLIST",
+        "status": "OPEN",
+        "asset_crit": "LOW",
+        "asset_type": "SENSOR",
+        "observed": "UNSEEN",
+        "plant_id": "PLT-11",
+        "units": [],
+        "unit_prod": [],
+        "safe_state": []
+      },
+      {
+        "finding_id": "VUL-00802",
+        "asset_id": "OT-01624",
+        "cvss": 9.2,
+        "severity": "HIGH",
+        "reachable": "NO",
+        "control": "ALLOWLIST",
+        "status": "MITIGATED",
+        "asset_crit": "LOW",
+        "asset_type": "DCS_CONTROLLER",
+        "observed": "INTERMITTENT",
+        "plant_id": "PLT-15",
+        "units": [],
+        "unit_prod": [],
+        "safe_state": []
+      }
+    ],
+    "lower_cvss_reachable_critical_open_n": 49,
+    "lower_cvss_reachable_critical_examples": [
+      {
+        "finding_id": "VUL-00008",
+        "asset_id": "OT-01650",
+        "cvss": 4.1,
+        "severity": "CRITICAL",
+        "reachable": "YES",
+        "control": "UNKNOWN",
+        "status": "OPEN",
+        "asset_crit": "CRITICAL",
+        "asset_type": "SENSOR",
+        "observed": "ONLINE",
+        "plant_id": "PLT-15",
+        "units": [],
+        "unit_prod": [],
+        "safe_state": []
+      },
+      {
+        "finding_id": "VUL-00062",
+        "asset_id": "OT-01392",
+        "cvss": 4.1,
+        "severity": "CRITICAL",
+        "reachable": "YES",
+        "control": "ALLOWLIST",
+        "status": "OPEN",
+        "asset_crit": "CRITICAL",
+        "asset_type": "HISTORIAN",
+        "observed": "ONLINE",
+        "plant_id": "PLT-13",
+        "units": [],
+        "unit_prod": [],
+        "safe_state": []
+      },
+      {
+        "finding_id": "VUL-00088",
+        "asset_id": "OT-01228",
+        "cvss": 5.8,
+        "severity": "HIGH",
+        "reachable": "YES",
+        "control": "MONITORED",
+        "status": "OPEN",
+        "asset_crit": "CRITICAL",
+        "asset_type": "RTU",
+        "observed": "ONLINE",
+        "plant_id": "PLT-12",
+        "units": [],
+        "unit_prod": [],
+        "safe_state": []
+      },
+      {
+        "finding_id": "VUL-00130",
+        "asset_id": "OT-00278",
+        "cvss": 4.1,
+        "severity": "LOW",
+        "reachable": "YES",
+        "control": "UNKNOWN",
+        "status": "OPEN",
+        "asset_crit": "CRITICAL",
+        "asset_type": "NETWORK_SWITCH",
+        "observed": "ONLINE",
+        "plant_id": "PLT-03",
+        "units": [],
+        "unit_prod": [],
+        "safe_state": []
+      },
+      {
+        "finding_id": "VUL-00162",
+        "asset_id": "OT-01191",
+        "cvss": 5.3,
+        "severity": "LOW",
+        "reachable": "YES",
+        "control": "MONITORED",
+        "status": "OPEN",
+        "asset_crit": "CRITICAL",
+        "asset_type": "IED",
+        "observed": "ONLINE",
+        "plant_id": "PLT-11",
+        "units": [],
+        "unit_prod": [],
+        "safe_state": []
+      }
+    ]
+  },
+  "safety": {
+    "n": 450,
+    "state": {
+      "ACTIVE": 389,
+      "DEGRADED": 35,
+      "BYPASSED": 26
+    },
+    "proof": {
+      "CURRENT": 377,
+      "DUE": 29,
+      "OVERDUE": 44
+    },
+    "bypass_auth": {
+      "NO": 157,
+      "UNKNOWN": 157,
+      "YES": 136
+    },
+    "barrier_type": {
+      "SIS_TRIP": 73,
+      "ALARM": 85,
+      "PERMISSIVE": 100,
+      "RELIEF": 91,
+      "INTERLOCK": 101
+    },
+    "bypassed_unauth": [
+      {
+        "barrier_id": "PLT-02-SAFE-17",
+        "plant_id": "PLT-02",
+        "unit_id": "PLT-02-U06",
+        "barrier_type": "INTERLOCK",
+        "state": "BYPASSED",
+        "proof_test_status": "OVERDUE",
+        "bypass_authorized": "UNKNOWN"
+      },
+      {
+        "barrier_id": "PLT-03-SAFE-14",
+        "plant_id": "PLT-03",
+        "unit_id": "PLT-03-U05",
+        "barrier_type": "PERMISSIVE",
+        "state": "BYPASSED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "NO"
+      },
+      {
+        "barrier_id": "PLT-04-SAFE-06",
+        "plant_id": "PLT-04",
+        "unit_id": "PLT-04-U11",
+        "barrier_type": "ALARM",
+        "state": "BYPASSED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "UNKNOWN"
+      },
+      {
+        "barrier_id": "PLT-05-SAFE-15",
+        "plant_id": "PLT-05",
+        "unit_id": "PLT-05-U01",
+        "barrier_type": "RELIEF",
+        "state": "BYPASSED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "NO"
+      },
+      {
+        "barrier_id": "PLT-06-SAFE-08",
+        "plant_id": "PLT-06",
+        "unit_id": "PLT-06-U10",
+        "barrier_type": "RELIEF",
+        "state": "BYPASSED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "NO"
+      },
+      {
+        "barrier_id": "PLT-07-SAFE-03",
+        "plant_id": "PLT-07",
+        "unit_id": "PLT-07-U11",
+        "barrier_type": "PERMISSIVE",
+        "state": "BYPASSED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "UNKNOWN"
+      },
+      {
+        "barrier_id": "PLT-07-SAFE-05",
+        "plant_id": "PLT-07",
+        "unit_id": "PLT-07-U02",
+        "barrier_type": "ALARM",
+        "state": "BYPASSED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "UNKNOWN"
+      },
+      {
+        "barrier_id": "PLT-08-SAFE-12",
+        "plant_id": "PLT-08",
+        "unit_id": "PLT-08-U06",
+        "barrier_type": "SIS_TRIP",
+        "state": "BYPASSED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "UNKNOWN"
+      }
+    ],
+    "sis_not_active": [
+      {
+        "barrier_id": "PLT-04-SAFE-19",
+        "plant_id": "PLT-04",
+        "unit_id": "PLT-04-U03",
+        "barrier_type": "SIS_TRIP",
+        "state": "DEGRADED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "NO"
+      },
+      {
+        "barrier_id": "PLT-05-SAFE-02",
+        "plant_id": "PLT-05",
+        "unit_id": "PLT-05-U12",
+        "barrier_type": "SIS_TRIP",
+        "state": "DEGRADED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "YES"
+      },
+      {
+        "barrier_id": "PLT-06-SAFE-14",
+        "plant_id": "PLT-06",
+        "unit_id": "PLT-06-U01",
+        "barrier_type": "SIS_TRIP",
+        "state": "DEGRADED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "YES"
+      },
+      {
+        "barrier_id": "PLT-08-SAFE-01",
+        "plant_id": "PLT-08",
+        "unit_id": "PLT-08-U12",
+        "barrier_type": "SIS_TRIP",
+        "state": "DEGRADED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "NO"
+      },
+      {
+        "barrier_id": "PLT-08-SAFE-12",
+        "plant_id": "PLT-08",
+        "unit_id": "PLT-08-U06",
+        "barrier_type": "SIS_TRIP",
+        "state": "BYPASSED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "UNKNOWN"
+      },
+      {
+        "barrier_id": "PLT-09-SAFE-06",
+        "plant_id": "PLT-09",
+        "unit_id": "PLT-09-U06",
+        "barrier_type": "SIS_TRIP",
+        "state": "DEGRADED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "UNKNOWN"
+      },
+      {
+        "barrier_id": "PLT-10-SAFE-17",
+        "plant_id": "PLT-10",
+        "unit_id": "PLT-10-U12",
+        "barrier_type": "SIS_TRIP",
+        "state": "BYPASSED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "YES"
+      },
+      {
+        "barrier_id": "PLT-12-SAFE-10",
+        "plant_id": "PLT-12",
+        "unit_id": "PLT-12-U04",
+        "barrier_type": "SIS_TRIP",
+        "state": "BYPASSED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "YES"
+      },
+      {
+        "barrier_id": "PLT-13-SAFE-25",
+        "plant_id": "PLT-13",
+        "unit_id": "PLT-13-U09",
+        "barrier_type": "SIS_TRIP",
+        "state": "DEGRADED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "NO"
+      },
+      {
+        "barrier_id": "PLT-16-SAFE-19",
+        "plant_id": "PLT-16",
+        "unit_id": "PLT-16-U09",
+        "barrier_type": "SIS_TRIP",
+        "state": "DEGRADED",
+        "proof_test_status": "DUE",
+        "bypass_authorized": "UNKNOWN"
+      }
+    ],
+    "units_with_nonactive_barrier": [
+      "PLT-02-U01",
+      "PLT-02-U06",
+      "PLT-03-U05",
+      "PLT-03-U08",
+      "PLT-04-U03",
+      "PLT-04-U06",
+      "PLT-04-U07",
+      "PLT-04-U11",
+      "PLT-05-U01",
+      "PLT-05-U11",
+      "PLT-05-U12",
+      "PLT-06-U01",
+      "PLT-06-U02",
+      "PLT-06-U04",
+      "PLT-06-U07",
+      "PLT-06-U08",
+      "PLT-06-U10",
+      "PLT-07-U02",
+      "PLT-07-U03",
+      "PLT-07-U11",
+      "PLT-07-U12",
+      "PLT-08-U02",
+      "PLT-08-U06",
+      "PLT-08-U08",
+      "PLT-08-U12",
+      "PLT-09-U06",
+      "PLT-10-U06",
+      "PLT-10-U08",
+      "PLT-10-U12",
+      "PLT-11-U05",
+      "PLT-12-U04",
+      "PLT-12-U07",
+      "PLT-12-U10",
+      "PLT-13-U03",
+      "PLT-13-U06",
+      "PLT-13-U09",
+      "PLT-13-U12",
+      "PLT-14-U01",
+      "PLT-14-U02",
+      "PLT-14-U06",
+      "PLT-14-U09",
+      "PLT-14-U12",
+      "PLT-15-U03",
+      "PLT-15-U04",
+      "PLT-15-U07",
+      "PLT-16-U01",
+      "PLT-16-U03",
+      "PLT-16-U06",
+      "PLT-16-U09",
+      "PLT-17-U02",
+      "PLT-17-U04",
+      "PLT-17-U06",
+      "PLT-18-U05",
+      "PLT-18-U07",
+      "PLT-18-U12"
+    ]
+  },
+  "unsafe_isolation": {
+    "n": 32,
+    "examples": [
+      {
+        "alert_id": "ALT-000018",
+        "asset_id": "OT-01962",
+        "severity": "HIGH",
+        "type": "AUTH_ANOMALY",
+        "process_context": "NORMAL",
+        "soc_status": "SUPPRESSED",
+        "units": [
+          "PLT-18-U12"
+        ],
+        "safe_state": [
+          "STOPPED"
+        ],
+        "asset_type": "DCS_CONTROLLER",
+        "plant_id": "PLT-18"
+      },
+      {
+        "alert_id": "ALT-000089",
+        "asset_id": "OT-00457",
+        "severity": "HIGH",
+        "type": "MALWARE_SIGNAL",
+        "process_context": "UNKNOWN",
+        "soc_status": "OPEN",
+        "units": [
+          "PLT-05-U07",
+          "PLT-05-U11"
+        ],
+        "safe_state": [
+          "MIN_LOAD",
+          "RECIRCULATE"
+        ],
+        "asset_type": "DCS_CONTROLLER",
+        "plant_id": "PLT-05"
+      },
+      {
+        "alert_id": "ALT-000170",
+        "asset_id": "OT-00569",
+        "severity": "HIGH",
+        "type": "AUTH_ANOMALY",
+        "process_context": "DEGRADED",
+        "soc_status": "OPEN",
+        "units": [
+          "PLT-06-U01"
+        ],
+        "safe_state": [
+          "STOPPED"
+        ],
+        "asset_type": "DCS_CONTROLLER",
+        "plant_id": "PLT-06"
+      },
+      {
+        "alert_id": "ALT-000425",
+        "asset_id": "OT-00847",
+        "severity": "HIGH",
+        "type": "MALWARE_SIGNAL",
+        "process_context": "DEGRADED",
+        "soc_status": "TRIAGED",
+        "units": [
+          "PLT-08-U04",
+          "PLT-08-U09"
+        ],
+        "safe_state": [
+          "MIN_LOAD",
+          "MIN_LOAD"
+        ],
+        "asset_type": "DCS_CONTROLLER",
+        "plant_id": "PLT-08"
+      },
+      {
+        "alert_id": "ALT-000508",
+        "asset_id": "OT-01104",
+        "severity": "HIGH",
+        "type": "POLICY_VIOLATION",
+        "process_context": "UNKNOWN",
+        "soc_status": "OPEN",
+        "units": [
+          "PLT-11-U05"
+        ],
+        "safe_state": [
+          "MIN_LOAD"
+        ],
+        "asset_type": "PLC",
+        "plant_id": "PLT-11"
+      },
+      {
+        "alert_id": "ALT-000545",
+        "asset_id": "OT-01399",
+        "severity": "HIGH",
+        "type": "NEW_DEVICE",
+        "process_context": "UNKNOWN",
+        "soc_status": "OPEN",
+        "units": [
+          "PLT-13-U03"
+        ],
+        "safe_state": [
+          "RECIRCULATE"
+        ],
+        "asset_type": "PLC",
+        "plant_id": "PLT-13"
+      },
+      {
+        "alert_id": "ALT-000594",
+        "asset_id": "OT-00970",
+        "severity": "HIGH",
+        "type": "MALWARE_SIGNAL",
+        "process_context": "UNKNOWN",
+        "soc_status": "SUPPRESSED",
+        "units": [
+          "PLT-09-U01"
+        ],
+        "safe_state": [
+          "MIN_LOAD"
+        ],
+        "asset_type": "DCS_CONTROLLER",
+        "plant_id": "PLT-09"
+      },
+      {
+        "alert_id": "ALT-000629",
+        "asset_id": "OT-01486",
+        "severity": "CRITICAL",
+        "type": "CONFIG_DRIFT",
+        "process_context": "UNKNOWN",
+        "soc_status": "TRIAGED",
+        "units": [
+          "PLT-14-U12"
+        ],
+        "safe_state": [
+          "RECIRCULATE"
+        ],
+        "asset_type": "SENSOR",
+        "plant_id": "PLT-14"
+      }
+    ],
+    "min_load_and_highcrit_alert_n": 18
+  },
+  "ops": {
+    "wo_n": 1250,
+    "cmms": {
+      "CLOSED": 328,
+      "IN_PROGRESS": 332,
+      "DEFERRED": 287,
+      "OPEN": 303
+    },
+    "field": {
+      "RETURNED_TO_SERVICE": 326,
+      "ACTIVE": 314,
+      "OUT_OF_SERVICE": 297,
+      "DEGRADED": 313
+    },
+    "type": {
+      "PM": 227,
+      "INSPECTION": 268,
+      "CALIBRATION": 260,
+      "EMERGENCY": 259,
+      "CM": 236
+    },
+    "bypass_yes": 94,
+    "notes": {
+      "awaiting vendor": 224,
+      "standard work": 283,
+      "parts substituted": 276,
+      "documentation pending": 215,
+      "operator workaround active": 252
+    },
+    "closed_not_rts": 244,
+    "closed_no_closed_at": 133,
+    "open_queue": 922
+  },
+  "enterprise": {
+    "events_n": 6500,
+    "source": {
+      "SIEM": 702,
+      "MES": 747,
+      "HISTORIAN": 741,
+      "IAM": 749,
+      "CMMS": 704,
+      "SCADA": 717,
+      "EAM": 724,
+      "VENDOR_PORTAL": 704,
+      "PASSIVE_DISCOVERY": 712
+    },
+    "event_type": {
+      "CONFIG_CHANGE": 935,
+      "WORK_ORDER": 901,
+      "SESSION": 959,
+      "HEARTBEAT": 938,
+      "STATE_CHANGE": 892,
+      "ALARM": 906,
+      "RISK_CHANGE": 969
+    },
+    "payload_state": {
+      "DEGRADED": 1035,
+      "OFFLINE": 1107,
+      "MAINTENANCE": 1058,
+      "UNKNOWN": 1081,
+      "NORMAL": 1111,
+      "HOLD": 1108
+    },
+    "corr_empty": 3251,
+    "lag_neg": 407,
+    "lag_p50": 423.0,
+    "vendors": [
+      {
+        "id": "VEN-01",
+        "name": "ControlWorks",
+        "remote": "jump_host",
+        "sla": "24"
+      },
+      {
+        "id": "VEN-02",
+        "name": "ProcessSys",
+        "remote": "vendor_vpn",
+        "sla": "8"
+      },
+      {
+        "id": "VEN-03",
+        "name": "LegacyPLC",
+        "remote": "none",
+        "sla": "24"
+      },
+      {
+        "id": "VEN-04",
+        "name": "SafeLogic",
+        "remote": "jump_host",
+        "sla": "4"
+      },
+      {
+        "id": "VEN-05",
+        "name": "HistorianX",
+        "remote": "vendor_vpn",
+        "sla": "8"
+      },
+      {
+        "id": "VEN-06",
+        "name": "FieldLink",
+        "remote": "jump_host",
+        "sla": "24"
+      },
+      {
+        "id": "VEN-07",
+        "name": "MotorDriveCo",
+        "remote": "service_laptop",
+        "sla": "8"
+      },
+      {
+        "id": "VEN-08",
+        "name": "RemoteAssist",
+        "remote": "jump_host",
+        "sla": "4"
+      },
+      {
+        "id": "VEN-09",
+        "name": "NetSwitchCo",
+        "remote": "jump_host",
+        "sla": "4"
+      },
+      {
+        "id": "VEN-10",
+        "name": "SensorTech",
+        "remote": "service_laptop",
+        "sla": "8"
+      }
+    ],
+    "plants_n": 18,
+    "regions": {
+      "NA": 4,
+      "EU": 4,
+      "APAC": 4,
+      "LATAM": 3,
+      "MEA": 3
+    },
+    "tracker_n": 180,
+    "tracker_decision": {
+      "DEFER": 51,
+      "ACCEPT": 71,
+      "MITIGATE": 58
+    },
+    "tracker_owner": {
+      "Engineering": 44,
+      "Unknown": 41,
+      "Plant Manager": 48,
+      "OT Security": 47
+    },
+    "tracker_expired_before_20260915": 134,
+    "tracker_accept_unknown": 19
+  },
+  "recovery": {
+    "n": 144,
+    "backup": {
+      "CURRENT": 119,
+      "STALE": 16,
+      "UNKNOWN": 9
+    },
+    "runbook": {
+      "CURRENT": 109,
+      "STALE": 14,
+      "MISSING": 21
+    },
+    "dep": {
+      "YES": 115,
+      "NO": 16,
+      "UNKNOWN": 13
+    },
+    "fallback": {
+      "YES": 55,
+      "LIMITED": 47,
+      "NO": 42
+    },
+    "component": {
+      "NETWORK": 18,
+      "IDENTITY": 18,
+      "SCADA": 18,
+      "HISTORIAN": 18,
+      "ENGINEERING_WS": 18,
+      "PLC_DCS": 18,
+      "MES_INTERFACE": 18,
+      "BACKUP_REPOSITORY": 18
+    },
+    "restore_p50": 376.0,
+    "restore_gt_180": 114,
+    "current_but_weak_n": 113,
+    "current_but_weak_examples": [
+      {
+        "plant_id": "PLT-01",
+        "component": "NETWORK",
+        "rto_hours": "4",
+        "last_restore_test_days": "185",
+        "backup_status": "CURRENT",
+        "manual_fallback": "YES",
+        "runbook_status": "CURRENT",
+        "dependency_verified": "YES"
+      },
+      {
+        "plant_id": "PLT-01",
+        "component": "IDENTITY",
+        "rto_hours": "8",
+        "last_restore_test_days": "360",
+        "backup_status": "CURRENT",
+        "manual_fallback": "LIMITED",
+        "runbook_status": "STALE",
+        "dependency_verified": "YES"
+      },
+      {
+        "plant_id": "PLT-01",
+        "component": "HISTORIAN",
+        "rto_hours": "8",
+        "last_restore_test_days": "657",
+        "backup_status": "CURRENT",
+        "manual_fallback": "LIMITED",
+        "runbook_status": "CURRENT",
+        "dependency_verified": "YES"
+      },
+      {
+        "plant_id": "PLT-01",
+        "component": "PLC_DCS",
+        "rto_hours": "2",
+        "last_restore_test_days": "510",
+        "backup_status": "CURRENT",
+        "manual_fallback": "YES",
+        "runbook_status": "CURRENT",
+        "dependency_verified": "YES"
+      },
+      {
+        "plant_id": "PLT-01",
+        "component": "MES_INTERFACE",
+        "rto_hours": "24",
+        "last_restore_test_days": "433",
+        "backup_status": "CURRENT",
+        "manual_fallback": "YES",
+        "runbook_status": "CURRENT",
+        "dependency_verified": "NO"
+      },
+      {
+        "plant_id": "PLT-02",
+        "component": "NETWORK",
+        "rto_hours": "24",
+        "last_restore_test_days": "334",
+        "backup_status": "CURRENT",
+        "manual_fallback": "YES",
+        "runbook_status": "CURRENT",
+        "dependency_verified": "YES"
+      },
+      {
+        "plant_id": "PLT-02",
+        "component": "IDENTITY",
+        "rto_hours": "24",
+        "last_restore_test_days": "169",
+        "backup_status": "CURRENT",
+        "manual_fallback": "LIMITED",
+        "runbook_status": "CURRENT",
+        "dependency_verified": "YES"
+      },
+      {
+        "plant_id": "PLT-02",
+        "component": "HISTORIAN",
+        "rto_hours": "2",
+        "last_restore_test_days": "150",
+        "backup_status": "CURRENT",
+        "manual_fallback": "LIMITED",
+        "runbook_status": "MISSING",
+        "dependency_verified": "YES"
+      }
+    ],
+    "legacy_would_ready": 119
+  },
+  "traces": [
+    {
+      "asset_id": "OT-00211",
+      "asset_type": "SAFETY_PLC",
+      "criticality": "CRITICAL",
+      "registered_state": "ACTIVE",
+      "observed_state": "ONLINE",
+      "firmware": "5.0.4",
+      "zone": "L0_FIELD",
+      "protocol": "ModbusTCP",
+      "plant_id": "PLT-03",
+      "plant_type": "food",
+      "plant_crit": "HIGH",
+      "unit_id": "PLT-03-U05",
+      "unit_type": "BOILER",
+      "unit_prod": "CRITICAL",
+      "safe_state": "MIN_LOAD",
+      "manual_mode": "YES",
+      "downstream": [
+        {
+          "plant_id": "PLT-03",
+          "upstream_unit": "PLT-03-U05",
+          "downstream_unit": "PLT-03-U06",
+          "dependency_type": "data",
+          "documented": "YES",
+          "critical": "NO"
+        }
+      ],
+      "barriers": [
+        {
+          "barrier_id": "PLT-03-SAFE-12",
+          "type": "PERMISSIVE",
+          "state": "ACTIVE",
+          "proof": "CURRENT",
+          "bypass_authorized": "NO"
+        },
+        {
+          "barrier_id": "PLT-03-SAFE-14",
+          "type": "PERMISSIVE",
+          "state": "BYPASSED",
+          "proof": "CURRENT",
+          "bypass_authorized": "NO"
+        },
+        {
+          "barrier_id": "PLT-03-SAFE-20",
+          "type": "INTERLOCK",
+          "state": "ACTIVE",
+          "proof": "CURRENT",
+          "bypass_authorized": "NO"
+        },
+        {
+          "barrier_id": "PLT-03-SAFE-22",
+          "type": "PERMISSIVE",
+          "state": "ACTIVE",
+          "proof": "CURRENT",
+          "bypass_authorized": "NO"
+        }
+      ],
+      "vulns": [
+        {
+          "finding_id": "VUL-00800",
+          "cvss": "8.1",
+          "reachable": "UNKNOWN",
+          "status": "OPEN"
+        }
+      ],
+      "alerts_n": 1,
+      "alerts_highcrit": 0
+    },
+    {
+      "asset_id": "OT-01016",
+      "asset_type": "DCS_CONTROLLER",
+      "criticality": "HIGH",
+      "registered_state": "ACTIVE",
+      "observed_state": "UNSEEN",
+      "firmware": "5.5.8",
+      "zone": "L1_CONTROL",
+      "protocol": "EtherNetIP",
+      "plant_id": "PLT-10",
+      "plant_type": "pharma",
+      "plant_crit": "HIGH",
+      "unit_id": "PLT-10-U06",
+      "unit_type": "PUMP_TRAIN",
+      "unit_prod": "HIGH",
+      "safe_state": "MIN_LOAD",
+      "manual_mode": "YES",
+      "downstream": [
+        {
+          "plant_id": "PLT-10",
+          "upstream_unit": "PLT-10-U06",
+          "downstream_unit": "PLT-10-U07",
+          "dependency_type": "safety",
+          "documented": "YES",
+          "critical": "YES"
+        }
+      ],
+      "barriers": [
+        {
+          "barrier_id": "PLT-10-SAFE-04",
+          "type": "PERMISSIVE",
+          "state": "ACTIVE",
+          "proof": "CURRENT",
+          "bypass_authorized": "YES"
+        },
+        {
+          "barrier_id": "PLT-10-SAFE-07",
+          "type": "ALARM",
+          "state": "BYPASSED",
+          "proof": "CURRENT",
+          "bypass_authorized": "NO"
+        },
+        {
+          "barrier_id": "PLT-10-SAFE-16",
+          "type": "RELIEF",
+          "state": "ACTIVE",
+          "proof": "CURRENT",
+          "bypass_authorized": "UNKNOWN"
+        }
+      ],
+      "vulns": [
+        {
+          "finding_id": "VUL-00098",
+          "cvss": "8.7",
+          "reachable": "YES",
+          "status": "OPEN"
+        }
+      ],
+      "alerts_n": 1,
+      "alerts_highcrit": 1
+    },
+    {
+      "asset_id": "OT-00528",
+      "asset_type": "SENSOR",
+      "criticality": "CRITICAL",
+      "registered_state": "RETIRED",
+      "observed_state": "ONLINE",
+      "firmware": "5.7.7",
+      "zone": "L2_SUPERVISORY",
+      "protocol": "ModbusTCP",
+      "plant_id": "PLT-05",
+      "plant_type": "power",
+      "plant_crit": "HIGH",
+      "unit_id": "PLT-05-U01",
+      "unit_type": "TREATMENT",
+      "unit_prod": "HIGH",
+      "safe_state": "MIN_LOAD",
+      "manual_mode": "LIMITED",
+      "downstream": [
+        {
+          "plant_id": "PLT-05",
+          "upstream_unit": "PLT-05-U01",
+          "downstream_unit": "PLT-05-U02",
+          "dependency_type": "material_flow",
+          "documented": "YES",
+          "critical": "NO"
+        }
+      ],
+      "barriers": [
+        {
+          "barrier_id": "PLT-05-SAFE-03",
+          "type": "ALARM",
+          "state": "ACTIVE",
+          "proof": "CURRENT",
+          "bypass_authorized": "UNKNOWN"
+        },
+        {
+          "barrier_id": "PLT-05-SAFE-15",
+          "type": "RELIEF",
+          "state": "BYPASSED",
+          "proof": "CURRENT",
+          "bypass_authorized": "NO"
+        }
+      ],
+      "vulns": [
+        {
+          "finding_id": "VUL-00744",
+          "cvss": "9.1",
+          "reachable": "YES",
+          "status": "OPEN"
+        }
+      ],
+      "alerts_n": 1,
+      "alerts_highcrit": 0
+    }
+  ],
+  "firmware_versions_by_type": {
+    "PLC": 141,
+    "GATEWAY": 148,
+    "OPC_SERVER": 138,
+    "ENG_WORKSTATION": 153,
+    "IED": 141,
+    "RTU": 128,
+    "DCS_CONTROLLER": 162,
+    "VFD": 120,
+    "NETWORK_SWITCH": 156,
+    "SENSOR": 135,
+    "HMI": 138,
+    "HISTORIAN": 139,
+    "SAFETY_PLC": 147
+  }
+}

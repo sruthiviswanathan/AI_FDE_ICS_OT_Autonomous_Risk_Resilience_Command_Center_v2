@@ -48,3 +48,21 @@ UNKNOWN permission is not permission. Missing named authority, threshold, ADR, o
 | OPEN-017 | Meaning of SOC SUPPRESSED on HIGH/CRITICAL | 211 HIGH/CRIT `soc_status=SUPPRESSED` (e.g. `ALT-000040`); not an ACTION_TIERS action; not trip suppression in SIS | Alert-queue vs safety policy | SOC mgr + Safety/SIS |
 
 SDD-01 IDs OPEN-001…011 are **not** closed by SDD-02. Isolation execute remains forbidden. No KG/ADR invented.
+
+---
+
+## SDD-03 | 96-cell forensics | 2026-09-15
+
+**Evidence used:** `scripts/mine_forensics.py`; `matrix.csv` 96 cells; traces OT-00211 / OT-01016 / OT-00528; `tag_telemetry.jsonl` 31224; `safety_barriers.csv`; `recovery_readiness.csv`; `cascade_001.json`.  
+**Assumptions:** Tag join is the only asset→unit path (182/2016).  
+**Unknowns:** below.  
+**Did not conclude:** identity winner; CVSS operational order; isolate; recovery-ready.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-018 | Which plant “Unit 04” in the night-shift handover refers to | `data/shadow/shift_handover_email.txt` has no `plant_id`; `process_units` has U04 on multiple plants; ALT-000425 hits PLT-08-U04 MIN_LOAD but that is **not** proven to be the email’s unit | Unsafe-isolation case binding | Process Eng + Ops |
+| OPEN-019 | The CASCADE-001 “37 controllers / 6 unknown firmware” set | `scenarios/cascade_001.json` 08:07; `assets.csv` has no advisory-affected flag; do not invent the 37 IDs | Firmware-campaign identity | FDE + OT-CISO |
+| OPEN-020 | Whether 182/2016 tagged assets is the full instrumented set | `tags.csv` unique asset_id=182; 1834 assets cannot be traced to a unit | Estate-wide process consequence | Process Eng |
+| OPEN-021 | Which clock is event order: telemetry ingest (never inverted, p50 120s) vs enterprise received (407 inversions) | TEL ingest−event neg=0; EVT-0000001 received before event; handover 20-min historian vs HMI not located as a tagged incident | EVAL-004 implementation | FDE |
+
+OPEN-001…017 remain open. SDD-03 does not close them. Isolation execute remains forbidden. No solution implemented.
