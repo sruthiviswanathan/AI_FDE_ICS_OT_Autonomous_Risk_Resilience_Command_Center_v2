@@ -430,5 +430,21 @@ No new ACTION_TIERS verbs. No recovery day threshold invented. `__version__` not
 
 No Execute Isolation / Write PLC added. `legacy_*` XFAIL unchanged.
 
+---
+
+## APP-01 | Fixtures from real synthetic data | 2026-09-16
+
+**Evidence used:** exact rows from `data/raw/*`, `data/telemetry/tag_telemetry.jsonl`, `data/shadow/shift_handover_email.txt`; generator `scripts/generate_command_center_fixtures.py`; output `apps/command_center/fixtures/command_center_fixtures.json`.  
+**Assumptions:** Demo slice is not a second system of record. Empty `shadow_overlay` for OT-00012/OT-00033 means those IDs are not in the 220-row spreadsheet (OPEN-015). Session rows in the fixture do not create an isolate/VPN execute API.  
+**Unknowns:** OPEN-031 dedicated sessions GET still absent from `api.py`.  
+**Did not conclude:** App UI; isolate execute; CMDB vs shadow winner.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-031 | *(partial)* fixture has real session rows; API still diagnostics-counts only | `api.py` has no `/sessions` GET | APP-02 may bind fixture or wait for a read GET | FDE |
+
+No invented fixture fields. `data/` not cleaned. `legacy_*` unchanged.
+
+
 
 

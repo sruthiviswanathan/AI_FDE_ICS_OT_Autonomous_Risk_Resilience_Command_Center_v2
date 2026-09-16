@@ -57,6 +57,7 @@ REQUIRED = [
     "participant/work/enh_10/REPO_3_0_GATE.md",
     "participant/work/prd/PRD.md",
     "participant/work/prd/APP_ACCEPTANCE_TESTS.md",
+    "apps/command_center/fixtures/command_center_fixtures.json",
     "src/ot_command/modern/README.md",
     "src/ot_command/modern/AS_BUILT_C4.md",
     "assurance/README.md",

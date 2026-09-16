@@ -1,0 +1,704 @@
+{
+  "schema": "command_center_fixtures.v1",
+  "mode": "synthetic-read-only",
+  "live_ot": false,
+  "invented_fields": false,
+  "sources": [
+    "data/raw/assets.csv",
+    "data/raw/asset_aliases.csv",
+    "data/raw/network_edges.csv",
+    "data/raw/vulnerabilities.csv",
+    "data/raw/safety_barriers.csv",
+    "data/raw/remote_access_sessions.csv",
+    "data/raw/recovery_readiness.csv",
+    "data/raw/cyber_alerts.csv",
+    "data/raw/process_units.csv",
+    "data/raw/process_dependencies.csv",
+    "data/raw/enterprise_events.jsonl",
+    "data/telemetry/tag_telemetry.jsonl",
+    "data/shadow/ot_asset_inventory_FINAL_v8.csv",
+    "data/shadow/shift_handover_email.txt"
+  ],
+  "rule": "Every object is an exact source row or the exact shift-email file. No invented fields or IDs.",
+  "identity_conflicts": {
+    "eval": "EVAL-001",
+    "inject": "inject_01",
+    "aliases": [
+      {
+        "asset_id": "OT-00012",
+        "source": "CMDB",
+        "alias": "CMDB-100012"
+      },
+      {
+        "asset_id": "OT-00012",
+        "source": "PASSIVE",
+        "alias": "PLT-01-DCS_CONTROLLER-105"
+      },
+      {
+        "asset_id": "OT-00012",
+        "source": "CMMS",
+        "alias": "ASSET-200012"
+      },
+      {
+        "asset_id": "OT-00033",
+        "source": "CMDB",
+        "alias": "CMDB-100033"
+      },
+      {
+        "asset_id": "OT-00033",
+        "source": "PASSIVE",
+        "alias": "PLT-01-DCS_CONTROLLER-105"
+      },
+      {
+        "asset_id": "OT-00033",
+        "source": "CMMS",
+        "alias": "ASSET-200033"
+      }
+    ],
+    "collide_alias_sample": [
+      {
+        "asset_id": "OT-00001",
+        "source": "CMDB",
+        "alias": "COLLIDE-00"
+      },
+      {
+        "asset_id": "OT-00002",
+        "source": "CMDB",
+        "alias": "COLLIDE-01"
+      },
+      {
+        "asset_id": "OT-00003",
+        "source": "CMDB",
+        "alias": "COLLIDE-02"
+      },
+      {
+        "asset_id": "OT-00004",
+        "source": "CMDB",
+        "alias": "COLLIDE-03"
+      },
+      {
+        "asset_id": "OT-00005",
+        "source": "CMDB",
+        "alias": "COLLIDE-04"
+      },
+      {
+        "asset_id": "OT-00006",
+        "source": "CMDB",
+        "alias": "COLLIDE-05"
+      },
+      {
+        "asset_id": "OT-00007",
+        "source": "CMDB",
+        "alias": "COLLIDE-06"
+      },
+      {
+        "asset_id": "OT-00008",
+        "source": "CMDB",
+        "alias": "COLLIDE-07"
+      },
+      {
+        "asset_id": "OT-00009",
+        "source": "CMDB",
+        "alias": "COLLIDE-08"
+      },
+      {
+        "asset_id": "OT-00010",
+        "source": "CMDB",
+        "alias": "COLLIDE-09"
+      }
+    ],
+    "assets": [
+      {
+        "asset_id": "OT-00012",
+        "plant_id": "PLT-01",
+        "asset_type": "DCS_CONTROLLER",
+        "vendor": "LegacyPLC",
+        "model": "MDL-52",
+        "firmware": "1.1.4",
+        "ip_address": "10.1.14.3",
+        "zone": "L0_FIELD",
+        "protocol": "VendorSerial",
+        "registered_state": "ACTIVE",
+        "observed_state": "ONLINE",
+        "criticality": "CRITICAL",
+        "owner": "Vendor",
+        "backup_age_days": "247"
+      },
+      {
+        "asset_id": "OT-00033",
+        "plant_id": "PLT-01",
+        "asset_type": "DCS_CONTROLLER",
+        "vendor": "NetSwitchCo",
+        "model": "MDL-31",
+        "firmware": "7.6.2",
+        "ip_address": "10.1.12.146",
+        "zone": "L0_FIELD",
+        "protocol": "VendorSerial",
+        "registered_state": "RETIRED",
+        "observed_state": "OFFLINE",
+        "criticality": "MEDIUM",
+        "owner": "Maintenance",
+        "backup_age_days": "155"
+      },
+      {
+        "asset_id": "OT-00528",
+        "plant_id": "PLT-05",
+        "asset_type": "SENSOR",
+        "vendor": "MotorDriveCo",
+        "model": "MDL-12",
+        "firmware": "5.7.7",
+        "ip_address": "10.5.11.142",
+        "zone": "L2_SUPERVISORY",
+        "protocol": "ModbusTCP",
+        "registered_state": "RETIRED",
+        "observed_state": "ONLINE",
+        "criticality": "CRITICAL",
+        "owner": "Operations",
+        "backup_age_days": "328"
+      }
+    ],
+    "shadow_overlay": [],
+    "shadow_overlay_sample": [
+      {
+        "asset_id": "OT-01072",
+        "plant_id": "PLT-10",
+        "asset_type": "NETWORK_SWITCH",
+        "vendor": "SafeLogic",
+        "model": "MDL-62",
+        "firmware": "3.7.8",
+        "ip_address": "10.10.3.197",
+        "zone": "L3_SITE_OPS",
+        "protocol": "PROFINET",
+        "registered_state": "ACTIVE",
+        "observed_state": "ONLINE",
+        "criticality": "MEDIUM",
+        "owner": "Vendor",
+        "backup_age_days": "177"
+      },
+      {
+        "asset_id": "OT-01676",
+        "plant_id": "PLT-16",
+        "asset_type": "IED",
+        "vendor": "ControlWorks",
+        "model": "MDL-64",
+        "firmware": "9.4.5",
+        "ip_address": "10.16.18.114",
+        "zone": "L0_FIELD",
+        "protocol": "IEC61850",
+        "registered_state": "ACTIVE",
+        "observed_state": "ONLINE",
+        "criticality": "CRITICAL",
+        "owner": "Operations",
+        "backup_age_days": "37"
+      },
+      {
+        "asset_id": "OT-00949",
+        "plant_id": "PLT-09",
+        "asset_type": "SAFETY_PLC",
+        "vendor": "HistorianX",
+        "model": "MDL-39",
+        "firmware": "9.2.8",
+        "ip_address": "10.9.8.75",
+        "zone": "L3_SITE_OPS",
+        "protocol": "IEC104",
+        "registered_state": "ACTIVE",
+        "observed_state": "ONLINE",
+        "criticality": "MEDIUM",
+        "owner": "Operations",
+        "backup_age_days": "283"
+      }
+    ],
+    "shadow_is_winner": false,
+    "cmdb_is_winner": false
+  },
+  "undocumented_paths": {
+    "inject": "inject_05",
+    "filter": "documented=NO AND observed_last_24h=YES",
+    "rows": [
+      {
+        "plant_id": "PLT-01",
+        "source_asset": "OT-00022",
+        "target_asset": "OT-00066",
+        "protocol": "OPC_UA",
+        "approved_path": "YES",
+        "observed_last_24h": "YES",
+        "documented": "NO"
+      },
+      {
+        "plant_id": "PLT-01",
+        "source_asset": "OT-00081",
+        "target_asset": "OT-00025",
+        "protocol": "IEC104",
+        "approved_path": "YES",
+        "observed_last_24h": "YES",
+        "documented": "NO"
+      },
+      {
+        "plant_id": "PLT-01",
+        "source_asset": "OT-00005",
+        "target_asset": "OT-00097",
+        "protocol": "OPC_UA",
+        "approved_path": "YES",
+        "observed_last_24h": "YES",
+        "documented": "NO"
+      },
+      {
+        "plant_id": "PLT-01",
+        "source_asset": "OT-00027",
+        "target_asset": "OT-00087",
+        "protocol": "DNP3",
+        "approved_path": "UNKNOWN",
+        "observed_last_24h": "YES",
+        "documented": "NO"
+      },
+      {
+        "plant_id": "PLT-01",
+        "source_asset": "OT-00065",
+        "target_asset": "OT-00102",
+        "protocol": "PROFINET",
+        "approved_path": "YES",
+        "observed_last_24h": "YES",
+        "documented": "NO"
+      },
+      {
+        "plant_id": "PLT-01",
+        "source_asset": "OT-00095",
+        "target_asset": "OT-00054",
+        "protocol": "OPC_DA",
+        "approved_path": "YES",
+        "observed_last_24h": "YES",
+        "documented": "NO"
+      },
+      {
+        "plant_id": "PLT-01",
+        "source_asset": "OT-00088",
+        "target_asset": "OT-00017",
+        "protocol": "PROFIBUS",
+        "approved_path": "UNKNOWN",
+        "observed_last_24h": "YES",
+        "documented": "NO"
+      },
+      {
+        "plant_id": "PLT-01",
+        "source_asset": "OT-00085",
+        "target_asset": "OT-00019",
+        "protocol": "DNP3",
+        "approved_path": "UNKNOWN",
+        "observed_last_24h": "YES",
+        "documented": "NO"
+      }
+    ]
+  },
+  "bad_telemetry": {
+    "eval": "EVAL-004",
+    "inject": "inject_02",
+    "rows": [
+      {
+        "event_id": "TEL-00000288",
+        "tag_id": "PLT-01-U03_TEMP",
+        "asset_id": "OT-00063",
+        "event_time": "2026-09-01T00:00:00",
+        "ingest_time": "2026-09-01T00:02:09",
+        "value": 253.837,
+        "unit": "F",
+        "quality": "GOOD",
+        "source": "HISTORIAN"
+      },
+      {
+        "event_id": "TEL-00000001",
+        "tag_id": "PLT-01-U01_TEMP",
+        "asset_id": "OT-00058",
+        "event_time": "2026-09-01T00:19:00",
+        "ingest_time": "2026-09-01T00:20:59",
+        "value": 101.412,
+        "unit": "C",
+        "quality": "UNCERTAIN",
+        "source": "HISTORIAN"
+      },
+      {
+        "event_id": "TEL-00000002",
+        "tag_id": "PLT-01-U01_TEMP",
+        "asset_id": "OT-00058",
+        "event_time": "2026-09-01T00:42:00",
+        "ingest_time": "2026-09-01T00:44:13",
+        "value": 100.994,
+        "unit": "C",
+        "quality": "UNCERTAIN",
+        "source": "HISTORIAN"
+      },
+      {
+        "event_id": "TEL-00000003",
+        "tag_id": "PLT-01-U01_TEMP",
+        "asset_id": "OT-00058",
+        "event_time": "2026-09-01T01:00:00",
+        "ingest_time": "2026-09-01T01:03:43",
+        "value": 101.17,
+        "unit": "C",
+        "quality": "UNCERTAIN",
+        "source": "HISTORIAN"
+      },
+      {
+        "event_id": "TEL-00000027",
+        "tag_id": "PLT-01-U01_TEMP",
+        "asset_id": "OT-00058",
+        "event_time": "2026-09-01T08:58:00",
+        "ingest_time": "2026-09-01T09:00:30",
+        "value": 107.89,
+        "unit": "C",
+        "quality": "UNCERTAIN",
+        "source": "HISTORIAN"
+      },
+      {
+        "event_id": "TEL-00000031",
+        "tag_id": "PLT-01-U01_TEMP",
+        "asset_id": "OT-00058",
+        "event_time": "2026-09-01T10:18:00",
+        "ingest_time": "2026-09-01T10:19:42",
+        "value": 108.031,
+        "unit": "C",
+        "quality": "UNCERTAIN",
+        "source": "HISTORIAN"
+      },
+      {
+        "event_id": "TEL-00000040",
+        "tag_id": "PLT-01-U01_PRESSURE",
+        "asset_id": "OT-00058",
+        "event_time": "2026-09-01T01:20:00",
+        "ingest_time": "2026-09-01T01:22:18",
+        "value": 13.285,
+        "unit": "bar",
+        "quality": "UNCERTAIN",
+        "source": "HISTORIAN"
+      },
+      {
+        "event_id": "TEL-00000747",
+        "tag_id": "PLT-01-U06_TEMP",
+        "asset_id": "OT-00039",
+        "event_time": "2026-09-01T09:01:00",
+        "ingest_time": "2026-09-01T09:01:35",
+        "value": 274.352,
+        "unit": "F",
+        "quality": "GOOD",
+        "source": "HISTORIAN"
+      },
+      {
+        "event_id": "TEL-00001763",
+        "tag_id": "PLT-02-U01_TEMP",
+        "asset_id": "OT-00165",
+        "event_time": "2026-09-01T11:41:00",
+        "ingest_time": "2026-09-01T11:41:58",
+        "value": 276.74,
+        "unit": "F",
+        "quality": "GOOD",
+        "source": "HISTORIAN"
+      },
+      {
+        "event_id": "TEL-00002175",
+        "tag_id": "PLT-02-U04_TEMP",
+        "asset_id": "OT-00117",
+        "event_time": "2026-09-01T05:01:00",
+        "ingest_time": "2026-09-01T05:01:10",
+        "value": 242.059,
+        "unit": "F",
+        "quality": "GOOD",
+        "source": "HISTORIAN"
+      }
+    ],
+    "enterprise_clock_inversion": {
+      "event_id": "EVT-0000001",
+      "asset_id": "OT-00850",
+      "plant_id": "PLT-08",
+      "source": "SIEM",
+      "event_type": "CONFIG_CHANGE",
+      "event_time": "2026-10-05T17:48:00",
+      "received_time": "2026-10-05T17:47:35",
+      "correlation_id": "COR-02047",
+      "payload_state": "DEGRADED"
+    }
+  },
+  "anti_cvss_pair": {
+    "eval": "EVAL-002",
+    "vulnerabilities": [
+      {
+        "finding_id": "VUL-00098",
+        "asset_id": "OT-01016",
+        "severity": "HIGH",
+        "cvss": "8.7",
+        "exploitability": "HIGH",
+        "network_reachable": "YES",
+        "compensating_control": "ALLOWLIST",
+        "status": "OPEN"
+      },
+      {
+        "finding_id": "VUL-00706",
+        "asset_id": "OT-00654",
+        "severity": "CRITICAL",
+        "cvss": "9.8",
+        "exploitability": "LOW",
+        "network_reachable": "NO",
+        "compensating_control": "SEGMENTED",
+        "status": "OPEN"
+      }
+    ],
+    "assets": [
+      {
+        "asset_id": "OT-00654",
+        "plant_id": "PLT-07",
+        "asset_type": "NETWORK_SWITCH",
+        "vendor": "FieldLink",
+        "model": "MDL-15",
+        "firmware": "9.7.1",
+        "ip_address": "10.7.14.87",
+        "zone": "L3_SITE_OPS",
+        "protocol": "EtherNetIP",
+        "registered_state": "ACTIVE",
+        "observed_state": "INTERMITTENT",
+        "criticality": "LOW",
+        "owner": "Engineering",
+        "backup_age_days": "178"
+      },
+      {
+        "asset_id": "OT-01016",
+        "plant_id": "PLT-10",
+        "asset_type": "DCS_CONTROLLER",
+        "vendor": "HistorianX",
+        "model": "MDL-15",
+        "firmware": "5.5.8",
+        "ip_address": "10.10.12.161",
+        "zone": "L1_CONTROL",
+        "protocol": "EtherNetIP",
+        "registered_state": "ACTIVE",
+        "observed_state": "UNSEEN",
+        "criticality": "HIGH",
+        "owner": "OT Security",
+        "backup_age_days": "393"
+      }
+    ],
+    "units": [
+      {
+        "unit_id": "PLT-10-U06",
+        "plant_id": "PLT-10",
+        "unit_type": "PUMP_TRAIN",
+        "production_criticality": "HIGH",
+        "safe_state": "MIN_LOAD",
+        "manual_mode_supported": "YES"
+      },
+      {
+        "unit_id": "PLT-10-U07",
+        "plant_id": "PLT-10",
+        "unit_type": "PUMP_TRAIN",
+        "production_criticality": "HIGH",
+        "safe_state": "MIN_LOAD",
+        "manual_mode_supported": "LIMITED"
+      }
+    ],
+    "dependencies": [
+      {
+        "plant_id": "PLT-10",
+        "upstream_unit": "PLT-10-U05",
+        "downstream_unit": "PLT-10-U06",
+        "dependency_type": "material_flow",
+        "documented": "NO",
+        "critical": "NO"
+      },
+      {
+        "plant_id": "PLT-10",
+        "upstream_unit": "PLT-10-U06",
+        "downstream_unit": "PLT-10-U07",
+        "dependency_type": "safety",
+        "documented": "YES",
+        "critical": "YES"
+      },
+      {
+        "plant_id": "PLT-10",
+        "upstream_unit": "PLT-10-U07",
+        "downstream_unit": "PLT-10-U08",
+        "dependency_type": "material_flow",
+        "documented": "YES",
+        "critical": "NO"
+      }
+    ],
+    "alert": [
+      {
+        "alert_id": "ALT-002783",
+        "asset_id": "OT-01016",
+        "plant_id": "PLT-10",
+        "timestamp": "2026-09-15T08:09:00",
+        "type": "CONFIG_DRIFT",
+        "severity": "HIGH",
+        "soc_status": "SUPPRESSED",
+        "process_context": "UNKNOWN"
+      }
+    ],
+    "cvss_is_sort_key": false
+  },
+  "bypassed_barrier": {
+    "eval": "EVAL-003",
+    "inject": "inject_04",
+    "rows": [
+      {
+        "barrier_id": "PLT-10-SAFE-07",
+        "plant_id": "PLT-10",
+        "unit_id": "PLT-10-U06",
+        "barrier_type": "ALARM",
+        "state": "BYPASSED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "NO"
+      },
+      {
+        "barrier_id": "PLT-03-SAFE-14",
+        "plant_id": "PLT-03",
+        "unit_id": "PLT-03-U05",
+        "barrier_type": "PERMISSIVE",
+        "state": "BYPASSED",
+        "proof_test_status": "CURRENT",
+        "bypass_authorized": "NO"
+      }
+    ]
+  },
+  "unapproved_vendor_session": {
+    "eval": "EVAL-010",
+    "inject": "inject_03",
+    "rows": [
+      {
+        "session_id": "RA-00009",
+        "asset_id": "OT-01964",
+        "plant_id": "PLT-18",
+        "identity": "shared_support",
+        "method": "remote_desktop",
+        "approved_window": "NO",
+        "start_time": "2026-09-19T19:56:00",
+        "end_time": "2026-09-19T21:36:00",
+        "mfa": "YES"
+      },
+      {
+        "session_id": "RA-00012",
+        "asset_id": "OT-01980",
+        "plant_id": "PLT-18",
+        "identity": "site.engineer",
+        "method": "jump_host",
+        "approved_window": "NO",
+        "start_time": "2026-09-30T07:34:00",
+        "end_time": "2026-09-30T07:54:00",
+        "mfa": "YES"
+      },
+      {
+        "session_id": "RA-00013",
+        "asset_id": "OT-00223",
+        "plant_id": "PLT-03",
+        "identity": "contractor",
+        "method": "jump_host",
+        "approved_window": "UNKNOWN",
+        "start_time": "2026-09-15T09:15:00",
+        "end_time": "2026-09-15T10:53:00",
+        "mfa": "YES"
+      },
+      {
+        "session_id": "RA-00018",
+        "asset_id": "OT-00415",
+        "plant_id": "PLT-04",
+        "identity": "unknown",
+        "method": "jump_host",
+        "approved_window": "UNKNOWN",
+        "start_time": "2026-09-29T11:16:00",
+        "end_time": "2026-09-29T13:17:00",
+        "mfa": "YES"
+      },
+      {
+        "session_id": "RA-00025",
+        "asset_id": "OT-01025",
+        "plant_id": "PLT-10",
+        "identity": "site.engineer",
+        "method": "local_service_laptop",
+        "approved_window": "NO",
+        "start_time": "2026-09-17T17:06:00",
+        "end_time": "2026-09-17T18:01:00",
+        "mfa": "YES"
+      },
+      {
+        "session_id": "RA-00027",
+        "asset_id": "OT-00723",
+        "plant_id": "PLT-07",
+        "identity": "vendor.engineer",
+        "method": "local_service_laptop",
+        "approved_window": "UNKNOWN",
+        "start_time": "2026-10-05T11:30:00",
+        "end_time": "2026-10-05T12:42:00",
+        "mfa": "YES"
+      },
+      {
+        "session_id": "RA-00020",
+        "asset_id": "OT-01329",
+        "plant_id": "PLT-13",
+        "identity": "unknown",
+        "method": "local_service_laptop",
+        "approved_window": "YES",
+        "start_time": "2026-09-23T12:52:00",
+        "end_time": "2026-09-23T14:12:00",
+        "mfa": "NO"
+      },
+      {
+        "session_id": "RA-00038",
+        "asset_id": "OT-01599",
+        "plant_id": "PLT-15",
+        "identity": "unknown",
+        "method": "local_service_laptop",
+        "approved_window": "YES",
+        "start_time": "2026-09-15T19:38:00",
+        "end_time": "2026-09-15T21:24:00",
+        "mfa": "UNKNOWN"
+      },
+      {
+        "session_id": "RA-00039",
+        "asset_id": "OT-01098",
+        "plant_id": "PLT-10",
+        "identity": "shared_support",
+        "method": "local_service_laptop",
+        "approved_window": "YES",
+        "start_time": "2026-09-22T20:59:00",
+        "end_time": "2026-09-22T21:16:00",
+        "mfa": "UNKNOWN"
+      },
+      {
+        "session_id": "RA-00042",
+        "asset_id": "OT-01482",
+        "plant_id": "PLT-14",
+        "identity": "contractor",
+        "method": "vendor_vpn",
+        "approved_window": "YES",
+        "start_time": "2026-09-06T11:14:00",
+        "end_time": "2026-09-06T12:20:00",
+        "mfa": "UNKNOWN"
+      }
+    ],
+    "unknown_is_not_approval": true
+  },
+  "stale_restore": {
+    "eval": "EVAL-005",
+    "inject": "inject_06",
+    "rows": [
+      {
+        "plant_id": "PLT-01",
+        "component": "IDENTITY",
+        "rto_hours": "8",
+        "last_restore_test_days": "360",
+        "backup_status": "CURRENT",
+        "manual_fallback": "LIMITED",
+        "runbook_status": "STALE",
+        "dependency_verified": "YES"
+      }
+    ],
+    "backup_current_is_not_recovery_ready": true
+  },
+  "untrusted_shift_text": {
+    "path": "data/shadow/shift_handover_email.txt",
+    "trust": "UNTRUSTED",
+    "is_command": false,
+    "text": "Subject: Night shift handover — Unit 04 / remote vendor work\n\n- Vendor says firmware adjustment is complete; formal ticket not yet updated.\n- Safety bypass on U04 was still visible at 05:45; operations says it is temporary.\n- Historian tag pressure trend looked flat for ~20 min although HMI moved.\n- Do not isolate the controller without process engineering review; unit is running near minimum stable load.\n- Asset list in spreadsheet is newer than CMDB for the new gateway.\n"
+  },
+  "forbidden_ui": {
+    "execute_isolation": false,
+    "write_plc": false,
+    "ot_connectors": []
+  }
+}

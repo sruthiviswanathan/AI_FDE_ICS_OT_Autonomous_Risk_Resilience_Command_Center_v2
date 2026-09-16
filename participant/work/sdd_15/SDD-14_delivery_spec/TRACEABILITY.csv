@@ -34,3 +34,4 @@ ENH-09,15,"C49,C52",SDD-08 TEVV,EVAL-001..031,evals/harness.py,assurance/ASSURAN
 ENH-10,16,"C58,C65",SDD-14 NFR,EVAL-016;EVAL-026,src/ot_command/core/ops.py + core/traces.py + ops/,AI cost meter OPEN-006,AI-disabled UX
 PRD-01,"4,10,13,19","C10,C11,C16",specs/PRD.md,EVAL-001..031,participant/work/prd/PRD.md + specs/PRD.md,decision evidence completeness OPEN-006,no isolate execute UI
 PRD-02,"4,7,10","C11,C53",specs/APP_ACCEPTANCE_TESTS.md,EVAL-001..006;inject_01..06;cascade_001,participant/work/prd/APP_ACCEPTANCE_TESTS.md,T-MUSTNOT 100pct,no Execute Isolation; no Write PLC
+APP-01,14,C26,specs/PRD.md,EVAL-001;EVAL-002;EVAL-005,apps/command_center/fixtures/command_center_fixtures.json,fixture slice of bronze,no invented fields
