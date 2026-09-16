@@ -391,3 +391,36 @@ No new OPEN id. Forbidden UI tests APP-AT-020/021 are blocking for app ship. Nam
 **Did not conclude:** implementation; Playwright tests; visual design system tokens.
 
 No new OPEN id. Execute/PLC/SIS controls absent from all wireframes. AI toggle defaults OFF in chrome spec.
+
+---
+
+## APP-01 | OM-14/16 | 2026-09-16
+
+**Evidence used:** `src/ot_command/core/data_layer.py`; canonical loads from `assets.csv`, `telemetry.jsonl` (`tag_telemetry.jsonl`), `vulnerabilities.csv`, `safety_barriers.csv`, `recovery_readiness.csv`, `vendor_sessions.csv` (`remote_access_sessions.csv`); `contracts/openapi_command_center.yaml`; `tests/test_api_product.py`, `tests/test_data_layer.py`; engines refactored to data layer; `GET /health` ai_enabled; recovery route plant-id fix (`PLT-01` not truncated to `PLT`).  
+**Assumptions:** UI (APP-02) consumes API only — not acceptance fixtures; `OT_DATA_ROOT` optional override; legacy asset_api v1/v2 unchanged.  
+**Unknowns:** OPEN-001 Authorize UX; OPEN-028 explainer; OPEN-029 auth gate.  
+**Did not conclude:** UI implementation; scenario rail (APP-03).
+
+No new OPEN id. No OT execute POST routes. Fixtures remain harness-only.
+
+---
+
+## APP-02 | OM-10/14/17 | 2026-09-16
+
+**Evidence used:** `apps/command_center/` React app (15 PRD routes); `product/UI_VERIFICATION.md`; API endpoints `/audit/traces`, `/scenarios/{id}`, `/data/shift-notes/untrusted`; CORS + optional static serve from `dist/`; SCREEN_SPECIFICATIONS routes; APP_ACCEPTANCE_TESTS APP-AT-001…024 mapping.  
+**Assumptions:** Dev mode uses Vite proxy `/api` → :8000; integrated mode requires `npm run build`; Playwright e2e deferred; Authorize remains disabled (OPEN-001).  
+**Unknowns:** OPEN-001 named Authorizer UX; OPEN-028 explainer content when AI on; OPEN-029 auth gate screen.  
+**Did not conclude:** APP-03 scenario bindings file; automated browser e2e.
+
+No new OPEN id. Execute/PLC/SIS controls absent from UI. AI default OFF. CASCADE-001 dual-column and untrusted shift notes visible.
+
+---
+
+## APP-03 | OM scenario rail | 2026-09-16
+
+**Evidence used:** `apps/command_center/scenario_bindings.json`, `SCENARIO_BINDINGS.md`; `GET /scenarios/catalog`, enhanced `GET /scenarios/{id}`; ScenarioRail in React nav; eval golden_cases EVAL-007…013, EVAL-016 bindings; APP-AT-007…013.  
+**Assumptions:** Selecting scenario loads context + badges via `applyScenario`; conflicts explicitly shown (`show_conflicts: true`); inject .md files remain title-only — bindings carry eval fixture metadata.  
+**Unknowns:** OPEN-001 Authorize; OPEN-006 aging KPI for inject_04.  
+**Did not conclude:** Playwright e2e; automated badge assertion tests.
+
+No new OPEN id. Demo must-not rules documented in SCENARIO_BINDINGS.md. CASCADE ctq_iso_complete=false disables Authorize in UI.

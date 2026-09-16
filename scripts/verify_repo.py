@@ -41,6 +41,12 @@ for rel in ['ops/RACI.md','ops/runbooks.md','ops/incident_rollback.md','ops/ai_i
     if not (ROOT/rel).exists(): errors.append(f'missing ENH-10 artifact {rel}')
 for rel in ['apps/command_center/APP_FLOW.md','apps/command_center/UI_WIREFRAMES.md','apps/command_center/SCREEN_SPECIFICATIONS.md']:
     if not (ROOT/rel).exists(): errors.append(f'missing APP-00 artifact {rel}')
+for rel in ['src/ot_command/core/data_layer.py','contracts/openapi_command_center.yaml','tests/test_api_product.py','tests/test_data_layer.py']:
+    if not (ROOT/rel).exists(): errors.append(f'missing APP-01 artifact {rel}')
+for rel in ['apps/command_center/package.json','apps/command_center/src/App.tsx','product/UI_VERIFICATION.md']:
+    if not (ROOT/rel).exists(): errors.append(f'missing APP-02 artifact {rel}')
+for rel in ['apps/command_center/SCENARIO_BINDINGS.md','apps/command_center/scenario_bindings.json']:
+    if not (ROOT/rel).exists(): errors.append(f'missing APP-03 artifact {rel}')
 # ENH-08: answer key must not ship; red-team tests present
 if (ROOT/'restricted_answer_key').exists():
     errors.append('restricted_answer_key/ must not exist in runtime tree')

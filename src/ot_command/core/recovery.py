@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from functools import lru_cache
 
-from ot_command.repository import rows
+from ot_command.core.data_layer import load_recovery_readiness, source_path
 
-RECOVERY_PATH = "data/raw/recovery_readiness.csv"
+RECOVERY_PATH = source_path("recovery_readiness")
 
 # Workshop threshold — plant SLA days remain OPEN-006/022; absence ⇒ not ready.
 RESTORE_TEST_MAX_DAYS = 180
@@ -24,7 +24,7 @@ def _provenance(record_id: str) -> dict:
 
 @lru_cache(maxsize=1)
 def _all_records() -> tuple[dict, ...]:
-    return tuple(rows(RECOVERY_PATH))
+    return load_recovery_readiness()
 
 
 def _record_key(plant_id: str, component: str) -> str:

@@ -6,9 +6,10 @@ from collections import Counter
 from datetime import datetime
 from functools import lru_cache
 
-from ot_command.repository import jsonl, rows
+from ot_command.core.data_layer import derived_telemetry_quality_keys, load_telemetry, source_path
+from ot_command.repository import rows
 
-TELEMETRY_PATH = "data/telemetry/tag_telemetry.jsonl"
+TELEMETRY_PATH = source_path("telemetry")
 TAGS_PATH = "data/reference/tags.csv"
 
 
@@ -29,7 +30,7 @@ def _tag_engineering_units() -> dict[str, str]:
 
 @lru_cache(maxsize=1)
 def _all_telemetry() -> tuple[dict, ...]:
-    return tuple(jsonl(TELEMETRY_PATH))
+    return load_telemetry()
 
 
 def _enrich_event(event: dict) -> dict:
@@ -72,7 +73,7 @@ def flag_temporal_anomalies(events: list) -> list:
 def telemetry_quality_summary() -> dict:
     tele = list(_all_telemetry())
     tags = _tag_engineering_units()
-    packet_keys = Counter((x["tag_id"], x["event_time"], str(x["value"]), x["unit"]) for x in tele)
+    packet_keys = derived_telemetry_quality_keys()
     unit_mismatches = sum(
         1 for x in tele if tags.get(x["tag_id"]) and x["unit"] != tags[x["tag_id"]]
     )

@@ -1,0 +1,213 @@
+{
+  "version": "1.0",
+  "note": "Golden scenario rail — loads plant/asset/alert and expected badges. Conflicts are shown, not hidden.",
+  "scenarios": [
+    {
+      "id": "nominal",
+      "label": "Nominal",
+      "title": "Estate nominal posture",
+      "eval_ids": [],
+      "source": null,
+      "context": {
+        "plant_id": "PLT-10",
+        "asset_id": "OT-01016",
+        "alert_id": "ALT-002783"
+      },
+      "badges": [
+        { "id": "mode", "label": "synthetic-read-only", "tone": "neutral" },
+        { "id": "ai", "label": "AI OFF default", "tone": "neutral" }
+      ],
+      "primary_routes": ["/", "/risk", "/identity"],
+      "ai_enabled": false,
+      "show_conflicts": true,
+      "ctq_iso_complete": true
+    },
+    {
+      "id": "cascade_001",
+      "label": "CASCADE-001",
+      "title": "Cyber-physical ambiguity under degraded safety protection",
+      "eval_ids": ["EVAL-007"],
+      "source": "scenarios/cascade_001.json",
+      "context": {
+        "plant_id": "PLT-10",
+        "asset_id": "OT-01016",
+        "alert_id": "ALT-002783",
+        "unit_id": "PLT-10-U06",
+        "safe_state": "MIN_LOAD",
+        "barrier_id": "PLT-10-SAFE-07"
+      },
+      "badges": [
+        { "id": "bypass", "label": "Barrier BYPASSED unauthorized", "tone": "orange" },
+        { "id": "min_load", "label": "safe_state MIN_LOAD", "tone": "amber" },
+        { "id": "vendor", "label": "08:24 vendor session", "tone": "amber" },
+        { "id": "soc_pe", "label": "SOC vs PE dissent", "tone": "orange" },
+        { "id": "untrusted", "label": "shift notes UNTRUSTED", "tone": "red" },
+        { "id": "execute", "label": "execute=false", "tone": "neutral" }
+      ],
+      "primary_routes": ["/incident", "/recommend", "/safety"],
+      "ai_enabled": false,
+      "show_conflicts": true,
+      "show_untrusted_shift_notes": true,
+      "ctq_iso_complete": false,
+      "timeline_must_surface": ["08:24 vendor session", "08:38 barrier bypassed", "08:47 SOC isolate", "08:50 PE destabilize"]
+    },
+    {
+      "id": "inject_01",
+      "label": "inject_01",
+      "title": "Inventory mismatch",
+      "eval_ids": ["EVAL-008"],
+      "source": "scenarios/inject_01.md",
+      "context": {
+        "plant_id": "PLT-01",
+        "asset_id": "OT-00528",
+        "alert_id": ""
+      },
+      "badges": [
+        { "id": "state", "label": "RETIRED vs ONLINE (OT-00528)", "tone": "amber" },
+        { "id": "conflicts", "label": "≥200 state conflicts", "tone": "orange" },
+        { "id": "alias", "label": "5 alias collisions", "tone": "orange" },
+        { "id": "shadow", "label": "shadow FINAL_v8 evidence only", "tone": "red" }
+      ],
+      "primary_routes": ["/identity", "/"],
+      "ai_enabled": false,
+      "show_conflicts": true,
+      "must_not_hide": ["shadow overlay", "alias collisions", "cmdb_winner=false"]
+    },
+    {
+      "id": "inject_02",
+      "label": "inject_02",
+      "title": "Historian quality degradation",
+      "eval_ids": ["EVAL-009"],
+      "source": "scenarios/inject_02.md",
+      "context": {
+        "plant_id": "PLT-01",
+        "asset_id": "",
+        "alert_id": "",
+        "tag_id": "PLT-01-U03_TEMP"
+      },
+      "badges": [
+        { "id": "bad", "label": "bad/uncertain ≥4094", "tone": "orange" },
+        { "id": "dup", "label": "duplicates ≥120", "tone": "amber" },
+        { "id": "unit", "label": "unit mismatch F≠C (≥47)", "tone": "amber" },
+        { "id": "dual_clock", "label": "event_time + ingest_time", "tone": "neutral" }
+      ],
+      "primary_routes": ["/telemetry"],
+      "ai_enabled": false,
+      "show_conflicts": true,
+      "must_not_hide": ["BAD quality rows", "unit mismatch flags"]
+    },
+    {
+      "id": "inject_03",
+      "label": "inject_03",
+      "title": "Unapproved vendor session",
+      "eval_ids": ["EVAL-010"],
+      "source": "scenarios/inject_03.md",
+      "context": {
+        "plant_id": "PLT-15",
+        "asset_id": "OT-01645",
+        "alert_id": ""
+      },
+      "badges": [
+        { "id": "unapproved", "label": "unapproved sessions ≥137", "tone": "orange" },
+        { "id": "mfa", "label": "MFA gaps ≥128", "tone": "amber" },
+        { "id": "tier3", "label": "change_remote_access tier 3", "tone": "neutral" },
+        { "id": "unknown_id", "label": "UNKNOWN identity ≠ approval", "tone": "red" }
+      ],
+      "primary_routes": ["/sessions", "/recommend"],
+      "ai_enabled": false,
+      "show_conflicts": true,
+      "must_not_hide": ["unapproved_window NO", "unknown identity sessions"]
+    },
+    {
+      "id": "inject_04",
+      "label": "inject_04",
+      "title": "Safety bypass aging",
+      "eval_ids": ["EVAL-011"],
+      "source": "scenarios/inject_04.md",
+      "context": {
+        "plant_id": "PLT-03",
+        "asset_id": "OT-00211",
+        "alert_id": "",
+        "unit_id": "PLT-03-U05",
+        "barrier_id": "PLT-03-SAFE-14"
+      },
+      "badges": [
+        { "id": "bypass_no", "label": "BYPASSED bypass_authorized=NO", "tone": "orange" },
+        { "id": "min_load", "label": "MIN_LOAD unit", "tone": "amber" },
+        { "id": "unknown_bypass", "label": "UNKNOWN ≠ authorized", "tone": "red" },
+        { "id": "aging", "label": "aging KPI BASELINE_PENDING", "tone": "neutral" }
+      ],
+      "primary_routes": ["/safety"],
+      "ai_enabled": false,
+      "show_conflicts": true,
+      "must_not_hide": ["bypassed_unauthorized barriers", "degraded state"]
+    },
+    {
+      "id": "inject_05",
+      "label": "inject_05",
+      "title": "Regional SCADA outage",
+      "eval_ids": ["EVAL-012"],
+      "source": "scenarios/inject_05.md",
+      "context": {
+        "plant_id": "PLT-01",
+        "asset_id": "",
+        "alert_id": ""
+      },
+      "badges": [
+        { "id": "paths", "label": "undocumented paths 779", "tone": "orange" },
+        { "id": "blast", "label": "blast radius UNKNOWN", "tone": "amber" },
+        { "id": "recovery", "label": "SCADA recovery gaps", "tone": "orange" },
+        { "id": "no_regional", "label": "no regional isolate", "tone": "neutral" }
+      ],
+      "primary_routes": ["/process", "/recovery"],
+      "ai_enabled": false,
+      "show_conflicts": true,
+      "must_not_hide": ["undocumented paths", "RecoveryReady false despite CURRENT"]
+    },
+    {
+      "id": "inject_06",
+      "label": "inject_06",
+      "title": "Restore failure during recovery drill",
+      "eval_ids": ["EVAL-013"],
+      "source": "scenarios/inject_06.md",
+      "context": {
+        "plant_id": "PLT-01",
+        "asset_id": "",
+        "alert_id": "",
+        "component": "IDENTITY"
+      },
+      "badges": [
+        { "id": "stale_restore", "label": "restore test >180d", "tone": "orange" },
+        { "id": "current_trap", "label": "CURRENT ≠ RecoveryReady", "tone": "red" },
+        { "id": "runbook", "label": "runbook STALE", "tone": "amber" },
+        { "id": "no_live_restore", "label": "no live restore UI", "tone": "neutral" }
+      ],
+      "primary_routes": ["/recovery"],
+      "ai_enabled": false,
+      "show_conflicts": true,
+      "must_not_hide": ["blockers list", "IDENTITY not ready"]
+    },
+    {
+      "id": "ai_outage",
+      "label": "AI outage",
+      "title": "AI-disabled / model timeout fallback",
+      "eval_ids": ["EVAL-016"],
+      "source": "participant/work/sdd_15/SDD-05_use_case/USE_CASE.md",
+      "context": {
+        "plant_id": "PLT-01",
+        "asset_id": "OT-01016",
+        "alert_id": "ALT-002783"
+      },
+      "badges": [
+        { "id": "ai_off", "label": "AI OFF", "tone": "neutral" },
+        { "id": "tables", "label": "deterministic tables visible", "tone": "green" },
+        { "id": "no_blank", "label": "no blank screen", "tone": "green" },
+        { "id": "refuse", "label": "ACTION_TIERS refuse tier 4", "tone": "neutral" }
+      ],
+      "primary_routes": ["/", "/identity", "/telemetry", "/recovery", "/recommend"],
+      "ai_enabled": false,
+      "show_conflicts": true,
+      "must_not_hide": ["diagnostics counters", "conflict counts"]
+    }
+  ]
+}

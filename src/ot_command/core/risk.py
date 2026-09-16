@@ -4,12 +4,18 @@ from __future__ import annotations
 
 from functools import lru_cache
 
-from ot_command.repository import rows
+from ot_command.core.data_layer import (
+    derived_assets_by_id,
+    derived_degraded_barriers_by_unit,
+    derived_recovery_by_plant,
+    derived_vulnerabilities,
+    source_path,
+)
 
-VULNERABILITIES_PATH = "data/raw/vulnerabilities.csv"
-ASSETS_PATH = "data/raw/assets.csv"
-RECOVERY_PATH = "data/raw/recovery_readiness.csv"
-SAFETY_PATH = "data/raw/safety_barriers.csv"
+VULNERABILITIES_PATH = source_path("vulnerabilities")
+ASSETS_PATH = source_path("assets")
+RECOVERY_PATH = source_path("recovery_readiness")
+SAFETY_PATH = source_path("safety_barriers")
 
 CRITICALITY_WEIGHT = {"CRITICAL": 40, "HIGH": 30, "MEDIUM": 20, "LOW": 10, "UNKNOWN": 5}
 REACHABILITY_WEIGHT = {"YES": 35, "UNKNOWN": 12, "NO": 5}
@@ -25,24 +31,17 @@ CVSS_WEIGHT = 2.0
 
 @lru_cache(maxsize=1)
 def _assets_by_id() -> dict[str, dict]:
-    return {r["asset_id"]: r for r in rows(ASSETS_PATH)}
+    return derived_assets_by_id()
 
 
 @lru_cache(maxsize=1)
 def _recovery_by_plant() -> dict[str, list[dict]]:
-    by_plant: dict[str, list[dict]] = {}
-    for row in rows(RECOVERY_PATH):
-        by_plant.setdefault(row["plant_id"], []).append(row)
-    return by_plant
+    return derived_recovery_by_plant()
 
 
 @lru_cache(maxsize=1)
 def _degraded_barriers_by_unit() -> dict[str, list[dict]]:
-    by_unit: dict[str, list[dict]] = {}
-    for row in rows(SAFETY_PATH):
-        if row["state"] != "ACTIVE" or row.get("bypass_authorized", "NO") != "NO":
-            by_unit.setdefault(row["unit_id"], []).append(row)
-    return by_unit
+    return derived_degraded_barriers_by_unit()
 
 
 def _normalize_finding(finding: dict) -> dict:
@@ -160,7 +159,7 @@ def contextual_rank(findings: list, *, context: dict | None = None) -> list:
 
 @lru_cache(maxsize=1)
 def _all_vulnerabilities() -> tuple[dict, ...]:
-    return tuple(rows(VULNERABILITIES_PATH))
+    return derived_vulnerabilities()
 
 
 def rank_corpus(*, limit: int = 20) -> dict:

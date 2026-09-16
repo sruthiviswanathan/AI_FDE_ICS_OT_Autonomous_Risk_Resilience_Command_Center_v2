@@ -1,21 +1,72 @@
+import json
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from .core import agent, authority, containment, graph_slice, identity, ops, recovery, risk, telemetry
+from .core import agent, authority, containment, data_layer, graph_slice, identity, ops, recovery, risk, telemetry
 from .core.agent import AgentValidationError
+from .core.ai_config import ai_enabled
+from .core.traces import read_traces
 from .diagnostics import run_diagnostics
 
-app = FastAPI(title="Synthetic ICS/OT Risk & Resilience API", version="2.0.0")
+ROOT = Path(__file__).resolve().parents[2]
+UI_DIST = ROOT / "apps" / "command_center" / "dist"
+
+app = FastAPI(
+    title="ICS/OT Command Center API",
+    version="3.0.0",
+    description="Read-only product API for the operator command center. Legacy contracts: contracts/asset_api_v1.yaml, contracts/asset_api_v2.yaml.",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:5173", "http://localhost:5173", "http://127.0.0.1:8000"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "mode": "synthetic-read-only"}
+    return {
+        "status": "ok",
+        "mode": "synthetic-read-only",
+        "ai_enabled": ai_enabled(),
+        "api_version": "3.0.0",
+    }
 
 
 @app.get("/diagnostics")
 def diagnostics():
     return run_diagnostics()
+
+
+@app.get("/data/sources")
+def data_sources():
+    """Canonical estate sources loaded at runtime (APP-01)."""
+    return data_layer.sources_catalog()
+
+
+@app.get("/data/views/estate")
+def data_estate_view():
+    """Live derived estate summary — not acceptance-test fixtures."""
+    return data_layer.estate_derived_view()
+
+
+@app.get("/data/views/vendor-sessions")
+def data_vendor_sessions(limit: int = 50):
+    """Vendor/remote access sessions with anomaly flags."""
+    anomalies = data_layer.derived_vendor_session_anomalies()
+    return {
+        "count": len(anomalies),
+        "limit": limit,
+        "sessions": anomalies[:limit],
+        "source_path": data_layer.source_path("vendor_sessions"),
+        "note": "UNKNOWN identity / unapproved window / MFA gaps flagged; not permission to block live.",
+    }
 
 
 @app.get("/assets/{id}/identity")
@@ -53,9 +104,17 @@ def safety_conflicts(plant_id: str | None = None):
     return containment.list_safety_conflicts(plant_id=plant_id)
 
 
+def _plant_id_from_site_or_unit(site_or_unit: str) -> str:
+    """Map plant id (PLT-01) or unit id (PLT-10-U06) to recovery plant grain."""
+    parts = site_or_unit.split("-")
+    if len(parts) >= 2 and parts[0] == "PLT":
+        return f"{parts[0]}-{parts[1]}"
+    return site_or_unit
+
+
 @app.get("/recovery/{site_or_unit}")
 def recovery_view(site_or_unit: str):
-    plant_id = site_or_unit.split("-")[0] if "-" in site_or_unit else site_or_unit
+    plant_id = _plant_id_from_site_or_unit(site_or_unit)
     try:
         return recovery.get_plant_recovery_view(plant_id)
     except KeyError:
@@ -140,6 +199,56 @@ def eval_run(request: EvalRunRequest | None = None):
     return run_all(case_ids=case_ids)
 
 
+@app.get("/audit/traces")
+def audit_traces(limit: int = 50):
+    """Decision trace list for audit screen (APP-02)."""
+    traces = read_traces(limit=limit)
+    return {"count": len(traces), "limit": limit, "traces": traces}
+
+
+BINDINGS_PATH = ROOT / "apps" / "command_center" / "scenario_bindings.json"
+
+
+def _load_scenario_bindings() -> dict:
+    if not BINDINGS_PATH.is_file():
+        raise HTTPException(status_code=404, detail="scenario bindings not found")
+    return json.loads(BINDINGS_PATH.read_text(encoding="utf-8"))
+
+
+@app.get("/scenarios/catalog")
+def scenario_catalog():
+    """APP-03 golden scenario rail — plant/asset/alert and expected badges."""
+    return _load_scenario_bindings()
+
+
+@app.get("/scenarios/{scenario_id}")
+def get_scenario(scenario_id: str):
+    """Scenario binding plus optional timeline JSON fixture."""
+    catalog = _load_scenario_bindings()
+    binding = next((s for s in catalog.get("scenarios", []) if s["id"] == scenario_id), None)
+    if binding is None:
+        raise HTTPException(status_code=404, detail=f"scenario {scenario_id} not found")
+    payload: dict = {"binding": binding}
+    timeline_path = ROOT / "scenarios" / f"{scenario_id}.json"
+    if timeline_path.is_file():
+        payload["timeline_fixture"] = json.loads(timeline_path.read_text(encoding="utf-8"))
+    return payload
+
+
+@app.get("/data/shift-notes/untrusted")
+def shift_notes_untrusted():
+    """Untrusted shift handover — never treated as authoritative."""
+    path = ROOT / "data" / "shadow" / "shift_handover_email.txt"
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="shift notes not found")
+    return {
+        "source_path": "data/shadow/shift_handover_email.txt",
+        "trust": "UNTRUSTED",
+        "content": path.read_text(encoding="utf-8"),
+        "note": "Shift notes are operator narrative only — not permission to act.",
+    }
+
+
 @app.get("/agent/workflow/demo")
 def agent_workflow_demo():
     """Expose workflow state shape for UI / EVAL-016 (deterministic demo envelope)."""
@@ -155,5 +264,9 @@ def agent_workflow_demo():
         "process_context": "UNKNOWN",
     }
     return agent.run_incident_workflow(envelope)
+
+
+if UI_DIST.is_dir():
+    app.mount("/", StaticFiles(directory=str(UI_DIST), html=True), name="ui")
 
 

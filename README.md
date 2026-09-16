@@ -69,7 +69,7 @@ Gate: `specs/REPO_3_0_GATE.md` · Coverage: `participant/work/FDE_96_COVERAGE.cs
 
 ## Participant path
 
-Read `AGENTS.md` → `specs/PRD.md` → `apps/command_center/` (APP-00 design) → `specs/APP_ACCEPTANCE_TESTS.md`. Next: **APP-01** / **APP-02**.
+Read `AGENTS.md` → `specs/PRD.md` → `apps/command_center/README.md` (React UI + scenario rail) → `specs/APP_ACCEPTANCE_TESTS.md`. Next: **REL-01** release pack.
 
 
 ## Safety

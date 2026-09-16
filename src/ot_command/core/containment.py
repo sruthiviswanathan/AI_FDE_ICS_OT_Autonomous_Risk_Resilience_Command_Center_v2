@@ -6,12 +6,13 @@ from functools import lru_cache
 from uuid import uuid4
 
 from ot_command.core.policy import ACTION_TIERS
+from ot_command.core.data_layer import derived_assets_by_id, load_safety_barriers, source_path
 from ot_command.repository import rows
 
 ALERTS_PATH = "data/raw/cyber_alerts.csv"
-ASSETS_PATH = "data/raw/assets.csv"
+ASSETS_PATH = source_path("assets")
 UNITS_PATH = "data/raw/process_units.csv"
-BARRIERS_PATH = "data/raw/safety_barriers.csv"
+BARRIERS_PATH = source_path("safety_barriers")
 TAGS_PATH = "data/reference/tags.csv"
 DEPS_PATH = "data/raw/process_dependencies.csv"
 HANDOVER_PATH = "data/shadow/shift_handover_email.txt"
@@ -29,7 +30,7 @@ def _alerts_by_id() -> dict[str, dict]:
 
 @lru_cache(maxsize=1)
 def _assets_by_id() -> dict[str, dict]:
-    return {r["asset_id"]: r for r in rows(ASSETS_PATH)}
+    return derived_assets_by_id()
 
 
 @lru_cache(maxsize=1)
@@ -48,7 +49,7 @@ def _unit_for_asset() -> dict[str, str]:
 @lru_cache(maxsize=1)
 def _barriers_by_unit() -> dict[str, list[dict]]:
     by_unit: dict[str, list[dict]] = {}
-    for row in rows(BARRIERS_PATH):
+    for row in load_safety_barriers():
         by_unit.setdefault(row["unit_id"], []).append(row)
     return by_unit
 

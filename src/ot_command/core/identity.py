@@ -5,9 +5,10 @@ from __future__ import annotations
 from collections import Counter, defaultdict
 from functools import lru_cache
 
+from ot_command.core.data_layer import load_assets, source_path
 from ot_command.repository import rows
 
-ASSETS_PATH = "data/raw/assets.csv"
+ASSETS_PATH = source_path("assets")
 ALIASES_PATH = "data/raw/asset_aliases.csv"
 SHADOW_PATH = "data/shadow/ot_asset_inventory_FINAL_v8.csv"
 TAGS_PATH = "data/reference/tags.csv"
@@ -26,7 +27,7 @@ def _provenance(source_path: str, record_id: str) -> dict:
 
 @lru_cache(maxsize=1)
 def _assets_by_id() -> dict[str, dict]:
-    return {r["asset_id"]: r for r in rows(ASSETS_PATH)}
+    return {r["asset_id"]: r for r in load_assets()}
 
 
 @lru_cache(maxsize=1)
@@ -209,7 +210,7 @@ def get_identity_bundle(asset_id: str) -> dict:
 
 
 def list_identity_conflicts() -> dict:
-    assets = rows(ASSETS_PATH)
+    assets = list(load_assets())
     alias_counts = Counter(r["alias"] for r in _alias_rows())
     alias_collisions = sum(1 for count in alias_counts.values() if count > 1)
     asset_state_conflicts = sum(

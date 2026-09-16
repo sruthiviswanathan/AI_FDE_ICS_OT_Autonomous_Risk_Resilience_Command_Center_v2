@@ -1060,6 +1060,7 @@ STANDING SYSTEM PROMPT is in force.
 APP-02 | BUILD THE APP FROM THE PRD ONLY
 
 Build apps/command_center/ as an OT command-room workbench, not a chatbot.
+Build the FE as a react application and not just standalone web page.
 
 Use specs/PRD.md, APP_ACCEPTANCE_TESTS.md, fixtures, and the read-only Python API.
 

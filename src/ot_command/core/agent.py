@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import os
 import time
 from uuid import uuid4
 
 from ot_command.core import authority, containment, identity, recovery, risk, telemetry
+from ot_command.core.ai_config import ai_enabled
 from ot_command.core.guardrails import (
     assert_loop_bounded,
     assert_tool_trace_safe,
@@ -53,10 +53,6 @@ ALLOWED_TOOLS = frozenset(
 
 class AgentValidationError(Exception):
     """Missing required envelope fields."""
-
-
-def _ai_enabled() -> bool:
-    return os.environ.get("AI_ENABLED", "0").strip() in {"1", "true", "TRUE", "yes"}
 
 
 def _count_evidence(payload) -> int:
@@ -229,7 +225,7 @@ def run_incident_workflow(envelope: dict) -> dict:
             "required_authority": recommendation.get("required_authority"),
             "execute": False,
             "named_authorizer": "OPEN-001",
-            "ai_enabled": _ai_enabled(),
+            "ai_enabled": ai_enabled(),
             "manual_fallback": "Engines render tables when AI_ENABLED=0 (ADR-12)",
         },
         tool_calls=[],
@@ -254,8 +250,8 @@ def run_incident_workflow(envelope: dict) -> dict:
         "recovery_preview": recovery_view,
         "authority_preview": authority_view,
         "human_review": review,
-        "ai_enabled": _ai_enabled(),
-        "explainer": None if not _ai_enabled() else {"status": "optional_off_by_default"},
+        "ai_enabled": ai_enabled(),
+        "explainer": None if not ai_enabled() else {"status": "optional_off_by_default"},
     }
 
     elapsed_ms = round((time.perf_counter() - workflow_start) * 1000, 2)
@@ -268,9 +264,9 @@ def run_incident_workflow(envelope: dict) -> dict:
             "tool_trace": tool_trace,
             "recommendation": recommendation.get("recommendation"),
             "execute": False,
-            "tokens": 0 if not _ai_enabled() else None,
+            "tokens": 0 if not ai_enabled() else None,
             "latency_ms": elapsed_ms,
-            "ai_enabled": _ai_enabled(),
+            "ai_enabled": ai_enabled(),
             "workflow_steps": len(workflow_states),
             "tool_call_count": len(tool_trace),
             "policy_gate": {
