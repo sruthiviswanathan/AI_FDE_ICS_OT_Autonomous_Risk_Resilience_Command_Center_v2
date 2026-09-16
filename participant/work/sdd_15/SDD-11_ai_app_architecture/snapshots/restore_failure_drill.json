@@ -1,0 +1,38 @@
+{
+  "snapshot_id": "SNAP-RESTORE-006",
+  "task": "recovery",
+  "plant_id": "PLT-01",
+  "asset_uid": null,
+  "actor_role": "Ops / continuity",
+  "as_of": "workshop-static",
+  "policy_version": "policy.py:ACTION_TIERS",
+  "graph_query_id": "Q4_RECOVERY_BLOCKERS",
+  "hop_cap": 8,
+  "identity_bundle": null,
+  "telemetry_quality_flags": null,
+  "process_unit": null,
+  "barriers": [],
+  "sessions": [],
+  "recovery_tuple": {
+    "plant_id": "PLT-01",
+    "component": "IDENTITY",
+    "backup_status": "CURRENT",
+    "last_restore_test_days": 360,
+    "runbook_status": "STALE",
+    "dependency_verified": "YES",
+    "manual_fallback": "LIMITED",
+    "recovery_ready": false,
+    "blockers": ["restore_test_stale", "runbook_STALE"],
+    "must_not": "backup exists therefore recoverable",
+    "open": ["OPEN-006 day SLA", "OPEN-027 no backup blobs"],
+    "estate_note": "113/119 CURRENT fail restore>90 OR runbook OR dep (SDD-03)"
+  },
+  "untrusted_notes": [],
+  "policy": {
+    "live_restore_orchestration": false,
+    "unsafe_restart": false
+  },
+  "eval_ids": ["EVAL-005", "EVAL-013", "EVAL-018"],
+  "inject": "scenarios/inject_06.md",
+  "engine_output": "RecoveryReady false; drill failure is not success; human orchestration only."
+}

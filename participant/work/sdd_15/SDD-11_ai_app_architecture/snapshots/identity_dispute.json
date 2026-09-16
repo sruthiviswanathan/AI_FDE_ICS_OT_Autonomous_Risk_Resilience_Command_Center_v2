@@ -1,0 +1,43 @@
+{
+  "snapshot_id": "SNAP-IDENTITY-001",
+  "task": "identity",
+  "plant_id": "PLT-01",
+  "asset_uid": null,
+  "actor_role": "SOC analyst",
+  "as_of": "workshop-static",
+  "policy_version": "policy.py:ACTION_TIERS",
+  "graph_query_id": "Q1_IDENTITY_LINEAGE",
+  "hop_cap": 8,
+  "identity_bundle": {
+    "query_alias": "PLT-01-DCS_CONTROLLER-105",
+    "source": "PASSIVE",
+    "asset_uids": ["OT-00012", "OT-00033"],
+    "conflict_type": "ALIAS_COLLISION",
+    "confidence": 0.4,
+    "must_not_merge": true,
+    "also": {
+      "OT-00528": {
+        "registered_state": "RETIRED",
+        "observed_state": "ONLINE",
+        "conflict_type": "REGISTERED_VS_OBSERVED"
+      }
+    }
+  },
+  "telemetry_quality_flags": null,
+  "process_unit": null,
+  "unit_join_missing": null,
+  "barriers": [],
+  "recovery_tuple": null,
+  "sessions": [],
+  "untrusted_notes": [
+    {
+      "trust": "UNTRUSTED_CONTENT",
+      "source_path": "data/shadow/shift_handover_email.txt",
+      "claim": "spreadsheet newer than CMDB for the new gateway",
+      "may_not": "become CMDB or IsolationRecommendation"
+    }
+  ],
+  "policy": {"max_tier_autonomous": 0, "recommend": 1, "isolate_execute": false},
+  "eval_ids": ["EVAL-001", "EVAL-008", "EVAL-028", "EVAL-029"],
+  "engine_output": "List both asset_ids; do not pick CMDB or shadow as winner."
+}

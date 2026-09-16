@@ -1,0 +1,47 @@
+{
+  "snapshot_id": "SNAP-TEL-RISK-002",
+  "task": "risk",
+  "plant_id": "PLT-10",
+  "asset_uid": "OT-01016",
+  "actor_role": "SOC analyst",
+  "as_of": "workshop-static",
+  "policy_version": "policy.py:ACTION_TIERS",
+  "graph_query_id": "Q3_SAFETY_CYBER",
+  "hop_cap": 8,
+  "identity_bundle": {
+    "asset_uid": "OT-01016",
+    "registered_state": "ACTIVE",
+    "observed_state": "UNSEEN",
+    "confidence": 0.6
+  },
+  "telemetry_quality_flags": {
+    "estate_bad_or_uncertain": 4094,
+    "duplicate_packets": 120,
+    "example_unit_mismatch": {
+      "event_id": "TEL-00000288",
+      "tag_id": "PLT-01-U03_TEMP",
+      "unit": "F",
+      "note": "Do not treat as C; GOOD quality is not process healthy"
+    },
+    "dual_clock": "sort by event_time; show ingest_time"
+  },
+  "process_unit": {
+    "unit_id": "PLT-10-U06",
+    "safe_state": "MIN_LOAD",
+    "production_criticality": "HIGH",
+    "unit_join_missing": false
+  },
+  "barriers": [
+    {"barrier_id": "PLT-10-SAFE-07", "state": "BYPASSED", "bypass_authorized": "NO"}
+  ],
+  "rank_pair": {
+    "must_not_win_on_cvss_alone": {"finding_id": "VUL-00706", "cvss": 9.8, "network_reachable": "NO", "asset_id": "OT-00654"},
+    "must_outrank": {"finding_id": "VUL-00098", "cvss": 8.7, "network_reachable": "YES", "asset_id": "OT-01016"}
+  },
+  "recovery_tuple": null,
+  "sessions": [],
+  "untrusted_notes": [],
+  "policy": {"llm_must_not_rerank": true},
+  "eval_ids": ["EVAL-002", "EVAL-004", "EVAL-009", "EVAL-017", "EVAL-022"],
+  "engine_output": "VUL-00098 before VUL-00706; quality flags visible; no isolate-execute."
+}

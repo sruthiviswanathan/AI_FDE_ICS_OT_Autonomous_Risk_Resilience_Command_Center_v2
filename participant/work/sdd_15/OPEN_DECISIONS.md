@@ -178,3 +178,14 @@ OPEN-001 still blocks named-human Authorize records. OPEN-002 still blocks any â
 | OPEN-009 | *(restated, not closed)* v1 `operationalState` vs CSV/v2 states | Anticorruption parks v1 in `legacy_v1_operational_state` (ADR-10). Still no documented plant mapping. | Treating v1 as ObservedState | FDE |
 
 **Closed in workshop (Proposed ADR-09):** persistence = typed JSON graph/JSONL, not RDF, not Neo4j-now. Vector remains optional untrusted memory and **must not** set isolation or ACTION_TIERS.
+
+---
+
+## SDD-11 | OM-10 | 2026-09-16
+
+**Evidence used:** `api.py` two GETs; SDD-09/10; CASCADE-001; SDD-08 EVAL-016.  
+**Assumptions:** LLM off until EVAL-016; workshop = local venv/Docker.  
+**Unknowns:** OPEN-003 production DMZ; OPEN-006 p95 SLA; OPEN-028 provider; OPEN-001 people.  
+**Did not conclude:** implemented routes; UI; model pick.
+
+No new OPEN id. **Proposed ADR-11** read-only API; **ADR-12** AI-disabled as the product core; **ADR-13** explainer port must not mutate ACTION_TIERS or isolation/recovery predicates.
