@@ -1,0 +1,65 @@
+# Decision trace schema (FR-008, ENH-10)
+# Append-only JSONL: data/local/decision_traces.jsonl (gitignored runtime file)
+
+schema_version: "1.0"
+transform_version: enh-10-traces.1
+
+required:
+  - decision_id
+  - actor
+  - purpose
+  - plant_id
+  - recommendation
+  - execute
+
+fields:
+  decision_id:
+    type: string
+    description: UUID for the decision packet
+  actor:
+    type: string
+    description: Requesting role or service identity (not named Authorizer — OPEN-001)
+  purpose:
+    type: string
+    description: Bounded purpose string; plant-wide dump denied by guardrails
+  plant_id:
+    type: string
+  tool_trace:
+    type: array
+    items: string
+    description: Tier ≤1 read tools only in autonomous path
+  recommendation:
+    type: string
+    enum: [MONITOR, ABSTAIN, DO_NOT_ISOLATE, ISOLATE_DRAFT, RECOMMEND_CONTAINMENT_REVIEW]
+  execute:
+    type: boolean
+    const: false
+    description: Software never executes OT isolation in this repo
+  tokens:
+    type: integer
+    minimum: 0
+    description: LLM tokens consumed; 0 when AI_ENABLED=0
+  latency_ms:
+    type: number
+    minimum: 0
+    description: Wall-clock ms for workflow assembly
+  ai_enabled:
+    type: boolean
+  policy_gate:
+    type: object
+    description: ACTION_TIERS evaluation snapshot
+  workflow_steps:
+    type: integer
+  tool_call_count:
+    type: integer
+  schema:
+    type: string
+    const: contracts/decision_trace.yaml
+  persisted_at:
+    type: string
+    format: date-time
+
+rules:
+  - execute must remain false for all workshop traces
+  - feedback traces are audit evidence, not auto-truth
+  - hidden chain-of-thought is not authority

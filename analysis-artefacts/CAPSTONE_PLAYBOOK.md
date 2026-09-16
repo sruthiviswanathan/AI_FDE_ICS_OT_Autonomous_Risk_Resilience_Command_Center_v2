@@ -828,6 +828,24 @@ Add agent definitions, prompt/config registry, model/tool version pinning placeh
 Expand API: GET /authority/actions, POST /recommend (returns a recommendation object, performs no OT action).
 Prompt lifecycle: versioned prompt files, eval gate before change.
 Model substitution: swapping the explainer model must not change deterministic risk/recovery/policy outputs.
+
+Expose agent workflow state.
+Display:
+- Request Validation
+- Identity Resolution
+- Risk Correlation
+- Safety Evaluation
+- Recovery Evaluation
+- Authority Evaluation
+- Recommendation Generation
+- Human Review
+
+Each state must emit timing,
+evidence count,
+confidence,
+tool calls used.
+
+
 ```
 
 ---
@@ -978,13 +996,59 @@ Write specs/APP_ACCEPTANCE_TESTS.md Given/When/Then for EVAL-001..006, inject_01
 
 ---
 
-## APP-01 — Fixture bundle
+## APP-00 — Command Center Design
 
 ```text
 STANDING SYSTEM PROMPT is in force.
-APP-01 | FIXTURES FROM REAL SYNTHETIC DATA
+APP-00 | Command Center Design
 
-Create apps/command_center/fixtures/command_center_fixtures.json (or generate via script) as a demo-scale slice of the real CSVs: identity conflicts, undocumented paths, BAD telemetry, anti-CVSS pair, bypassed barrier, unapproved vendor session, stale restore, untrusted shift text. No invented fields.
+Design the operator experience.
+
+Create:
+- User journeys
+- Screen map
+- Navigation map
+- Dashboard layout
+- Card hierarchy
+- Alert workflow
+- Incident workflow
+- Executive workflow
+
+Output:
+UI_WIREFRAMES.md
+APP_FLOW.md
+SCREEN_SPECIFICATIONS.md
+
+The system must support:
+- Analyst
+- Process Engineer
+- Safety Owner
+- Executive
+
+No chatbot-first design.
+
+```
+
+---
+
+## APP-01 — Create a runtime data abstraction layer.
+
+```text
+STANDING SYSTEM PROMPT is in force.
+APP-01 | Create a runtime data abstraction layer.
+
+Load directly from:
+- assets.csv
+- telemetry.jsonl
+- vulnerabilities.csv
+- safety_barriers.csv
+- recovery_readiness.csv
+- vendor_sessions.csv
+
+Build live derived views at runtime.
+Fixtures may exist only for acceptance testing.
+The UI must not depend on fixtures.
+
 ```
 
 ---

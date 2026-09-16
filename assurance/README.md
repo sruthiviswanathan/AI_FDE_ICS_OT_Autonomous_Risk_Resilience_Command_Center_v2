@@ -1,8 +1,7 @@
-# Assurance (ENH-09)
+# Assurance
 
-Placeholder. Claim–argument–evidence pack and the EVAL-001…031 harness are **ENH-09**.
-
-Until then:
-- Contract: `evals/golden_cases.jsonl` + `specs/08_evals_risks.md`
-- Strategy: `participant/work/sdd_15/SDD-08_evals_risks/TEVV.md`
-- Do not invent pass results.
+- **Report:** `assurance/ASSURANCE_REPORT.md` (ENH-09 — executed harness + red-team evidence)
+- **Contract:** `evals/golden_cases.jsonl` + `specs/08_evals_risks.md`
+- **Harness:** `evals/harness.py` · `make eval` · `POST /eval/run` (local only)
+- **Strategy:** `participant/work/sdd_15/SDD-08_evals_risks/TEVV.md`
+- **OWASP / SBOM:** `OWASP_MAPPING.md`, `SBOM_FREEZE.md`

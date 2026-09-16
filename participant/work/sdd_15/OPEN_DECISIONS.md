@@ -244,3 +244,117 @@ No new OPEN id. **ADR-KG and ADR-01…16 Accepted** for ENH. SDD-09 Option C / i
 | OPEN-010 | *(restated, not closed)* Canonical package `__version__` | `__init__.py` left at `0.1.0` vs pyproject `2.0.0`. Optional packaging alignment was not taken. | Packaging identity | FDE |
 
 No new OPEN id. ENH remediations queued. Isolation execute remains forbidden. `legacy_*` unchanged.
+
+---
+
+## ENH-01 | OM-14 | 2026-09-16
+
+**Evidence used:** `specs/14_delivery_spec.md`; `specs/08_evals_risks.md`; `evals/golden_cases.jsonl` (31 cases); `tests/test_known_legacy_defects.py`; `traceability/TRACEABILITY.csv` (planned_code `modern/`); capstone ENH-01 (`ot_command.core.*`); `data/raw/asset_aliases.csv` (alias `PLT-01-DCS_CONTROLLER-105` → OT-00012 + OT-00033); diagnostics counters via VERIFICATION.md.  
+**Assumptions:** Stubs raise `NotImplementedError` until ENH-02+; test helpers are not production code.  
+**Unknowns:** OPEN-001…010, 012…029, OPEN-RISK-01/05/11 unchanged.  
+**Did not conclude:** implemented engines; gold API routes; named Authorizer; legal class.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-030 | Canonical module path: `core.*` vs `modern/*` in TRACEABILITY.csv | Capstone ENH-01 tests target `src/ot_command/core/*.py`; TRACEABILITY.csv rows still say `src/ot_command/modern/*.py` (48 rows). Both are stubs/placeholders; no second ADR. | Coverage CSV path accuracy; as-built C4 labels | FDE |
+
+No other new OPEN id. Legacy XFAIL preserved (3). New core tests fail closed on `NotImplementedError`. Isolation execute remains forbidden. `data/` not cleaned.
+
+---
+
+## ENH-02 | OM-14 | 2026-09-16
+
+**Evidence used:** `specs/10_information_architecture.md`; `adrs/ADR-01-identity.md`; `data/raw/assets.csv` (n=2016); `data/raw/asset_aliases.csv` (5 collision aliases, e.g. `PLT-01-DCS_CONTROLLER-105` → OT-00012 + OT-00033); `data/shadow/ot_asset_inventory_FINAL_v8.csv` (n=220, 0 shadow-only ids); `data/reference/tags.csv` (182 tagged assets); diagnostics: alias_collisions=5, asset_state_conflicts=200; EVAL-001 golden fixture.  
+**Assumptions:** Shadow overlay confidence=0.3; alias collision confidence=0.4 per SDD-11 snapshot SNAP-IDENTITY-001. v1 `operationalState` remains unmapped side-field (OPEN-009).  
+**Unknowns:** OPEN-001…010, 012…029, OPEN-RISK-01/05/11, OPEN-030 unchanged.  
+**Did not conclude:** risk/telemetry engines; named Authorizer; shadow spreadsheet promoted to CMDB.
+
+No new OPEN id. `assets.csv` and shadow not rewritten. Gold route `/assets/{id}/identity` + `/identity/conflicts` added (read-only). Legacy XFAIL preserved. Risk engine still stubbed.
+
+---
+
+## ENH-03 | OM-14 | 2026-09-16
+
+**Evidence used:** `data/telemetry/tag_telemetry.jsonl` (n=31224); `data/reference/tags.csv` (engineering_unit); ADR-02; EVAL-004 fixture (EVT-0000001 received before event); diagnostics-aligned counts: bad_or_uncertain=4094, duplicate_packets=120, unit_mismatches=47 (tags.csv join); ingest−event negative count=0 on tag telemetry.  
+**Assumptions:** `order=event_time` only; received_time treated as ingest analogue for enterprise-style rows. GOOD ≠ ProcessHealthy (OPEN-026).  
+**Unknowns:** OPEN-001…010, 012…029, OPEN-RISK-01/05/11, OPEN-030 unchanged.  
+**Did not conclude:** risk/safety/recovery engines; enterprise_events.jsonl timeline API; imputing BAD→GOOD.
+
+No new OPEN id. `tag_telemetry.jsonl` not rewritten. Legacy XFAIL preserved. Risk engine still stubbed.
+
+---
+
+## ENH-04 | OM-14 | 2026-09-16
+
+**Evidence used:** `data/raw/vulnerabilities.csv` (n=1100); EVAL-002 fixtures VUL-00706 (cvss 9.8, reachable NO, asset OT-00654 LOW) vs VUL-00098 (cvss 8.7, reachable YES, OT-01016 HIGH, barrier BYPASSED); EVAL-017 A/B fixture; ADR-03; `legacy_rank` unchanged in `legacy/risk.py`.  
+**Assumptions:** Weights are workshop-explainable, not OPEN-006 dollar thresholds. Asset enrichment when `criticality` omitted. CVSS weighted as input (×2), not sole sort key.  
+**Unknowns:** OPEN-001…010, 012…029, OPEN-RISK-01/05/11, OPEN-030 unchanged.  
+**Did not conclude:** safety/containment engine; full RecoveryReady predicate (ENH-06); LLM re-rank (forbidden).
+
+No new OPEN id. `legacy_rank` XFAIL preserved. Gold GET `/risk/contextual` added (read-only).
+
+---
+
+## ENH-05 | OM-14 | 2026-09-16
+
+**Evidence used:** EVAL-003 fixture OT-01016 / ALT-002783 / PLT-10-U06 MIN_LOAD / PLT-10-SAFE-07 BYPASSED bypass_authorized NO; EVAL-019 CRITICAL-only; EVAL-031 UNKNOWN process_context; ADR-04; `policy.py` isolate_endpoint tier 3; handover email constraint (untrusted); 860 legacy safety-blind isolations cited in ADR-04.  
+**Assumptions:** `required_authority` lists roles only (OPEN-001 unnamed people). ISOLATE_DRAFT requires explicit `asset_id` + unit join safe_state. Alert-only queries abstain on UNKNOWN process_context.  
+**Unknowns:** OPEN-001…010, 012…029, OPEN-RISK-01/05/11, OPEN-030 unchanged.  
+**Did not conclude:** recovery engine; isolate execute; named Authorizer; trip suppression (forbidden).
+
+No new OPEN id. `legacy_isolation_recommendation` XFAIL preserved. Gold GET `/safety/conflicts` added. `execute` always false.
+
+---
+
+## ENH-06 | OM-14 | 2026-09-16
+
+**Evidence used:** `data/raw/recovery_readiness.csv` (144 rows / 18 plants); EVAL-005 PLT-01 IDENTITY (backup CURRENT, restore 360d, runbook STALE, manual_fallback LIMITED); EVAL-018 CURRENT-only; ADR-05 (113/119 CURRENT rows fail restore/runbook/deps); workshop restore-test threshold **180d** (not a close of OPEN-006/022 plant SLA).  
+**Assumptions:** `recovery_ready` requires backup CURRENT + restore ≤180d + runbook CURRENT + dependency YES + manual_fallback YES. Missing fields ⇒ false.  
+**Unknowns:** OPEN-001…010, 012…029, OPEN-RISK-01/05/11, OPEN-030 unchanged.  
+**Did not conclude:** live restore orchestration; backup blob verification (OPEN-027); authority/agent engines.
+
+No new OPEN id. `legacy_recovery_ready` XFAIL preserved. Gold GET `/recovery/{site_or_unit}` added. CSV not rewritten.
+
+---
+
+## ENH-07 | OM-14 | 2026-09-16
+
+**Evidence used:** SDD-12 AGENTIC.md; EVAL-006/014/023; ADR-07/12/14; `policy.py` ACTION_TIERS; CASCADE-001 handoff constraint; playbook workflow display states (8); `config/prompts/incident_analyst_v1.md` registry.  
+**Assumptions:** Single Incident Analyst agent; AI_ENABLED=0 default; POST `/recommend` returns packet only (no OT action); tool trace tier ≤1; prompt/model pins are placeholders (OPEN-028).  
+**Unknowns:** OPEN-001 named Authorizer; OPEN-004 verb gaps; OPEN-028 model provider.  
+**Did not conclude:** graph slice GET (later ENH); multi-agent; LLM explainer on by default.
+
+No new OPEN id. Forbidden tools raise/deny. Workflow states emit timing_ms, evidence_count, confidence, tool_calls_used. Traces append to `data/local/decision_traces.jsonl`.
+
+---
+
+## ENH-08 | OM-14–15 | 2026-09-16
+
+**Evidence used:** SDD-13 SECURITY.md A-01…A-10; `tests/red_team/test_redteam_agent.py` (14 cases); `evals/adversarial_cases.jsonl` (7 rows); `assurance/OWASP_MAPPING.md`; `assurance/SBOM_FREEZE.md`; guardrails caps steps=12 tools=20; verify_repo checks restricted_answer_key absent.  
+**Assumptions:** Red team is local synthetic only — no OT protocol attacks. Workshop CI via Makefile + `.github/workflows/ci.yml`.  
+**Unknowns:** OPEN-024 full SPDX; OPEN-029 API authn; OPEN-028 model card.  
+**Did not conclude:** external pentest; certification; real OT connectors.
+
+No new OPEN id. Attacks fail closed. `restricted_answer_key/` must remain absent. Legacy XFAIL preserved for A-07 contrast.
+
+---
+
+## ENH-09 | OM-15 | 2026-09-16
+
+**Evidence used:** `evals/harness.py` executed 31/31 PASS; `tests/test_eval_golden.py`; `assurance/ASSURANCE_REPORT.md`; red-team 17/17; EVAL-007 CASCADE-001 latency ~132 ms / 0 tokens; guardrails extended for EVAL-014/030 patterns; `containment.is_packet_authorizable` (EVAL-020); `POST /eval/run` local only.  
+**Assumptions:** Harness checks modern engines deterministically — not a production LLM eval. Latency/token numbers are workshop measurements; OPEN-006 thresholds still unset.  
+**Unknowns:** OPEN-001…010, 012…029, OPEN-RISK-01/05/11, OPEN-030 unchanged.  
+**Did not conclude:** external pentest; certification; graph slice GET (FR-006 still missing — pytest route test fails until implemented).
+
+No new OPEN id. Golden harness **executed** (SDD-08 assumption “harness not implemented” superseded for Repo 2.0). Legacy XFAIL preserved. `GET /graph/slice` remains out of scope for ENH-09.
+
+---
+
+## ENH-10 | OM-16 | 2026-09-16
+
+**Evidence used:** `specs/REPO_3_0_GATE.md`; `ops/*.md` pack; `specs/as_built_c4.md`; `core/ops.py` + `GET /ops/slo`, `/ops/cost-per-incident`; `core/graph_slice.py` + `GET /graph/slice`; `contracts/decision_trace.yaml`; enriched `traces.py` (tokens, latency_ms, policy_gate); `tests/test_ops_telemetry.py`; Dockerfile `AI_ENABLED=0` + HEALTHCHECK; `pyproject.toml` 3.0.0.  
+**Assumptions:** Synthetic advisory service only. FinOps meters present; dollar thresholds remain OPEN-006. SLO-LAT p95 logged from traces — not a production SLA sign-off.  
+**Unknowns:** OPEN-001…010, 012…029, OPEN-RISK-01/05/11, OPEN-030 unchanged.  
+**Did not conclude:** live plant deploy; production auth (OPEN-029); LLM vendor (OPEN-028); customer UI (PRD-01).
+
+No new OPEN id. Repo 3.0 gate declares **PRD + App ready**. Legacy XFAIL preserved. `data/` contradictions not cleaned. Decision traces gitignored at runtime path.

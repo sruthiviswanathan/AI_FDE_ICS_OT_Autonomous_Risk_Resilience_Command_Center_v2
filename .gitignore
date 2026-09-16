@@ -20,3 +20,4 @@ src/ot_command/validators/test_validators.py
 src/ot_command/validators/test_validators.pyc
 src/ot_command/validators/test_validators.pyo
 src/ot_command/validators/test_validators.pyd
+data/local/decision_traces.jsonl

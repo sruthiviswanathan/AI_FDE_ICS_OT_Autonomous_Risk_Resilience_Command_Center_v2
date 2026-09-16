@@ -35,8 +35,15 @@ for p in ROOT.rglob('*.db'):
         if result!='ok': errors.append(f'sqlite {p.relative_to(ROOT)}: {result}')
     except Exception as e: errors.append(f'sqlite {p.relative_to(ROOT)}: {e}')
 # Required release files
-for rel in ['README.md','AGENTS.md','requirements.txt','pyproject.toml','Dockerfile','Makefile','data/manifest.json']:
+for rel in ['README.md','AGENTS.md','requirements.txt','pyproject.toml','Dockerfile','Makefile','data/manifest.json','assurance/SBOM_FREEZE.md','assurance/OWASP_MAPPING.md','assurance/ASSURANCE_REPORT.md','evals/harness.py','tests/test_eval_golden.py','specs/REPO_3_0_GATE.md','specs/as_built_c4.md','contracts/decision_trace.yaml','tests/test_ops_telemetry.py','src/ot_command/core/ops.py','src/ot_command/core/graph_slice.py']:
     if not (ROOT/rel).exists(): errors.append(f'missing {rel}')
+for rel in ['ops/RACI.md','ops/runbooks.md','ops/incident_rollback.md','ops/ai_incident_response.md','ops/bcdr.md','ops/production_readiness_checklist.md','ops/handover.md','ops/finops_cost_dashboard.md','ops/drift_management.md','participant/work/enh_10/REPO_3_0_GATE.md']:
+    if not (ROOT/rel).exists(): errors.append(f'missing ENH-10 artifact {rel}')
+# ENH-08: answer key must not ship; red-team tests present
+if (ROOT/'restricted_answer_key').exists():
+    errors.append('restricted_answer_key/ must not exist in runtime tree')
+for rel in ['tests/red_team/test_redteam_agent.py','src/ot_command/core/guardrails.py','evals/adversarial_cases.jsonl']:
+    if not (ROOT/rel).exists(): errors.append(f'missing ENH-08 artifact {rel}')
 if errors:
     print('VERIFY_FAIL')
     for e in errors: print(e)

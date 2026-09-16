@@ -45,17 +45,31 @@ uvicorn ot_command.api:app --reload
 
 Set `PYTHONPATH=src` if your IDE does not infer it.
 
-## Repo 2.0 status
+## Repo 3.0 status
 
-This tree is **SDD-aligned**. Structured specs live in `specs/` (OM 1–13 freeze). Accepted ADRs live in `adrs/`. Traceability and open decisions live in `traceability/`. Enhancement backlog is **ENH-01…10** (`src/ot_command/modern/` is a placeholder — no business logic yet).
+This tree is **production-oriented (synthetic)** and **PRD + App ready**. Structured specs live in `specs/`; ADRs in `adrs/`; traceability in `traceability/`. Modern engines live in `src/ot_command/core/` (ENH-01…10 complete). Ops pack in `ops/`. Assurance in `assurance/ASSURANCE_REPORT.md`.
 
-**Legacy behavior is preserved:** `legacy_rank` / `legacy_recovery_ready` / `legacy_isolation_recommendation` and the three strict XFAIL tests are unchanged. Seeded `data/` contradictions were not cleaned. The API remains read-only (`GET /health`, `GET /diagnostics`).
+| Property | Repo 3.0 |
+|----------|----------|
+| Maturity | Governed advisory increment with eval harness + ops telemetry |
+| Specs | Refined freeze + as-built C4 (`specs/as_built_c4.md`) |
+| Validation | 31/31 golden evals, red team, readiness checklist |
+| API | Read-only gold GETs + local `POST /recommend`, `POST /eval/run` |
+| AI | Disabled by default (`AI_ENABLED=0`) — deterministic core (ADR-12) |
 
-Gate: `python scripts/check_sdd_gates.py` (also `make sdd-gates`). Coverage: `participant/work/FDE_96_COVERAGE.csv`.
+**Legacy behavior preserved:** `legacy_*` and three strict XFAIL tests unchanged. Seeded `data/` contradictions not cleaned. No OT execute surfaces.
+
+```bash
+make ci          # sdd-gates + verify + test + eval + red-team
+make eval        # EVAL-001…031 harness
+uvicorn ot_command.api:app --reload   # PYTHONPATH=src
+```
+
+Gate: `specs/REPO_3_0_GATE.md` · Coverage: `participant/work/FDE_96_COVERAGE.csv`
 
 ## Participant path
 
-Read `AGENTS.md` → `specs/README.md` → `participant/CHALLENGE_BRIEF.md` → `docs/02_imperfection_layers.md` → `data/manifest.json` → `src/ot_command/legacy/`. ENH starts at FR-001 (`specs/14_delivery_spec.md`).
+Read `AGENTS.md` → `specs/README.md` → `specs/REPO_3_0_GATE.md` → `assurance/ASSURANCE_REPORT.md` → `ops/runbooks.md`. Next: **PRD-01** (`specs/PRD.md`).
 
 
 ## Safety

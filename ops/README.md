@@ -1,8 +1,17 @@
-# Ops (REL-01 / ENH-10)
+# Ops — Repo 3.0 (ENH-10)
 
-Placeholder. Runbooks, SOPs, dashboards, SBOM/AIBOM meters, and production-readiness are **REL-01** and **ENH-10**.
+Production-readiness pack for the **synthetic advisory service**. Not live plant operations.
 
-Until then:
-- Workshop SLOs: `specs/14_delivery_spec.md`
-- AI-disabled core: ADR-12
-- No live OT operations from this repo.
+| Document | Purpose |
+|----------|---------|
+| [RACI.md](RACI.md) | Roles (unnamed until OPEN-001) |
+| [runbooks.md](runbooks.md) | Local API, triage, eval gates |
+| [incident_rollback.md](incident_rollback.md) | Software rollback (`AI_ENABLED=0`) |
+| [ai_incident_response.md](ai_incident_response.md) | Model/agent failure classes |
+| [bcdr.md](bcdr.md) | Advisory service continuity |
+| [production_readiness_checklist.md](production_readiness_checklist.md) | Pre-PRD gate |
+| [handover.md](handover.md) | FDE handover + training outline |
+| [finops_cost_dashboard.md](finops_cost_dashboard.md) | Cost-per-incident design |
+| [drift_management.md](drift_management.md) | Spec/data/policy drift |
+
+Telemetry: `GET /ops/slo`, `GET /ops/cost-per-incident` · Traces: `data/local/decision_traces.jsonl` · Schema: `contracts/decision_trace.yaml`
