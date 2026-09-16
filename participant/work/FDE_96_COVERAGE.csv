@@ -8,13 +8,13 @@ C06,Process discovery and process mining,2,SDD-02,"SIPOC, VSM, **event mining**"
 C07,Root-cause analysis,3,"SDD-03, SDD-04",RCA from 96 forensic cells,specced
 C08,No-AI / conventional-automation alternative,4,SDD-05,Non-AI alternative,specced
 C09,AI intervention justification,4,SDD-05,Suitability + go/no-go,specced
-C10,Product judgement,4,"SDD-05, SDD-09, PRD-01",Use-case + selected solution + PRD,specced
-C11,User journey and service-design thinking,4,"SDD-05, PRD-01","**Journeys** (SOC, process, safety, exec)",specced
+C10,Product judgement,4,"SDD-05, SDD-09, PRD-01",Use-case + selected solution + PRD,evidenced
+C11,User journey and service-design thinking,4,"SDD-05, PRD-01","**Journeys** (SOC, process, safety, exec)",evidenced
 C12,Business-value engineering,3,"SDD-04, SDD-09, REL-03",Value hypothesis + trade-off + benefits,specced
 C13,Benefits hypothesis and value-tree design,3,SDD-04,KPI / value tree,specced
 C14,Process improvement / DMAIC,2,"SDD-02/04, REL-03/04",Define-Measure-Analyse-Improve-Control,specced
 C15,Domain modelling / DDD,5,SDD-06,DOMAIN.md,specced
-C16,Requirements engineering,13,"SDD-14, PRD-01",Delivery spec + FR-###,specced
+C16,Requirements engineering,13,"SDD-14, PRD-01",Delivery spec + FR-###,evidenced
 C17,Requirements-to-evidence traceability,13,SDD-14,TRACEABILITY.csv,specced
 C18,"Constraint, assumption and dependency management",2,"SDD-02, SDD-14",Dependencies + OPEN_DECISIONS,specced
 C19,Data engineering,6,"SDD-07, SDD-10, ENH",Inventories + pipelines,specced

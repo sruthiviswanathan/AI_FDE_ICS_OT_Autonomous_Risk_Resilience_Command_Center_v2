@@ -32,3 +32,4 @@ ENH-07,14,"C37,C38",SDD-12 AGENTIC.md,EVAL-006;EVAL-023,src/ot_command/core/agen
 ENH-08,15,C54,SDD-13 s15,A-01..A-10,tests/red_team/test_redteam_agent.py,abuse case coverage,no PLC tool even in tests that execute
 ENH-09,15,"C49,C52",SDD-08 TEVV,EVAL-001..031,evals/harness.py,assurance/ASSURANCE_REPORT.md,ENH-09 completes C49
 ENH-10,16,"C58,C65",SDD-14 NFR,EVAL-016;EVAL-026,src/ot_command/core/ops.py + core/traces.py + ops/,AI cost meter OPEN-006,AI-disabled UX
+PRD-01,"4,10,13,19","C10,C11,C16",specs/PRD.md,EVAL-001..031,participant/work/prd/PRD.md + specs/PRD.md,decision evidence completeness OPEN-006,no isolate execute UI

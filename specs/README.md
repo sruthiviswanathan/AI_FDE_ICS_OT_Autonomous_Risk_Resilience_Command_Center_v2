@@ -18,6 +18,8 @@ SDD-aligned repository. **Normative long-form** artifacts remain under `particip
 | [12_agentic.md](12_agentic.md) | 11 | specced | FDE | SDD-12 AGENTIC.md |
 | [13_security_guardrails.md](13_security_guardrails.md) | 12 | specced | OT-CISO | SDD-13 SECURITY.md |
 | [14_delivery_spec.md](14_delivery_spec.md) | 13 | specced | FDE | SDD-14 DELIVERY_SPEC.md |
+| [PRD.md](PRD.md) | 4 / 10 / 13 / 19 | freeze | FDE + Product | `participant/work/prd/PRD.md` |
+| [REQUIREMENTS_TRACEABILITY.md](REQUIREMENTS_TRACEABILITY.md) | 13 | freeze | FDE | PRD-01 chain |
 
 Gate: [REPO_2_0_GATE.md](REPO_2_0_GATE.md). ADRs: [`/adrs`](../adrs/README.md). Traceability: [`/traceability`](../traceability/TRACEABILITY.csv). Coverage: [`participant/work/FDE_96_COVERAGE.csv`](../participant/work/FDE_96_COVERAGE.csv).
 

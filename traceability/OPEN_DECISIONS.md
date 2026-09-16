@@ -396,3 +396,23 @@ C49/C52/C53/C54/C56 marked evidenced in `FDE_96_COVERAGE.csv` because harness + 
 
 `legacy_*` unchanged. No live OT canary. No model credentials in git. `__version__` not bumped (OPEN-010).
 
+---
+
+## PRD-01 | Product requirements from Repo 3.0 | 2026-09-16
+
+**Evidence used:** `specs/01`–`14`; ADR-KG + ADR-01…16; `assurance/ASSURANCE_REPORT.md`; `docs/04` `docs/05` `docs/06`; SDD-05 journeys J1–J5; `src/ot_command/api.py`; FR-001…014; EVAL-001…031; diagnostics 14-int baseline.  
+**Assumptions:** PRD freezes the App against existing engines. UI is specified, not built. Workshop ≠ production plant.  
+**Unknowns:** OPEN-001, OPEN-002, OPEN-003, OPEN-006/022/023, OPEN-009, OPEN-010, OPEN-028, OPEN-029, OPEN-RISK-01/05/11.  
+**Did not conclude:** named Authorizers; legal class; restore-test day bar; USD SLA; model capabilities; isolate execute; APP UI.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-001 | Named human for every ACTION_TIERS ≥ 3 | PRD RACI is roles only; AwaitAuthorization cannot close | Isolation **execute** remains forbidden | Global OT Risk Sponsor |
+| OPEN-002 | EU AI Act / ISO 42001 class | PRD restates working assumption only; no certificate | Regulatory claims in exec brief | OT-CISO + counsel |
+| OPEN-006 | KPI formulas / MTT / $/incident | Screen 14/15 and cost API leave measured_usd null; `docs/05` BASELINE_PENDING | REL-03 numeric before/after | FDE + VP Ops |
+| OPEN-029 | API authn for production App | FastAPI still has no authn | Production App access matrix | OT-CISO |
+| OPEN-031 | Row-level read GET for `remote_access_sessions.csv` | Diagnostics expose 137/128 counts only; no execute implied | APP-01 Screen 7 completeness | FDE |
+
+No new ACTION_TIERS verbs. No recovery day threshold invented. `__version__` not bumped (OPEN-010). `legacy_*` unchanged.
+
+
