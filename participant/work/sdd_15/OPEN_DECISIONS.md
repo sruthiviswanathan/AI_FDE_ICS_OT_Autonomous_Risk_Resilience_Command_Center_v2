@@ -415,4 +415,20 @@ C49/C52/C53/C54/C56 marked evidenced in `FDE_96_COVERAGE.csv` because harness + 
 
 No new ACTION_TIERS verbs. No recovery day threshold invented. `__version__` not bumped (OPEN-010). `legacy_*` unchanged.
 
+---
+
+## PRD-02 | App acceptance tests | 2026-09-16
+
+**Evidence used:** `evals/golden_cases.jsonl` EVAL-001…006; inject_01…06 titles; cascade_001; EVAL-014/016/017/018/020/027; A-01/A-02/A-03; PRD UX-01…15.  
+**Assumptions:** AT-* cases accept the App, not re-score the engine harness. Fail closed if a Then would require an invented threshold or execute control.  
+**Unknowns:** OPEN-001, OPEN-006/022, OPEN-019, OPEN-031.  
+**Did not conclude:** APP UI implementation; isolate execute.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-031 | Sessions row GET for AT-I03 completeness | AT-I03 can pass on diagnostics counts; row-level UX-07 still APP-01 | APP-01 | FDE |
+
+No Execute Isolation / Write PLC added. `legacy_*` XFAIL unchanged.
+
+
 
