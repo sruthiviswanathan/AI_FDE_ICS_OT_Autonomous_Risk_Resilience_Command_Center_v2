@@ -1,6 +1,6 @@
 PYTHON ?= python
 
-.PHONY: test diagnostics run verify
+.PHONY: test diagnostics run verify sdd-gates
 test:
 	$(PYTHON) -m pytest -q
 
@@ -12,3 +12,6 @@ run:
 
 verify:
 	$(PYTHON) scripts/verify_repo.py
+
+sdd-gates:
+	$(PYTHON) scripts/check_sdd_gates.py

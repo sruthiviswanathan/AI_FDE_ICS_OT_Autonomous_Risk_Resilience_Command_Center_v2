@@ -45,9 +45,17 @@ uvicorn ot_command.api:app --reload
 
 Set `PYTHONPATH=src` if your IDE does not infer it.
 
+## Repo 2.0 status
+
+This tree is **SDD-aligned**. Structured specs live in `specs/` (OM 1–13 freeze). Accepted ADRs live in `adrs/`. Traceability and open decisions live in `traceability/`. Enhancement backlog is **ENH-01…10** (`src/ot_command/modern/` is a placeholder — no business logic yet).
+
+**Legacy behavior is preserved:** `legacy_rank` / `legacy_recovery_ready` / `legacy_isolation_recommendation` and the three strict XFAIL tests are unchanged. Seeded `data/` contradictions were not cleaned. The API remains read-only (`GET /health`, `GET /diagnostics`).
+
+Gate: `python scripts/check_sdd_gates.py` (also `make sdd-gates`). Coverage: `participant/work/FDE_96_COVERAGE.csv`.
+
 ## Participant path
 
-Read `AGENTS.md` → `participant/CHALLENGE_BRIEF.md` → `docs/02_imperfection_layers.md` → `data/manifest.json` → `src/ot_command/legacy/`.
+Read `AGENTS.md` → `specs/README.md` → `participant/CHALLENGE_BRIEF.md` → `docs/02_imperfection_layers.md` → `data/manifest.json` → `src/ot_command/legacy/`. ENH starts at FR-001 (`specs/14_delivery_spec.md`).
 
 
 ## Safety

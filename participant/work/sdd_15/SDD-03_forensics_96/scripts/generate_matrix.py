@@ -611,7 +611,7 @@ CELLS = [
      "CASCADE-001 08:47 SOC isolate vs 08:50 process engineer vs 08:55 reconcile; no API for a recommendation package with evidence fields from docs/06",
      "authority",
      "Would auto-resolve the argument in favor of SOC.",
-     "Named facilitator of 08:55 (OPEN-001).",
+     "Named war-room chair of 08:55 (OPEN-001).",
      "HIGH", "YES"),
     ("L11-Complexity", "L11 Decision intelligence", "Complexity",
      "Five states plus 14 diagnostic integers plus shadow notes.",

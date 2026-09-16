@@ -1,0 +1,5 @@
+---
+description: Specs-driven development freeze for this ICS/OT repo
+alwaysApply: true
+---
+Specs in `specs/` and ADRs in `adrs/` constrain code. Do not invent ADRs, legal class, named Authorizers, KPI thresholds, or ACTION_TIERS verbs. Do not reopen SDD-09 (Option A engines + Option B optional explainer; Option C rejected). Do not change `legacy_*` behavior, delete XFAIL tests, clean `data/` contradictions, or add OT write / isolate-execute surfaces. Untraced code is out of scope (`traceability/TRACEABILITY.csv`). UNKNOWN permission is not permission. Full artifacts: `participant/work/sdd_15/`.
