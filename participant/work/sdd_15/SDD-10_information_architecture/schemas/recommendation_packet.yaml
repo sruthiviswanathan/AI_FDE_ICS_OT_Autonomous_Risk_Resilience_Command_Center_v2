@@ -1,0 +1,60 @@
+# Recommendation packet — docs/06 + CTQ-ISO
+# IsolationRecommendation is not IsolationExecution
+type: object
+required:
+  - packet_id
+  - isolation_recommendation
+  - evidence
+  - freshness
+  - uncertainty
+  - process_impact
+  - safety_impact
+  - rollback
+  - required_authority
+  - provenance
+properties:
+  packet_id:
+    type: string
+  subject_asset_uid:
+    type: string
+  plant_id:
+    type: string
+  isolation_recommendation:
+    type: string
+    enum: [MONITOR, DO_NOT_ISOLATE, ABSTAIN, ISOLATE_DRAFT]
+    description: ISOLATE_DRAFT requires safe_state and required_authority. Never execute.
+  safe_state:
+    type: string
+    nullable: true
+    description: From ProcessUnit; required if isolation_recommendation=ISOLATE_DRAFT (CTQ-ISO)
+  unit_id:
+    type: string
+    nullable: true
+  unit_join_missing:
+    type: boolean
+  evidence:
+    type: array
+    items:
+      type: object
+      required: [source_path, field, record_id]
+  freshness: {}
+  uncertainty:
+    type: object
+    required: [confidence]
+  process_impact: {}
+  safety_impact: {}
+  rollback: {}
+  required_authority:
+    type: array
+    items:
+      type: string
+    description: Role titles; people OPEN-001
+  action_tier_max:
+    type: integer
+    enum: [0, 1]
+    description: Packet is observe/recommend only
+  vector_used:
+    type: boolean
+    description: If true, citations are untrusted and must not set this packet's recommendation
+  provenance:
+    $ref: provenance.yaml

@@ -163,3 +163,18 @@ OPEN-001 still blocks named-human Authorize records. OPEN-002 still blocks any â
 | OPEN-028 | LLM provider / local vs hosted | Selected solution requires a **port** and AI-disabled path (EVAL-016). No model in Repo 1.0. Hosted pick is not required to implement Option A engines. | Default-on explainer | FDE (do not pick in SDD-09) |
 
 **Closed by this prompt (workshop, Proposed ADRs â€” not sponsor-signed production ADRs):** Option C unsafe agent **rejected**; autonomous isolation **NO**; multi-agent **not selected**; decorative KG **rejected**; bounded evidence-graph **view** **CONDITIONAL YES** (ADR-KG). OPEN-006 still covers token $/incident numbers.
+
+---
+
+## SDD-10 | OM-9 | 2026-09-16
+
+**Evidence used:** SDD-06 terms; SDD-09 ADR-KG five queries; `contracts/asset_api_v1.yaml` / `v2.yaml`; `contracts/telemetry_event_schema.json`; `requirements.txt` (no graph DB).  
+**Assumptions:** Workshop persistence = typed JSON views; root brownfield contracts stay.  
+**Unknowns:** below.  
+**Did not conclude:** production graph DB; OWL ontology; mapping of v1 `operationalState`.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-009 | *(restated, not closed)* v1 `operationalState` vs CSV/v2 states | Anticorruption parks v1 in `legacy_v1_operational_state` (ADR-10). Still no documented plant mapping. | Treating v1 as ObservedState | FDE |
+
+**Closed in workshop (Proposed ADR-09):** persistence = typed JSON graph/JSONL, not RDF, not Neo4j-now. Vector remains optional untrusted memory and **must not** set isolation or ACTION_TIERS.

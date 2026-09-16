@@ -1,0 +1,40 @@
+# Provenance envelope — required on every silver/gold fact
+# SDD-07 §4, SDD-10 INFO_ARCH §4
+type: object
+required:
+  - source_system
+  - source_path
+  - extracted_at
+  - transform_version
+  - confidence
+properties:
+  source_system:
+    type: string
+    description: CMDB, PASSIVE, CMMS, HISTORIAN, SIEM, SHADOW_SPREADSHEET, SHIFT_EMAIL, SQLITE_REPLICA, SCENARIO, ENGINE
+  source_path:
+    type: string
+    description: Repo-relative path or engine id
+  extracted_at:
+    type: string
+    format: date-time
+  event_time:
+    type: string
+    format: date-time
+    nullable: true
+  ingest_or_received_time:
+    type: string
+    format: date-time
+    nullable: true
+  clock_completeness:
+    type: string
+    enum: [FULL, PARTIAL]
+  quality_flag:
+    type: string
+    enum: [GOOD, UNCERTAIN, BAD, NA]
+  confidence:
+    type: number
+    minimum: 0
+    maximum: 1
+    description: Must be < 1 when sources conflict, UNKNOWN present, or unit join missing
+  transform_version:
+    type: string

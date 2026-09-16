@@ -1,0 +1,31 @@
+{
+  "title": "TelemetryEventCanonical",
+  "description": "Widens contracts/telemetry_event_schema.json. Do not delete ingest_time/source/asset_id to match the thin brownfield schema. Root schema remains evidence of drift (OPEN-009).",
+  "type": "object",
+  "required": [
+    "event_id",
+    "tag_id",
+    "asset_id",
+    "event_time",
+    "ingest_time",
+    "value",
+    "unit",
+    "quality",
+    "source",
+    "provenance"
+  ],
+  "properties": {
+    "event_id": { "type": "string" },
+    "tag_id": { "type": "string" },
+    "asset_id": { "type": "string" },
+    "event_time": { "type": "string" },
+    "ingest_time": { "type": "string" },
+    "value": { "type": "number" },
+    "unit": { "type": "string" },
+    "engineering_unit": { "type": "string", "description": "From tags.csv; flag if != unit" },
+    "quality": { "enum": ["GOOD", "UNCERTAIN", "BAD"] },
+    "source": { "type": "string" },
+    "unit_mismatch": { "type": "boolean" },
+    "provenance": { "type": "object" }
+  }
+}

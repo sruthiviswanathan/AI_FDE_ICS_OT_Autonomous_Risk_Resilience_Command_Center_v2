@@ -1,0 +1,54 @@
+{
+  "title": "EvidenceGraphView",
+  "description": "Bounded gold graph for ADR-KG queries Q1-Q5. Not a system of record. No node field named status.",
+  "type": "object",
+  "required": ["nodes", "edges", "query_id", "hop_cap", "filters"],
+  "properties": {
+    "query_id": {
+      "enum": ["Q1_IDENTITY_LINEAGE", "Q2_UNDOCUMENTED_PATH", "Q3_SAFETY_CYBER", "Q4_RECOVERY_BLOCKERS", "Q5_CASCADE_SLICE"]
+    },
+    "hop_cap": { "type": "integer", "maximum": 8 },
+    "filters": {
+      "type": "object",
+      "properties": {
+        "plant_id": { "type": "string" },
+        "zone": { "type": "string" },
+        "purpose": { "enum": ["identity", "risk", "safety", "recovery", "audit"] },
+        "as_of": { "type": "string" },
+        "policy_version": { "type": "string" }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type"],
+        "not": { "required": ["status"] },
+        "properties": {
+          "id": { "type": "string" },
+          "type": {
+            "enum": ["Plant", "Asset", "Alias", "Unit", "Tag", "Barrier", "Finding", "Alert", "Session", "RecoveryComponent", "Conflict"]
+          }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "from", "to"],
+        "properties": {
+          "type": {
+            "enum": [
+              "ALIAS_OF", "IN_PLANT", "TAGGED", "IN_UNIT", "DEPENDS_ON", "PROTECTS",
+              "FOUND_ON", "ALERT_ON", "SESSION_ON", "PATH", "RECOVERY_FOR", "CONFLICTS"
+            ]
+          },
+          "from": { "type": "string" },
+          "to": { "type": "string" }
+        }
+      }
+    },
+    "unit_join_missing": { "type": "boolean" }
+  }
+}

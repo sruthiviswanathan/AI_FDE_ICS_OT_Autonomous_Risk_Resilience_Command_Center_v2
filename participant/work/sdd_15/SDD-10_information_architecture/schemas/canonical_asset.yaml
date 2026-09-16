@@ -1,0 +1,93 @@
+# Canonical identity bundle — gold/silver
+# Does not replace contracts/asset_api_v1.yaml or v2.yaml
+type: object
+required:
+  - asset_uid
+  - registered_state
+  - observed_state
+  - aliases
+  - provenance
+  - conflicts
+properties:
+  asset_uid:
+    type: string
+    description: Workshop stable id = assets.asset_id (e.g. OT-01016)
+  plant_id:
+    type: string
+  asset_type:
+    type: string
+    description: Class label; not Device (OPEN-025)
+  registered_state:
+    type: string
+    enum: [ACTIVE, UNKNOWN, RETIRED]
+  observed_state:
+    type: string
+    enum: [ONLINE, INTERMITTENT, UNSEEN, OFFLINE]
+  operational_interpretation:
+    type: string
+    nullable: true
+    enum: [NORMAL, MAINTENANCE_WINDOW, DEGRADED, UNKNOWN, null]
+    description: Nullable; never overwrite registered/observed. Case-level from Alert.process_context only.
+  firmware_declared:
+    type: string
+  firmware_observed:
+    type: string
+    description: UNKNOWN unless a distinct observation source exists (CSV has one firmware column)
+  asset_criticality:
+    type: string
+    enum: [CRITICAL, HIGH, MEDIUM, LOW]
+  zone:
+    type: string
+  owner:
+    type: string
+  aliases:
+    type: array
+    items:
+      type: object
+      required: [source, alias, provenance]
+      properties:
+        source:
+          type: string
+          enum: [CMDB, PASSIVE, CMMS]
+        alias:
+          type: string
+        provenance:
+          $ref: provenance.yaml
+  shadow_overlay:
+    type: object
+    nullable: true
+    description: confidence=low; not CMDB
+  unit_join_missing:
+    type: boolean
+    description: true when no tags.csv row (1834/2016)
+  conflicts:
+    type: array
+    items:
+      $ref: '#/definitions/ConflictRecord'
+  provenance:
+    $ref: provenance.yaml
+  legacy_v1_operational_state:
+    type: string
+    nullable: true
+    description: Unmapped v1 field (OPEN-009 / ADR-10); not ObservedState
+definitions:
+  ConflictRecord:
+    type: object
+    required: [conflict_id, type, left_value, right_value]
+    properties:
+      conflict_id:
+        type: string
+      type:
+        type: string
+        enum:
+          - REGISTERED_VS_OBSERVED
+          - ALIAS_COLLISION
+          - SHADOW_VS_ASSETS
+          - V1_OPERATIONALSTATE_UNMAPPED
+          - CMMS_VS_FIELD
+          - BACKUP_VS_RECOVERY_PREDICATE
+          - SEVERITY_VS_CVSS
+      left_value: {}
+      right_value: {}
+      rule_id:
+        type: string

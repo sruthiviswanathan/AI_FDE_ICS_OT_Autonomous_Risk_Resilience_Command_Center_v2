@@ -1,0 +1,29 @@
+# Anticorruption map — legacy asset APIs remain files under repo contracts/
+# Modern code consumes canonical_asset.yaml
+description: Keep v1/v2 stubs as evidence. Do not implement them as the identity SoR.
+
+v1:
+  path: /assets/{id}
+  file: contracts/asset_api_v1.yaml
+  fields:
+    assetId: canonical.asset_uid
+    fwVersion: canonical.firmware_declared
+    operationalState: canonical.legacy_v1_operational_state   # NOT observed_state (OPEN-009, ADR-10)
+
+v2:
+  path: /ot-assets/{asset_id}
+  file: contracts/asset_api_v2.yaml
+  fields:
+    asset_id: canonical.asset_uid
+    firmware: canonical.firmware_declared
+    observed_state: canonical.observed_state
+
+csv_assets:
+  registered_state: canonical.registered_state
+  observed_state: canonical.observed_state
+  firmware: canonical.firmware_declared
+
+forbidden:
+  - collapse registered_state and observed_state into operationalState
+  - treat v1 operationalState as ObservedState without a closed OPEN-009
+  - Device as an API resource

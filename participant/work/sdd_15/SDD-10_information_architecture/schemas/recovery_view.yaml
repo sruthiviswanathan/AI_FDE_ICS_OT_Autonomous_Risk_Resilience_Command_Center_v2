@@ -1,0 +1,47 @@
+# Recovery gold view — derived RecoveryReady, never a copy of backup_status
+type: object
+required:
+  - plant_id
+  - component
+  - backup_status
+  - last_restore_test_days
+  - runbook_status
+  - dependency_verified
+  - manual_fallback
+  - recovery_ready
+  - blockers
+  - provenance
+properties:
+  plant_id:
+    type: string
+  component:
+    type: string
+  rto_hours:
+    type: number
+    description: Registered target, not measured RTO
+  backup_status:
+    type: string
+    enum: [CURRENT, STALE, UNKNOWN]
+  last_restore_test_days:
+    type: integer
+  runbook_status:
+    type: string
+    enum: [CURRENT, STALE, MISSING]
+  dependency_verified:
+    type: string
+    enum: [YES, NO, UNKNOWN]
+  manual_fallback:
+    type: string
+    enum: [YES, LIMITED, NO]
+  recovery_ready:
+    type: boolean
+    description: false unless restore evidence AND runbook CURRENT AND dependency_verified=YES. Day SLA OPEN-006/022; absence of fields => false.
+  blockers:
+    type: array
+    items:
+      type: string
+  process_dependency_blockers:
+    type: array
+    description: DEPENDS_ON edges; not a substitute for restore test
+  provenance:
+    $ref: provenance.yaml
