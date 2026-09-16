@@ -60,3 +60,19 @@ def test_eval_002_must_include_five_factors_on_top_finding():
     for key in golden_case("EVAL-002")["must_include"]:
         token = key.split()[0].lower()
         assert token in blob or key.replace(" ", "_") in blob or field(factors, token) is not None
+
+
+def test_enh04_risk_routes_are_get_only():
+    from ot_command.api import app
+
+    found = {}
+    for route in app.routes:
+        path = getattr(route, "path", None)
+        methods = set(getattr(route, "methods", None) or [])
+        if path in {"/risk/rank", "/risk/contextual"}:
+            found[path] = methods
+    assert "/risk/rank" in found
+    assert "/risk/contextual" in found
+    for methods in found.values():
+        assert "GET" in methods
+        assert not (methods & {"POST", "PUT", "PATCH", "DELETE"})

@@ -1,7 +1,7 @@
 req_id,om_stage,fde_capability,spec_file,eval_id,planned_code,kpi,safety_constraint
 FR-001,"5,9,10,13","C15,C21",SDD-06_domain/DOMAIN.md; SDD-10; SDD-14,EVAL-001;EVAL-008;EVAL-028;EVAL-029,src/ot_command/core/identity.py,inventory_disagreement_rate; alias_collision_count,do not merge aliases; no CMDB winner
 FR-002,"6,9,10,13",C20,SDD-07; SDD-10 schemas/telemetry_event_canonical.json,EVAL-004;EVAL-009;EVAL-015;EVAL-022,src/ot_command/core/telemetry.py,telemetry_not_good_rate,do not impute BAD to GOOD; no ProcessHealthy
-FR-003,"3,7,8,13","C10,C52",SDD-04 SCQA; SDD-09 ADR-03; SDD-08,EVAL-002;EVAL-017,src/ot_command/modern/risk.py,CTQ-CVSS,highest CVSS is not highest operational risk
+FR-003,"3,7,8,13","C10,C52",SDD-04 SCQA; SDD-09 ADR-03; SDD-08,EVAL-002;EVAL-017,src/ot_command/core/risk.py,CTQ-CVSS,highest CVSS is not highest operational risk
 FR-004,"5,7,11,13",C40,SDD-06; SDD-09 ADR-04; SDD-11,EVAL-003;EVAL-007;EVAL-011;EVAL-019;EVAL-020;EVAL-027;EVAL-030;EVAL-031,src/ot_command/modern/safety.py,CTQ-ISO,no isolate execute; no SIS bypass tool
 FR-005,"5,7,9,13",C23,SDD-09 ADR-05; SDD-10 recovery_view.yaml,EVAL-005;EVAL-013;EVAL-018,src/ot_command/modern/recovery.py,CTQ-REC; restore-test freshness,CURRENT backup is not RecoveryReady
 FR-006,"5,9,10,13",C23,SDD-10 INFO_ARCH Q2-Q3,EVAL-003;EVAL-012,src/ot_command/modern/graph_slice.py,vuln-to-process coverage (OPEN-006),do not impute tag-to-unit for 1834 assets

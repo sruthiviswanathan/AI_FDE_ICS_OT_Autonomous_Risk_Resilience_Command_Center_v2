@@ -289,3 +289,18 @@ No data files overwritten. Isolation execute remains forbidden. `legacy_*` uncha
 | OPEN-030 | *(telemetry slice closed)* `core.telemetry` vs `modern/telemetry.py` | FR-002 planned_code is `src/ot_command/core/telemetry.py`. | ENH-04+ remaining `modern/*` rows | FDE |
 
 No OT write routes. `legacy_*` unchanged. BAD/UNCERTAIN not imputed.
+
+---
+
+## ENH-04 | Contextual risk | 2026-09-16
+
+**Evidence used:** ADR-03; `legacy_rank` still CVSS-only; VUL-00706 cvss 9.8 unreachable LOW OT-00654 vs VUL-00098 8.7 reachable OT-01016 / PLT-10-U06 MIN_LOAD / PLT-10-SAFE-07 BYPASSED; EVAL-017 A vs B.  
+**Assumptions:** Sort tuple is reachability, process criticality, safety pressure, compensating-control credit, recovery gap. CVSS is recorded, not the key. LLM does not re-rank. RecoveryReady public predicate remains ENH-06.  
+**Unknowns:** OPEN-006 restore-test day SLA; OPEN-020 untagged assets (OT-00654 has no tags).  
+**Did not conclude:** containment/recovery/authority engines; isolate execute.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-030 | *(risk slice closed)* `core.risk` vs `modern/risk.py` | FR-003 planned_code is `src/ot_command/core/risk.py`. | ENH-05+ remaining `modern/*` | FDE |
+
+`legacy_rank` unchanged. No OT write routes.

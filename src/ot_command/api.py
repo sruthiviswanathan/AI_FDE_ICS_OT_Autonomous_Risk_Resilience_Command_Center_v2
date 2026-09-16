@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Query
 from .diagnostics import run_diagnostics
 from .core.identity import asset_context, identity_bundle, list_identity_conflicts
 from .core.telemetry import quality_summary, timeline
+from .core.risk import rank_all
 
 app=FastAPI(title='Synthetic ICS/OT Risk & Resilience API',version='2.0.0')
 
@@ -36,3 +37,11 @@ def telemetry_quality():
 @app.get('/telemetry/timeline')
 def telemetry_timeline(order: str = Query(default='event_time'), tag_id: str | None = None, limit: int = 500):
     return timeline(tag_id=tag_id, order=order, limit=limit)
+
+@app.get('/risk/rank')
+def risk_rank(limit: int = Query(default=50, ge=1, le=200)):
+    return rank_all(limit=limit)
+
+@app.get('/risk/contextual')
+def risk_contextual(limit: int = Query(default=50, ge=1, le=200)):
+    return rank_all(limit=limit)
