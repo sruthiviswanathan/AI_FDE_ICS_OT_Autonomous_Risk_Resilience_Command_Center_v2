@@ -17,6 +17,7 @@ from typing import Any
 
 from .authority import POLICY_VERSION, authority_catalog, forbidden_execute_tools, permit
 from .containment import isolation_recommendation, recommendation_packet, safety_conflicts
+from .guardrails import apply_guardrails, loop_guard, principal_denied, purpose_denied
 from .identity import identity_bundle, list_identity_conflicts
 from .recovery import plant_recovery
 from .risk import rank_all
@@ -116,11 +117,12 @@ def _envelope_complete(env: dict) -> bool:
 
 
 def _access_ok(env: dict) -> tuple[bool, str]:
-    actor = str(env.get("actor") or "")
     if not _envelope_complete(env):
         return False, "envelope incomplete — deny-by-default"
-    if actor.lower() in {"vendor", "anonymous"}:
+    if principal_denied(env.get("actor")):
         return False, "principal denied"
+    if purpose_denied(env.get("purpose")):
+        return False, "purpose denied — no plant-wide dump"
     return True, "envelope complete; agent is not operator"
 
 
@@ -276,6 +278,34 @@ def call_tool(name: str, envelope: dict | None = None, payload: dict | None = No
     return _dispatch(name, payload or {})
 
 
+def run_tool_sequence(names: list[str], envelope: dict, payload: dict | None = None) -> dict[str, Any]:
+    """Execute allowlisted tools with loop abort. Denied tools are not retried."""
+    payload = payload or {}
+    history: list[tuple] = []
+    results: list[dict] = []
+    aborted = None
+    for name in names:
+        decision = loop_guard(history, name, payload)
+        if decision["abort"]:
+            aborted = decision
+            break
+        try:
+            results.append({"tool": name, "ok": True, "result": call_tool(name, envelope=envelope, payload=payload)})
+            history.append(decision["key"])
+        except ToolDenied as exc:
+            results.append({"tool": name, "ok": False, "denied": exc.reason, "not_retried": True})
+            aborted = {"abort": True, "reason": "denied", "not_retried": True, "executed": False}
+            break
+    return {
+        "results": results,
+        "aborted": aborted,
+        "calls": len(results),
+        "executed": False,
+        "max_tool_calls": MAX_TOOL_CALLS,
+        "max_steps": MAX_STEPS,
+    }
+
+
 def optional_explanation(explainer_model: str | None) -> dict | None:
     if not ai_enabled():
         return None
@@ -410,6 +440,14 @@ def run_workflow(payload: dict | None = None) -> dict[str, Any]:
     _TRACES.append(trace)
 
     explanation = optional_explanation(payload.get("explainer_model"))
+    guarded = apply_guardrails(
+        payload=payload,
+        packet=packet,
+        model_output=payload.get("model_output"),
+        requested=requested,
+        core=core,
+    )
+    rec = guarded.get("isolation_recommendation") or core["isolation_recommendation"]
     return {
         "agent": AGENT_DEFINITION,
         "workflow": list(WORKFLOW),
@@ -424,8 +462,9 @@ def run_workflow(payload: dict | None = None) -> dict[str, Any]:
         "permit": gate,
         "human_packet": human,
         "trace": trace,
-        "isolation_recommendation": core["isolation_recommendation"],
-        "recommendation": core["recommendation"],
+        "guardrails": guarded,
+        "isolation_recommendation": rec,
+        "recommendation": rec,
         "recovery_ready": core["recovery_ready"],
         "risk_finding_ids": core["risk_finding_ids"],
         "cvss_is_sort_key": False,

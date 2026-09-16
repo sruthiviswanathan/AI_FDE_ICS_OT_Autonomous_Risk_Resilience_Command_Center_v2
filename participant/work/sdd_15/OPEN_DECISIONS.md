@@ -349,3 +349,18 @@ No OT write routes. `legacy_*` unchanged. BAD/UNCERTAIN not imputed.
 | OPEN-030 | *(authority + agent slice closed)* `core.authority` / `core.agent` vs `modern/*` | FR-012 planned_code is `src/ot_command/core/policy.py + src/ot_command/core/authority.py`. ENH-07 is `src/ot_command/core/agent.py`. | ENH-08+ remaining `modern/*` (graph_slice, packet, traces, ai_disabled, provenance) | FDE |
 
 `legacy_*` unchanged. No PLC/SIS/isolate-execute routes. Prompt change still requires eval gate EVAL-006/014/016/023.
+
+---
+
+## ENH-08 | Guardrails and attack tests | 2026-09-16
+
+**Evidence used:** SDD-13 A-01…A-10; ADR-15/16; `requirements.txt` pins fastapi 0.115.0 / uvicorn 0.30.6 / pydantic 2.9.2 / pytest 8.3.3; `restricted_answer_key/` absent; PLT-10-SAFE-07 BYPASSED in `safety_barriers.csv`.  
+**Assumptions:** Guardrails run after the model. Red-team tests are synthetic prompt/tool abuse against this repo only. SBOM freeze is unsigned (OPEN-024). AIBOM model list empty (OPEN-028).  
+**Unknowns:** OPEN-029 API authn; OPEN-024 SPDX recopy; OPEN-028 model.  
+**Did not conclude:** ENH-09 assurance certificate; graph slice GET; isolate execute; signed SBOM.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-030 | *(guardrails slice closed)* `core.guardrails` vs untraced path | NFR-SEC planned_code is `src/ot_command/core/guardrails.py`. | ENH-09+ remaining `modern/*` (graph_slice, packet, traces) | FDE |
+
+`legacy_*` unchanged. No real OT connectors. No `restricted_answer_key/` read.

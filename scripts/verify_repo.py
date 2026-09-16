@@ -37,6 +37,20 @@ for p in ROOT.rglob('*.db'):
 # Required release files
 for rel in ['README.md','AGENTS.md','requirements.txt','pyproject.toml','Dockerfile','Makefile','data/manifest.json']:
     if not (ROOT/rel).exists(): errors.append(f'missing {rel}')
+# ENH-08: restricted_answer_key must stay absent; no real OT connectors in src
+if (ROOT/'restricted_answer_key').exists():
+    errors.append('restricted_answer_key must remain absent')
+_banned_ot=('pymodbus','opcua','asyncua','snap7','pycomm3','cpppo','minimalmodbus')
+for p in (ROOT/'src').rglob('*.py'):
+    if '__pycache__' in p.parts:
+        continue
+    try: src=p.read_text(encoding='utf-8')
+    except UnicodeDecodeError: continue
+    for name in _banned_ot:
+        if f'import {name}' in src or f'from {name}' in src:
+            errors.append(f'ot connector import {p.relative_to(ROOT)}: {name}')
+for rel in ['src/ot_command/core/guardrails.py','src/ot_command/core/agent.py','src/ot_command/core/authority.py','src/ot_command/sbom_freeze.json','tests/red_team/test_redteam_agent.py']:
+    if not (ROOT/rel).exists(): errors.append(f'missing {rel}')
 if errors:
     print('VERIFY_FAIL')
     for e in errors: print(e)

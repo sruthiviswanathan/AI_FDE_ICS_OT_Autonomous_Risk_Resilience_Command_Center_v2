@@ -1,6 +1,6 @@
 PYTHON ?= python
 
-.PHONY: test diagnostics run verify sdd-gates
+.PHONY: test diagnostics run verify sdd-gates redteam workshop-ci
 test:
 	$(PYTHON) -m pytest -q
 
@@ -15,3 +15,9 @@ verify:
 
 sdd-gates:
 	$(PYTHON) scripts/check_sdd_gates.py
+
+redteam:
+	$(PYTHON) -m pytest -q tests/red_team tests/test_denied_control.py tests/test_authority.py
+
+workshop-ci: verify sdd-gates test
+	@echo WORKSHOP_CI_OK

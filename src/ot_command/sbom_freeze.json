@@ -1,0 +1,22 @@
+{
+  "status": "workshop-freeze",
+  "signed": false,
+  "open_024_spdx_recopy": true,
+  "generated": "ENH-08",
+  "not_a_certificate": true,
+  "components": [
+    {"name": "fastapi", "version": "0.115.0", "ai": false},
+    {"name": "uvicorn", "version": "0.30.6", "ai": false},
+    {"name": "pydantic", "version": "2.9.2", "ai": false},
+    {"name": "pytest", "version": "8.3.3", "ai": false}
+  ],
+  "aibom": {
+    "models": [],
+    "open_028": true,
+    "prompt_id": "prompt-v1",
+    "eval_gate_before_default_on": ["EVAL-014", "EVAL-016", "EVAL-020", "EVAL-021", "EVAL-027"]
+  },
+  "ot_connectors": [],
+  "policy_version": "policy.py:ACTION_TIERS",
+  "exit": "AI_ENABLED=0 keeps engines"
+}
