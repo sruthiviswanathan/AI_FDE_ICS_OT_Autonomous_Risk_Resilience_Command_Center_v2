@@ -1,4 +1,6 @@
-# AI FDE Brownfield Repo v2 — ICS/OT Autonomous Risk & Resilience Command Center
+# AI FDE Brownfield Repo 3.0 — ICS/OT Autonomous Risk & Resilience Command Center
+
+**Repo 3.0:** mature / **production-oriented** (still synthetic), **refined specs**, **stronger governance**, **readiness-focused validation**, **PRD + App ready**. This tree is not the customer application; PRD-01 / APP-01 follow. No live plant deploy.
 
 A **fictional, deterministic, locally runnable multinational ICS/OT brownfield simulation** for AI Forward-Deployed Engineering. It models plants where PLC/DCS/SCADA/HMI/historians, SIS, CMMS/EAM, SOC/SIEM, IAM/PAM, vendor remote access, engineering workstations and production systems have evolved independently.
 
@@ -45,13 +47,22 @@ uvicorn ot_command.api:app --reload
 
 Set `PYTHONPATH=src` if your IDE does not infer it.
 
-## Repo 2.0 status
+## Repo 3.0 status
 
-This tree is **SDD-aligned**. Structured specs live in `specs/` (OM 1–13 freeze). Accepted ADRs live in `adrs/`. Traceability and open decisions live in `traceability/`. Enhancement backlog is **ENH-01…10** (`src/ot_command/modern/` is a placeholder — no business logic yet).
+This tree is **production-oriented synthetic advisory software**. Structured specs live in `specs/` (OM 1–13 freeze, refined with as-built C4). Accepted ADRs live in `adrs/`. Traceability and open decisions live in `traceability/`. ENH-01…10 engines live in `src/ot_command/core/` (not a rewrite of `legacy_*`). Ops pack, FinOps design, and readiness checklist live in `ops/`. Decision traces append to `data/local/decision_traces.jsonl` (gitignored).
 
-**Legacy behavior is preserved:** `legacy_rank` / `legacy_recovery_ready` / `legacy_isolation_recommendation` and the three strict XFAIL tests are unchanged. Seeded `data/` contradictions were not cleaned. The API remains read-only (`GET /health`, `GET /diagnostics`).
+**Legacy behavior is preserved:** `legacy_rank` / `legacy_recovery_ready` / `legacy_isolation_recommendation` and the three strict XFAIL tests are unchanged. Seeded `data/` contradictions were not cleaned. The API is GET-only for OT plus `POST /recommend` (recommendation packet, not an OT action). Gold GETs include `/graph/slice`. Ops views: `GET /ops/slo`, `GET /ops/cost-per-incident`.
 
-Gate: `python scripts/check_sdd_gates.py` (also `make sdd-gates`). Coverage: `participant/work/FDE_96_COVERAGE.csv`.
+| Dimension | Repo 1.0 | Repo 2.0 | Repo 3.0 |
+|---|---|---|---|
+| Stage | Baseline | Modernized (structure) | Modernized (engines + ops) |
+| Nature | Brownfield sim | SDD-aligned | Production-oriented synthetic |
+| Specs | `docs/` scattered | structured `specs/` | refined + as-built C4 |
+| Controls | weak | traceability + gates | + guardrails + traces + SBOM freeze |
+| Validation | 3 pass / 3 xfail | spec-aligned | readiness-focused (harness + assurance) |
+| Outcome | messy repo | improved repo | **PRD + App ready** |
+
+Gates: `python scripts/check_sdd_gates.py` (`make sdd-gates`); `specs/REPO_3_0_GATE.md`; `participant/work/enh_10/REPO_3_0_GATE.md`. Coverage: `participant/work/FDE_96_COVERAGE.csv`. Default: `AI_ENABLED=0`.
 
 ## Participant path
 
@@ -60,7 +71,7 @@ Read `AGENTS.md` → `specs/README.md` → `participant/CHALLENGE_BRIEF.md` → 
 
 ## Safety
 
-This repository is synthetic and **does not connect to real industrial equipment**. The API is read-only. No code performs PLC writes, safety changes, network blocking or real control actions.
+This repository is synthetic and **does not connect to real industrial equipment**. No code performs PLC writes, safety changes, network blocking or real control actions. IsolationRecommendation is not IsolationExecution. CURRENT backup is not RecoveryReady. Highest CVSS is not highest operational risk.
 
 ## V2 reliability profile
 

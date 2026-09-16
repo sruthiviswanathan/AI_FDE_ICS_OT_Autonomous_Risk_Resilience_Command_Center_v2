@@ -21,7 +21,7 @@ C19,Data engineering,6,"SDD-07, SDD-10, ENH",Inventories + pipelines,specced
 C20,"Data quality, contracts, lineage, provenance",6,"SDD-07, SDD-10",Quality profile + data contracts,specced
 C21,Knowledge engineering,5–6,"SDD-06, SDD-07, SDD-10",Glossary → knowledge inventory → semantic,specced
 C22,"Taxonomy, ontology and semantic modelling",5,"SDD-06, SDD-10",Glossary + ontology,specced
-C23,Knowledge graph justification and engineering,8,"SDD-09, SDD-10",**Justify first**; conditional graph,specced
+C23,Knowledge graph justification and engineering,8,"SDD-09, SDD-10, ENH-10",**Justify first**; hop_cap 8 graph_slice,evidenced
 C24,Context engineering,9,"SDD-10, SDD-11, SDD-12",Retrieval + context snapshots,specced
 C25,Enterprise integration,2,"SDD-02, SDD-11",Landscape + integration patterns,specced
 C26,"API, event and data-contract engineering",9,"SDD-10, SDD-11, SDD-14",Contracts; read-only API,specced
@@ -56,15 +56,15 @@ C54,AI red teaming,15,"ENH-08, ENH-09","Injection, tool-misuse, loop tests",evid
 C55,Business-outcome evaluation,3,"SDD-04, SDD-08, REL-03",Criteria → thresholds → realisation,specced
 C56,Token efficiency,15,"ENH-09, REL-02",**Named eval metric** (not in PDF text),evidenced
 C57,Token economics,18,"REL-02, REL-03",Cost/availability reports,pending
-C58,AI FinOps,18,"ENH-10, REL-03",Cost dashboards + cost-to-value,pending
+C58,AI FinOps,18,"ENH-10, REL-03",Cost dashboards + cost-to-value,evidenced
 C59,TCO,8,"SDD-09, REL-03",Build/buy + cost-to-value,specced
 C60,Cost-per-successful-business-outcome,19,"SDD-04, REL-03",KPI from docs/05 + after measurement,specced
 C61,Performance and latency engineering,13,"SDD-11, SDD-14",NFRs; evals README latency,specced
 C62,Scalability and capacity engineering,13,"SDD-11, SDD-14",NFRs,specced
 C63,Reliability and resilience,10,"SDD-11, REL-01, REL-02",Failure-mode + chaos + recovery,specced
 C64,Graceful degradation and AI-disabled operation,10,"SDD-11, APP-02, REL-02",Failure-mode + UI fallback,specced
-C65,Observability,13,"SDD-14, ENH-10",Telemetry spec + dashboards,specced
-C66,AI / agent observability and traceability,13,"SDD-14, ENH-07, ENH-10",Decision traces; no hidden CoT,specced
+C65,Observability,13,"SDD-14, ENH-10",Telemetry spec + dashboards,evidenced
+C66,AI / agent observability and traceability,13,"SDD-14, ENH-07, ENH-10",Decision traces; no hidden CoT,evidenced
 C67,Service management,16,REL-01,"Runbooks, SOPs, dashboards",pending
 C68,SLO / SLA / error-budget engineering,13,"SDD-14, REL-01",**Named SLOs** in NFRs,specced
 C69,Incident response,16,REL-01,Incident/rollback plans,pending
@@ -83,7 +83,7 @@ C81,"Roles, RACI and decision-rights design",1,"SDD-01, SDD-12, REL-01",Governan
 C82,Operational ownership,5,"SDD-06, REL-01",Ownership map + ops RACI,specced
 C83,Operational handover,16,REL-01,Handover pack,pending
 C84,Knowledge transfer,16,"REL-01, REL-04",SOPs + reusable IP,pending
-C85,Production-readiness assessment,16,"ENH-10, REL-01, REL-02",Readiness checklist,pending
+C85,Production-readiness assessment,16,"ENH-10, REL-01, REL-02",Readiness checklist,evidenced
 C86,Deployment and release governance,17,REL-02,Release manifest (workshop),pending
 C87,Benefits-realisation measurement,19,REL-03,Benefits report,pending
 C88,Post-intervention KPI measurement (After),19,REL-03,After KPIs,pending

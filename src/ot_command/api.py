@@ -9,6 +9,8 @@ from .core.containment import recommendation_packet, safety_conflicts
 from .core.recovery import plant_recovery
 from .core.authority import authority_catalog
 from .core.agent import run_recommend
+from .core.graph_slice import graph_slice
+from .core.ops import cost_per_incident, slo_status
 
 app=FastAPI(title='Synthetic ICS/OT Risk & Resilience API',version='2.0.0')
 
@@ -84,3 +86,20 @@ def authority_actions_route():
 @app.post('/recommend')
 def recommend_route(payload: dict[str, Any] | None = Body(default=None)):
     return run_recommend(payload or {})
+
+@app.get('/graph/slice')
+def graph_slice_route(
+    plant_id: str | None = None,
+    unit_id: str | None = None,
+    asset_id: str | None = None,
+    hops: int = Query(default=4, ge=1, le=8),
+):
+    return graph_slice(plant_id=plant_id, unit_id=unit_id, asset_id=asset_id, hops=hops)
+
+@app.get('/ops/slo')
+def ops_slo_route():
+    return slo_status()
+
+@app.get('/ops/cost-per-incident')
+def ops_cost_route():
+    return cost_per_incident()

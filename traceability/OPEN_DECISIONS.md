@@ -379,3 +379,20 @@ No OT write routes. `legacy_*` unchanged. BAD/UNCERTAIN not imputed.
 | OPEN-RISK-01/05/11 | Residual write / wrongful authorize / UI isolate pressure | Recorded in ASSURANCE_REPORT; **not** accepted as permission | REL/APP | OT-CISO + Safety + Product |
 
 C49/C52/C53/C54/C56 marked evidenced in `FDE_96_COVERAGE.csv` because harness + report + red-team tests ran. `legacy_*` unchanged.
+
+---
+
+## ENH-10 | Materialize Repo 3.0 | 2026-09-16
+
+**Evidence used:** Playbook ENH-10; `GET /graph/slice` hop_cap 8; `GET /ops/slo` + `GET /ops/cost-per-incident`; `ops/` pack; `contracts/decision_trace.yaml`; `specs/as_built_c4.md`; Dockerfile `AI_ENABLED=0`; traces under `data/local/` (gitignored).  
+**Assumptions:** Repo 3.0 is PRD-ready advisory software, not a live plant or the customer UI. Cost tiles may show token counts without inventing USD. RACI is roles only.  
+**Unknowns:** OPEN-001, OPEN-002, OPEN-006/022, OPEN-024, OPEN-028, OPEN-029, OPEN-RISK-01/05/11.  
+**Did not conclude:** PRD/APP UI; isolate execute; signed SBOM; dollar SLA.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-006 | KPI formulas including AI cost per analyzed incident | `docs/05_kpis_baseline.md` BASELINE_PENDING; `GET /ops/cost-per-incident` returns `measured_usd=null` | REL-03 dollar meter | FDE + VP Ops |
+| OPEN-030 | *(graph_slice + traces closed)* remaining `modern/packet.py`, `ai_disabled.py`, `provenance.py` | Packet/disabled/provenance live in `core.containment` / `core.agent` / `core.telemetry`. FR-007/009/011 planned_code still names `modern/*`. | Cosmetic TRACEABILITY rename only | FDE |
+
+`legacy_*` unchanged. No live OT canary. No model credentials in git. `__version__` not bumped (OPEN-010).
+

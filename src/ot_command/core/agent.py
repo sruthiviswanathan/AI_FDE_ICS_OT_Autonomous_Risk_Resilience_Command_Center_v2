@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 from pathlib import Path
 from typing import Any
 
@@ -22,6 +23,7 @@ from .identity import identity_bundle, list_identity_conflicts
 from .recovery import plant_recovery
 from .risk import rank_all
 from .telemetry import quality_summary
+from .traces import append_trace
 
 ROOT = Path(__file__).resolve().parents[3]
 PKG = Path(__file__).resolve().parents[1]
@@ -343,6 +345,7 @@ def _fallback_tables(core: dict) -> dict:
 
 
 def run_workflow(payload: dict | None = None) -> dict[str, Any]:
+    started = time.perf_counter()
     payload = dict(payload or {})
     requested = payload.get("action") or payload.get("requested_action") or "recommend"
     env = _envelope(payload)
@@ -433,13 +436,17 @@ def run_workflow(payload: dict | None = None) -> dict[str, Any]:
         "prompt_id": pin.get("prompt_id"),
         "tool_catalog_version": pin.get("tool_catalog_version"),
         "tokens": 0,
+        "latency_ms": round((time.perf_counter() - started) * 1000, 2),
         "hidden_cot_as_authority": False,
         "execute_control": False,
+        "executed": False,
         "agent": AGENT_DEFINITION,
     }
-    _TRACES.append(trace)
-
     explanation = optional_explanation(payload.get("explainer_model"))
+    if explanation:
+        trace["tokens"] = max(len(str(explanation.get("text") or "")) // 4, 0)
+    _TRACES.append(trace)
+    append_trace({**trace, "ai_enabled": ai_enabled(), "policy_gate": gate})
     guarded = apply_guardrails(
         payload=payload,
         packet=packet,

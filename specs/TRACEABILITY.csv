@@ -4,9 +4,9 @@ FR-002,"6,9,10,13",C20,SDD-07; SDD-10 schemas/telemetry_event_canonical.json,EVA
 FR-003,"3,7,8,13","C10,C52",SDD-04 SCQA; SDD-09 ADR-03; SDD-08,EVAL-002;EVAL-017,src/ot_command/core/risk.py,CTQ-CVSS,highest CVSS is not highest operational risk
 FR-004,"5,7,11,13",C40,SDD-06; SDD-09 ADR-04; SDD-11,EVAL-003;EVAL-007;EVAL-011;EVAL-019;EVAL-020;EVAL-027;EVAL-030;EVAL-031,src/ot_command/core/containment.py,CTQ-ISO,no isolate execute; no SIS bypass tool
 FR-005,"5,7,9,13",C23,SDD-09 ADR-05; SDD-10 recovery_view.yaml,EVAL-005;EVAL-013;EVAL-018,src/ot_command/core/recovery.py,CTQ-REC; restore-test freshness,CURRENT backup is not RecoveryReady
-FR-006,"5,9,10,13",C23,SDD-10 INFO_ARCH Q2-Q3,EVAL-003;EVAL-012,src/ot_command/modern/graph_slice.py,vuln-to-process coverage (OPEN-006),do not impute tag-to-unit for 1834 assets
+FR-006,"5,9,10,13",C23,SDD-10 INFO_ARCH Q2-Q3,EVAL-003;EVAL-012,src/ot_command/core/graph_slice.py,vuln-to-process coverage (OPEN-006),do not impute tag-to-unit for 1834 assets
 FR-007,"4,7,11,13",C16,SDD-05; docs/06; SDD-10 recommendation_packet.yaml,EVAL-021;EVAL-024;EVAL-006,src/ot_command/modern/packet.py,decision evidence completeness (OPEN-006),recommend != AUTHORIZE != execute
-FR-008,"10,11,13","C65,C66",SDD-11; SDD-14 DELIVERY_SPEC s8,EVAL-023,src/ot_command/modern/traces.py,audit completeness,no hidden CoT as authority
+FR-008,"10,11,13","C65,C66",SDD-11; SDD-14 DELIVERY_SPEC s8,EVAL-023,src/ot_command/core/traces.py,audit completeness,no hidden CoT as authority
 FR-009,"4,8,10,13",C64,SDD-05 s4; SDD-09; SDD-11 ADR-12,EVAL-016,src/ot_command/modern/ai_disabled.py,AI-disabled usability,blank screen on LLM down is fail
 FR-010,"7,13,15","C52,C53",SDD-08 TEVV; golden_cases_expanded.jsonl,EVAL-001..031,evals/harness.py + tests/test_eval_golden.py,T-MUSTNOT 100pct,fail closed on must_not
 FR-011,"6,9,13",C20,SDD-07; SDD-10 provenance.yaml,EVAL-021,src/ot_command/modern/provenance.py,freshness fields present,UNKNOWN is not permission
@@ -16,9 +16,9 @@ FR-014,"1,6,13",C18,AGENTS.md; SDD-07; SDD-14 s9,EVAL-001;EVAL-029,do not rewrit
 NFR-SAFE,"12,13",C41,SDD-13; docs/06,EVAL-014;EVAL-027;EVAL-030,tool catalogue deny,CTQ-0,0 write routes
 NFR-SEC,"12,13","C41,C42,C45",SDD-13 SECURITY.md,A-01..A-10 ENH-08,src/ot_command/core/guardrails.py,OPEN-029 authn,no answer-key; no session dump
 NFR-LAT,"7,10,13",C61,SDD-08 EVAL-025; SDD-14 SLO-LAT,EVAL-025,packet timer,p95 <8000ms workshop,never skip safety join
-NFR-AUD,13,"C65,C66",SDD-14 s8,EVAL-021,decision traces,trace completeness,packet is the argument
+NFR-AUD,13,"C65,C66",SDD-14 s8,EVAL-021,src/ot_command/core/traces.py,trace completeness,packet is the argument
 NFR-DEG,"10,13",C64,SDD-11 ADR-12,EVAL-016,AI_ENABLED=0,degraded mode,historian stale keeps quality flags
-NFR-CAP,"9,13",C62,SDD-10 hop_cap 8; 18 plants,EVAL-012,graph slice limiter,18 plants / 2016 assets,no whole-graph dump
+NFR-CAP,"9,13",C62,SDD-10 hop_cap 8; 18 plants,EVAL-012,src/ot_command/core/graph_slice.py,18 plants / 2016 assets,no whole-graph dump
 SLO-OT,13,C68,SDD-14 s12,EVAL-023,CI scan + tool gate,0 OT execute attempts,error budget 0
 SLO-ISO,"4,13",C68,SDD-04 CTQ-ISO,EVAL-003;EVAL-020,packet schema,100pct drafts have safe_state+role,error budget 0
 SLO-EVAL,"7,13",C55,SDD-08 T-MUSTNOT,EVAL-001..031,harness,100pct must_not,error budget 0
@@ -27,8 +27,8 @@ ENH-02,14,C31,SDD-14 backlog,EVAL-004,src/ot_command/modern/telemetry.py,telemet
 ENH-03,14,C31,SDD-14 backlog,EVAL-017,src/ot_command/modern/risk.py,CTQ-CVSS,do not ship legacy_rank as default
 ENH-04,14,C31,SDD-14 backlog,EVAL-003,src/ot_command/modern/safety.py,CTQ-ISO,no isolate execute
 ENH-05,14,C31,SDD-14 backlog,EVAL-018,src/ot_command/modern/recovery.py,CTQ-REC,no CURRENT=ready
-ENH-06,14,C23,SDD-10 Q1-Q5,EVAL-007,src/ot_command/modern/graph_slice.py,graph query completeness,no decorative KG
+ENH-06,14,C23,SDD-10 Q1-Q5,EVAL-007,src/ot_command/core/graph_slice.py,graph query completeness,no decorative KG
 ENH-07,14,"C37,C38",SDD-12 AGENTIC.md,EVAL-006;EVAL-023,src/ot_command/core/agent.py,token meter,one agent; allowlist
 ENH-08,15,C54,SDD-13 s15,A-01..A-10,tests/red_team/test_redteam_agent.py,abuse case coverage,no PLC tool even in tests that execute
 ENH-09,15,"C49,C52",SDD-08 TEVV,EVAL-001..031,evals/harness.py,assurance/ASSURANCE_REPORT.md,ENH-09 completes C49
-ENH-10,16,"C58,C65",SDD-14 NFR,EVAL-016;EVAL-026,ops telemetry + SBOM,AI cost meter OPEN-006,AI-disabled UX
+ENH-10,16,"C58,C65",SDD-14 NFR,EVAL-016;EVAL-026,src/ot_command/core/ops.py + core/traces.py + ops/,AI cost meter OPEN-006,AI-disabled UX
