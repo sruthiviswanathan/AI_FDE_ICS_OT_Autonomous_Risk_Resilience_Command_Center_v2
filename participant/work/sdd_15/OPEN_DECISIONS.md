@@ -200,3 +200,20 @@ No new OPEN id. **Proposed ADR-11** read-only API; **ADR-12** AI-disabled as the
 **Did not conclude:** implemented agent loop.
 
 No new OPEN id. **Proposed ADR-14** autonomy pin to ACTION_TIERS. Multi-agent still **not selected**. `isolate_endpoint` execute is **not a tool**. AwaitAuthorization cannot close without a named human (OPEN-001) and still must not execute.
+
+---
+
+## SDD-13 | OM-12 | 2026-09-16
+
+**Evidence used:** `api.py` (no authn); `requirements.txt` pins; `LICENSE.txt`; SDD-12 allowlist; OWASP LLM Top 10 2026; OWASP Agentic ASI 2026; docs/07 answer-key absent.  
+**Assumptions:** Guardrails are code after the model (ADR-15). Model card is placeholder.  
+**Unknowns:** below.  
+**Did not conclude:** signed SBOM; counsel opinion; implemented authn.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-028 | *(restated)* Model/provider + model card | No weights in Repo 1.0; SECURITY.md card is placeholder | Default-on explainer | FDE |
+| OPEN-024 | *(restated)* SPDX recopy / production SBOM + session PII | LICENSE.txt does not recopy FastAPI/Pydantic/pytest licenses | Production supply-chain pack | Legal + FDE |
+| OPEN-029 | Authentication on FastAPI before non-localhost | `api.py` has no authn (ASI03 workshop gap) | Bind beyond loopback; plant-scoped IAM | FDE + OT-CISO |
+
+**Proposed ADR-15:** guardrails deterministic, non-bypassable by prompts. **ADR-16:** SBOM/AIBOM + exit = AI-disabled engines. `restricted_answer_key/` must remain absent.
