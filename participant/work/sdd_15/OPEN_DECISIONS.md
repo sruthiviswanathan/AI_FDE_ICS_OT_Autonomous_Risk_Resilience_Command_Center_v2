@@ -148,3 +148,18 @@ OPEN-003 (production reuse), OPEN-009 (contracts vs records), OPEN-012 (correlat
 | OPEN-RISK-11 | Accept that advisory UI may increase isolate pressure vs paper war-room | EVAL-020 specifies no one-click; residual over-trust | Production UX | OT-CISO + Safety |
 
 OPEN-001 still blocks named-human Authorize records. OPEN-002 still blocks any “high-risk system” claim. EVAL-001…006 stubs are expanded in `golden_cases_expanded.jsonl` but **not executed**.
+
+---
+
+## SDD-09 | OM-8 | 2026-09-16
+
+**Evidence used:** SDD-03 collisions/CVSS/CURRENT/ISOLATE; SDD-05 B+C; SDD-08 EVAL map; `docs/04`; `requirements.txt` (no LLM/graph SDK).  
+**Assumptions:** Workshop build = extend this repo. TCO is FDE-weeks / relative tokens, not a quote.  
+**Unknowns:** below.  
+**Did not conclude:** graph store engine (SDD-10); LLM vendor; digital twin.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-028 | LLM provider / local vs hosted | Selected solution requires a **port** and AI-disabled path (EVAL-016). No model in Repo 1.0. Hosted pick is not required to implement Option A engines. | Default-on explainer | FDE (do not pick in SDD-09) |
+
+**Closed by this prompt (workshop, Proposed ADRs — not sponsor-signed production ADRs):** Option C unsafe agent **rejected**; autonomous isolation **NO**; multi-agent **not selected**; decorative KG **rejected**; bounded evidence-graph **view** **CONDITIONAL YES** (ADR-KG). OPEN-006 still covers token $/incident numbers.
