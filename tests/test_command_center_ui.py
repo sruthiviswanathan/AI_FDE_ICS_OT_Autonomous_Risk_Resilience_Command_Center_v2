@@ -37,6 +37,7 @@ def test_ui_files_exist_and_fifteen_screens_named():
     assert (UI / "fixtures" / "scenario_bindings.json").exists()
     html = (UI / "index.html").read_text(encoding="utf-8")
     assert 'id="scenario-rail"' in html
+    assert 'id="packet-status"' in html
 
 
 def test_no_execute_isolation_or_write_plc_controls():
@@ -70,6 +71,8 @@ def test_health_exposes_ai_enabled_and_ui_path():
     assert payload["mode"] == "synthetic-read-only"
     assert payload["live_ot"] is False
     assert "ai_enabled" in payload
+    assert payload["explainer_is_authority"] is False
+    assert payload["model_selected"] is False
     assert payload["ui"] == "/ui"
 
 
@@ -97,6 +100,16 @@ def test_scenario_bindings_do_not_hide_conflicts_or_invent_execute():
     js = (UI / "static" / "app.js").read_text(encoding="utf-8")
     assert "applyScenario" in js
     assert "hide_conflicts=false" in js
+
+
+def test_ui_renders_records_not_pretty_json():
+    js = (UI / "static" / "app.js").read_text(encoding="utf-8")
+    css = (UI / "static" / "app.css").read_text(encoding="utf-8")
+    assert "JSON.stringify(obj, null, 2)" not in js
+    assert "function record(" in js
+    assert "function sloCard(" in js
+    assert ".facts" in css
+    assert "Execute Isolation" not in js
 
 
 def test_scenario_bindings_use_estate_ids():

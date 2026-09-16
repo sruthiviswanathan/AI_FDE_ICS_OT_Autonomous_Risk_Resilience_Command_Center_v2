@@ -64,8 +64,27 @@ th { color: var(--muted); font-weight: 500; }
 .mix .memory { color: var(--muted); }
 .empty { color: var(--muted); font-style: italic; padding: 12px; border: 1px dashed var(--line); }
 .row-btns { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
-#ai-toggle { accent-color: var(--amber); }
+#ai-api-state { max-width: 420px; }
 dl { display: grid; grid-template-columns: 110px 1fr; gap: 4px 8px; margin: 0; }
 dt { color: var(--muted); }
 dd { margin: 0; }
 .kpi-null { color: var(--amber); }
+.facts { display: grid; gap: 0; }
+.fact { display: grid; grid-template-columns: minmax(148px, 34%) 1fr; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--line); align-items: start; }
+.fact-k { color: var(--muted); }
+.fact-v { word-break: break-word; }
+.val.ok { color: var(--green); }
+.val.bad { color: var(--red); }
+.val.warn { color: var(--amber); }
+.val.unk { color: var(--amber); font-style: italic; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.statbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.stat { background: var(--panel); border: 1px solid var(--line); padding: 8px 10px; min-width: 132px; }
+.stat b { display: block; font-size: 15px; font-family: var(--mono); }
+.stat span { color: var(--muted); font-size: 11px; }
+.answer { font-size: 14px; line-height: 1.45; margin: 0 0 12px; }
+#packet-status { border-color: var(--cyan); color: var(--text); font-size: 15px; }
+#packet-status .verdict { font-size: 28px; }
+details.card summary { cursor: pointer; color: var(--cyan); }
+.card h3 { margin-top: 10px; }
+.card h3:first-child { margin-top: 0; }

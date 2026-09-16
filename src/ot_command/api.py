@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Any
+import os
 
 from fastapi import Body, FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse
@@ -18,6 +19,24 @@ from .core.graph_slice import graph_slice
 from .core.ops import cost_per_incident, slo_status
 from .core.traces import recent_traces
 
+
+def _apply_dotenv() -> None:
+    """Honor repo `.env` for keys the process did not already set. Shell wins."""
+    path = Path(__file__).resolve().parents[2] / ".env"
+    if not path.is_file():
+        return
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, val = line.partition("=")
+        key, val = key.strip(), val.strip().strip('"').strip("'")
+        if key and key not in os.environ:
+            os.environ[key] = val
+
+
+_apply_dotenv()
+
 UI_ROOT = Path(__file__).resolve().parents[2] / "apps" / "command_center"
 
 app = FastAPI(title="Synthetic ICS/OT Risk & Resilience API", version="2.0.0")
@@ -29,6 +48,9 @@ def health():
         "status": "ok",
         "mode": "synthetic-read-only",
         "ai_enabled": ai_enabled(),
+        "explainer": "placeholder" if ai_enabled() else "omitted",
+        "explainer_is_authority": False,
+        "model_selected": False,
         "live_ot": False,
         "ui": "/ui",
     }
@@ -176,7 +198,7 @@ def ui_index():
     index = UI_ROOT / "index.html"
     if not index.exists():
         raise HTTPException(status_code=404, detail="command center UI missing")
-    return FileResponse(index)
+    return FileResponse(index, headers={"Cache-Control": "no-store"})
 
 
 if (UI_ROOT / "static").is_dir():

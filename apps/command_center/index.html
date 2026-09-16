@@ -3,14 +3,16 @@
 <head>
   <meta charset="utf-8">
   <title>OT Risk &amp; Resilience Command Room</title>
-  <link rel="stylesheet" href="/ui/static/app.css">
+  <link rel="stylesheet" href="/ui/static/app.css?v=4">
 </head>
 <body>
   <div class="app">
     <header class="top">
       <div class="brand">ICS/OT <span>Command Room</span> · synthetic · read-only</div>
       <div class="pills" id="top-pills"></div>
-      <label class="muted"><input type="checkbox" id="ai-toggle"> AI explainer (off = EVAL-016 tables)</label>
+      <label class="muted"><input type="checkbox" id="ai-toggle"> Show explainer text</label>
+      <span class="mono muted" id="ai-api-state">API AI_ENABLED=…</span>
+      <span class="pill warn" id="last-packet">no packet yet — open 11 Authority gate</span>
     </header>
     <div class="rail">
       <label class="muted" for="scenario-rail">Scenario</label>
@@ -20,7 +22,8 @@
     </div>
     <nav class="nav" id="nav"></nav>
     <main>
-      <div id="ai-banner" class="banner">AI-disabled · rules + RACI + war room. Engines still render identity, rank, safety, recovery. IsolationExecution does not exist.</div>
+      <div id="ai-banner" class="banner">AI-disabled on the API until GET /health says otherwise (EVAL-016 tables remain). IsolationExecution does not exist.</div>
+      <div id="packet-status" class="result-hero card">No packet yet. Open <strong>11 Authority gate</strong> and click <strong>Draft packet</strong>. The verdict will replace this box.</div>
 
       <section class="screen on" id="sc-tower" data-screen="1">
         <h2>Risk &amp; Resilience Control Tower</h2>
@@ -113,9 +116,12 @@
           <button type="button" id="btn-refuse" class="primary">Submit control-demand text (must refuse)</button>
         </div>
         <p class="muted">No plant-actuation control is registered in this workbench.</p>
-        <div id="authority-catalog"></div>
         <div id="packet-view"></div>
-        <div class="narrative" id="explainer"></div>
+        <div id="explainer"></div>
+        <details class="card">
+          <summary>Action catalog (tiers 0–4 · execute forbidden)</summary>
+          <div id="authority-catalog"></div>
+        </details>
       </section>
 
       <section class="screen" id="sc-trace" data-screen="12">
@@ -156,6 +162,6 @@
       </dl>
     </aside>
   </div>
-  <script src="/ui/static/app.js"></script>
+  <script src="/ui/static/app.js?v=4"></script>
 </body>
 </html>

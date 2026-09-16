@@ -39,15 +39,15 @@ python -m ot_command.cli diagnostics
 pytest -q
 ```
 
-Optional read-only API and command-room UI:
+Optional read-only API and command-room UI (full Windows/macOS/Docker steps: `apps/command_center/README.md`):
 
-```bash
-uvicorn ot_command.api:app --reload
+```powershell
+$env:PYTHONPATH = "src"
+$env:AI_ENABLED = "0"
+python -m uvicorn ot_command.api:app --host 127.0.0.1 --port 8000
 ```
 
-UI: http://127.0.0.1:8000/ui (`AI_ENABLED=0` by default).
-
-Set `PYTHONPATH=src` if your IDE does not infer it.
+UI: http://127.0.0.1:8000/ui (`AI_ENABLED=0` by default). `GET /` is 404; the product surface is `/ui`.
 
 ## Repo 3.0 status
 
