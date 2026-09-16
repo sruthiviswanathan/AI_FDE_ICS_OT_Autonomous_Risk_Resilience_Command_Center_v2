@@ -25,7 +25,14 @@ The baseline works well enough to operate, but it contains conflicting inventori
 
 Every layer should be investigated through **Imperfection, Inconsistency, Friction, Complexity, Volatility, Uncertainty, Hidden Dependency and Unknown Unknown**.
 
-## Quick start
+## Prerequisites
+
+- **Python 3.11+** — backend API and CLI
+- **Node.js 18+** and **npm** — React command-center UI (`apps/command_center`)
+
+
+
+## Quick start (backend + tests)
 
 ```bash
 python -m venv .venv
@@ -37,32 +44,94 @@ python -m ot_command.cli diagnostics
 pytest -q
 ```
 
-Optional read-only API:
+Set `PYTHONPATH=src` if your IDE does not infer it.
+
+## Run backend (BE)
+
+From the **repo root** with the virtual environment activated:
 
 ```bash
-uvicorn ot_command.api:app --reload
+# Windows (PowerShell)
+$env:PYTHONPATH="src"
+python -m uvicorn ot_command.api:app --host 127.0.0.1 --port 8000 --reload
+
+# Linux/macOS
+PYTHONPATH=src python -m uvicorn ot_command.api:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-Set `PYTHONPATH=src` if your IDE does not infer it.
+Or use Make:
+
+```bash
+make run
+```
+
+Verify the API is up:
+
+```bash
+curl http://127.0.0.1:8000/health
+```
+
+The backend is **read-only** — no OT execute surfaces. OpenAPI contract: `contracts/openapi_command_center.yaml`.
+
+## Run frontend (FE)
+
+The React operator workbench lives in `apps/command_center/`. Full UI docs: `[apps/command_center/README.md](apps/command_center/README.md)`.
+
+**Development** (hot reload; Vite proxies `/api/`* to the backend on port 8000):
+
+```bash
+
+# Terminal 1 — backend (see above)
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\\.venv\Scripts\Activate.ps1
+PYTHONPATH=src python -m uvicorn ot_command.api:app --host 127.0.0.1 --port 8000
+
+# Terminal 2 — frontend
+cd apps/command_center
+npm install
+npm run dev
+```
+
+Open **[http://127.0.0.1:5173](http://127.0.0.1:5173)** in your browser.
+
+**Integrated** (single port — serves built UI from the API):
+
+```bash
+cd apps/command_center && npm install && npm run build
+cd ../..
+PYTHONPATH=src python -m uvicorn ot_command.api:app --host 127.0.0.1 --port 8000
+```
+
+Open **[http://127.0.0.1:8000](http://127.0.0.1:8000)**.
+
+**Port conflict (Windows):** If port 8000 is in use (`WinError 10013`), start the backend on 8001 and create `apps/command_center/.env.development.local`:
+
+```env
+VITE_DEV_API_TARGET=http://127.0.0.1:8001
+```
+
+Restart `npm run dev` after changing env files.
 
 ## Repo 3.0 status
 
 This tree is **production-oriented (synthetic)** and **PRD + App ready**. Structured specs live in `specs/`; ADRs in `adrs/`; traceability in `traceability/`. Modern engines live in `src/ot_command/core/` (ENH-01…10 complete). Ops pack in `ops/`. Assurance in `assurance/ASSURANCE_REPORT.md`.
 
-| Property | Repo 3.0 |
-|----------|----------|
-| Maturity | Governed advisory increment with eval harness + ops telemetry |
-| Specs | Refined freeze + as-built C4 (`specs/as_built_c4.md`) |
-| Validation | 31/31 golden evals, red team, readiness checklist |
-| API | Read-only gold GETs + local `POST /recommend`, `POST /eval/run` |
-| AI | Disabled by default (`AI_ENABLED=0`) — deterministic core (ADR-12) |
 
-**Legacy behavior preserved:** `legacy_*` and three strict XFAIL tests unchanged. Seeded `data/` contradictions not cleaned. No OT execute surfaces.
+| Property   | Repo 3.0                                                           |
+| ---------- | ------------------------------------------------------------------ |
+| Maturity   | Governed advisory increment with eval harness + ops telemetry      |
+| Specs      | Refined freeze + as-built C4 (`specs/as_built_c4.md`)              |
+| Validation | 31/31 golden evals, red team, readiness checklist                  |
+| API        | Read-only gold GETs + local `POST /recommend`, `POST /eval/run`    |
+| AI         | Disabled by default (`AI_ENABLED=0`) — deterministic core (ADR-12) |
+
+
+**Legacy behavior preserved:** `legacy_`* and three strict XFAIL tests unchanged. Seeded `data/` contradictions not cleaned. No OT execute surfaces.
 
 ```bash
 make ci          # sdd-gates + verify + test + eval + red-team
 make eval        # EVAL-001…031 harness
-uvicorn ot_command.api:app --reload   # PYTHONPATH=src
+make run         # BE on http://127.0.0.1:8000 (see Run backend above)
 ```
 
 Gate: `specs/REPO_3_0_GATE.md` · Coverage: `participant/work/FDE_96_COVERAGE.csv`
@@ -70,7 +139,6 @@ Gate: `specs/REPO_3_0_GATE.md` · Coverage: `participant/work/FDE_96_COVERAGE.cs
 ## Participant path
 
 Read `AGENTS.md` → `specs/PRD.md` → `apps/command_center/README.md` (React UI + scenario rail) → `specs/APP_ACCEPTANCE_TESTS.md`. Next: **REL-01** release pack.
-
 
 ## Safety
 
