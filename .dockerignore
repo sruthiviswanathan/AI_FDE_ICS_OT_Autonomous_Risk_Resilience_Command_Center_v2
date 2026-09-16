@@ -1,0 +1,13 @@
+.venv
+.git
+__pycache__
+*.pyc
+.pytest_cache
+node_modules
+apps/command_center/node_modules
+apps/command_center/dist
+data/local
+*.md
+participant
+analysis-artefacts
+tests

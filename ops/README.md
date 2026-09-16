@@ -13,5 +13,6 @@ Production-readiness pack for the **synthetic advisory service**. Not live plant
 | [handover.md](handover.md) | FDE handover + training outline |
 | [finops_cost_dashboard.md](finops_cost_dashboard.md) | Cost-per-incident design |
 | [drift_management.md](drift_management.md) | Spec/data/policy drift |
+| [render_deployment.md](render_deployment.md) | Deploy FE + BE to Render (Docker, free tier) |
 
 Telemetry: `GET /ops/slo`, `GET /ops/cost-per-incident` · Traces: `data/local/decision_traces.jsonl` · Schema: `contracts/decision_trace.yaml`
