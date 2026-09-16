@@ -319,3 +319,18 @@ No OT write routes. `legacy_*` unchanged. BAD/UNCERTAIN not imputed.
 | OPEN-030 | *(containment slice closed)* `core.containment` vs `modern/safety.py` | FR-004 planned_code is `src/ot_command/core/containment.py`. | ENH-06+ remaining `modern/*` | FDE |
 
 `legacy_isolation_recommendation` unchanged (strict XFAIL). No OT write routes.
+
+---
+
+## ENH-06 | Recovery readiness | 2026-09-16
+
+**Evidence used:** ADR-05; PLT-01 IDENTITY backup CURRENT, restore 360d, runbook STALE, deps YES, fallback LIMITED; EVAL-018 CURRENT-only; `legacy_recovery_ready` still True on CURRENT.  
+**Assumptions:** Restore-test day cutoff remains OPEN-006/022, so freshness is never declared acceptable. `recovery_ready` is False until that OPEN closes **and** runbook CURRENT **and** deps YES **and** backup CURRENT. No live restore API.  
+**Unknowns:** OPEN-006/022; OPEN-027 restore blobs.  
+**Did not conclude:** authority engine; graph slice; isolate execute.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-030 | *(recovery slice closed)* `core.recovery` vs `modern/recovery.py` | FR-005 planned_code is `src/ot_command/core/recovery.py`. | ENH-07+ remaining `modern/*` | FDE |
+
+`legacy_recovery_ready` unchanged (strict XFAIL). No OT write routes.

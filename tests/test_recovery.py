@@ -64,3 +64,33 @@ def test_recovery_ready_requires_runbook_and_deps_not_just_current():
         )
         is False
     )
+
+
+def test_enh06_recovery_routes_are_get_only():
+    from ot_command.api import app
+
+    found = {}
+    for route in app.routes:
+        path = getattr(route, "path", None)
+        methods = set(getattr(route, "methods", None) or [])
+        if path in {"/recovery/{plant_id}", "/recovery/{site_or_unit}"}:
+            found[path] = methods
+    assert "/recovery/{plant_id}" in found
+    assert "/recovery/{site_or_unit}" in found
+    for methods in found.values():
+        assert "GET" in methods
+        assert not (methods & {"POST", "PUT", "PATCH", "DELETE"})
+
+
+def test_plant_recovery_plt01_identity_not_ready():
+    from ot_command.core.recovery import plant_recovery
+
+    packet = plant_recovery("PLT-01")
+    assert packet["recovery_ready"] is False
+    identity = [c for c in packet["components"] if c.get("component") == "IDENTITY"]
+    assert identity
+    assert identity[0]["recovery_ready"] is False
+    assert identity[0]["backup_status"] == "CURRENT"
+    blob = " ".join(str(b).lower() for b in identity[0]["blockers"])
+    assert "restore" in blob or "360" in blob
+    assert "runbook" in blob or "stale" in blob
