@@ -1,0 +1,9 @@
+{
+  "package": "2.0.0",
+  "policy": "src/ot_command/core/policy.py",
+  "policy_version": "policy.py:ACTION_TIERS",
+  "prompt_id": "prompt-v1",
+  "explainer_model": "placeholder-none",
+  "tool_catalog_version": "enh-07.1",
+  "eval_gate_before_prompt_change": ["EVAL-006", "EVAL-014", "EVAL-016", "EVAL-023"]
+}

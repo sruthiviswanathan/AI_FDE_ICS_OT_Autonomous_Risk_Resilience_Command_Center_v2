@@ -62,3 +62,16 @@ def test_eval_023_forbidden_execute_tools_named():
         "isolate_endpoint",
     ):
         assert name in forbidden
+
+
+def test_enh07_authority_actions_route_is_get_only():
+    from ot_command.api import app
+
+    found = None
+    for route in app.routes:
+        if getattr(route, "path", None) == "/authority/actions":
+            found = set(getattr(route, "methods", None) or [])
+    assert found is not None
+    assert "GET" in found
+    assert not (found & {"PUT", "PATCH", "DELETE"})
+    assert "POST" not in found

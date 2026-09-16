@@ -334,3 +334,18 @@ No OT write routes. `legacy_*` unchanged. BAD/UNCERTAIN not imputed.
 | OPEN-030 | *(recovery slice closed)* `core.recovery` vs `modern/recovery.py` | FR-005 planned_code is `src/ot_command/core/recovery.py`. | ENH-07+ remaining `modern/*` | FDE |
 
 `legacy_recovery_ready` unchanged (strict XFAIL). No OT write routes.
+
+---
+
+## ENH-07 | Bounded agent workflow | 2026-09-16
+
+**Evidence used:** ADR-07/12/14; `policy.py` ACTION_TIERS; EVAL-006/014/016/023; SDD-12 tool catalogue; `data/shadow/shift_handover_email.txt` contains isolate language as content.  
+**Assumptions:** One Incident Analyst. HTTP may call engines with zero agent. `POST /recommend` returns a packet and does not actuate. Envelope missing ⇒ tools deny, engines still draft. Explainer model is a placeholder and cannot re-rank or flip RecoveryReady.  
+**Unknowns:** OPEN-001 named Authorizer; OPEN-028 model; OPEN-029 API authn.  
+**Did not conclude:** graph slice GET; ENH-08 red-team suite; isolate execute.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-030 | *(authority + agent slice closed)* `core.authority` / `core.agent` vs `modern/*` | FR-012 planned_code is `src/ot_command/core/policy.py + src/ot_command/core/authority.py`. ENH-07 is `src/ot_command/core/agent.py`. | ENH-08+ remaining `modern/*` (graph_slice, packet, traces, ai_disabled, provenance) | FDE |
+
+`legacy_*` unchanged. No PLC/SIS/isolate-execute routes. Prompt change still requires eval gate EVAL-006/014/016/023.

@@ -1,10 +1,14 @@
-from fastapi import FastAPI, HTTPException, Query
+from typing import Any
+
+from fastapi import Body, FastAPI, HTTPException, Query
 from .diagnostics import run_diagnostics
 from .core.identity import asset_context, identity_bundle, list_identity_conflicts
 from .core.telemetry import quality_summary, timeline
 from .core.risk import rank_all
 from .core.containment import recommendation_packet, safety_conflicts
 from .core.recovery import plant_recovery
+from .core.authority import authority_catalog
+from .core.agent import run_recommend
 
 app=FastAPI(title='Synthetic ICS/OT Risk & Resilience API',version='2.0.0')
 
@@ -72,3 +76,11 @@ def recovery_site_route(site_or_unit: str):
         return plant_recovery(site_or_unit)
     except KeyError:
         raise HTTPException(status_code=404, detail='unknown site_or_unit')
+
+@app.get('/authority/actions')
+def authority_actions_route():
+    return authority_catalog()
+
+@app.post('/recommend')
+def recommend_route(payload: dict[str, Any] | None = Body(default=None)):
+    return run_recommend(payload or {})

@@ -1,0 +1,17 @@
+{
+  "active": "prompt-v1",
+  "eval_gate_required_before_change": true,
+  "eval_gate": ["EVAL-006", "EVAL-014", "EVAL-016", "EVAL-023"],
+  "prompts": {
+    "prompt-v1": {
+      "status": "active",
+      "prompt_id": "prompt-v1",
+      "files": {
+        "system": "v1/system.md",
+        "gather": "v1/gather.md",
+        "recommend": "v1/recommend.md",
+        "refuse_control": "v1/refuse-control.md"
+      }
+    }
+  }
+}
