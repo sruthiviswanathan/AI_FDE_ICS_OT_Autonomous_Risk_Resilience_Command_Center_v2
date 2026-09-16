@@ -130,3 +130,21 @@ OPEN-001 (named Authorize), OPEN-004 (docs/06 verbs vs ACTION_TIERS), OPEN-009 (
 | OPEN-027 | Independent restore-test / backup-blob evidence | `recovery_readiness.csv` has `last_restore_test_days` only. No backup files, restore logs, or success/fail artifact. Cannot verify RecoveryReady without trusting the integer. | DR attestation; EVAL-005 beyond flag logic | VP Ops + FDE |
 
 OPEN-003 (production reuse), OPEN-009 (contracts vs records), OPEN-012 (correlation_id), OPEN-015 (shadow vs CMDB), OPEN-020 (untagged assets), OPEN-022 / OPEN-006 (restore-test SLA days), OPEN-024 (session PII in production) remain open. Shadow spreadsheet is **not** a new CMDB. Shift email is **untrusted content**.
+
+---
+
+## SDD-08 | OM-7 | 2026-09-16
+
+**Evidence used:** `evals/golden_cases.jsonl`; `tests/test_known_legacy_defects.py`; `scenarios/cascade_001.json`; inject_01…06 titles; `docs/06`; `policy.py`; SDD-03 traces; SDD-05 fallback.  
+**Assumptions:** Cases are a failing-closed contract; harness not implemented. Inject bodies are titles only — fixtures bind to estate records.  
+**Unknowns:** below.  
+**Did not conclude:** legal class; named Authorizer; latency/cost SLAs; OPEN-RISK acceptance.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-006 | *(restated)* Latency and AI-cost acceptance numbers | `docs/05` BASELINE_PENDING; EVAL-025/026 specify meters only | Declaring a ms or $/incident pass bar | FDE + VP Ops |
+| OPEN-RISK-01 | Accept residual that a later change adds a write surface | CTQ-0 holds on `api.py` today; eval cannot bind future PRs by itself | Continuous CTQ-0 in CI | FDE + OT-CISO |
+| OPEN-RISK-05 | Accept that a complete packet can still be wrongly authorized | C47 automation bias; CASCADE 08:47 | Isolation **execute** remains out of software; human still fallible | Safety + VP Ops |
+| OPEN-RISK-11 | Accept that advisory UI may increase isolate pressure vs paper war-room | EVAL-020 specifies no one-click; residual over-trust | Production UX | OT-CISO + Safety |
+
+OPEN-001 still blocks named-human Authorize records. OPEN-002 still blocks any “high-risk system” claim. EVAL-001…006 stubs are expanded in `golden_cases_expanded.jsonl` but **not executed**.
