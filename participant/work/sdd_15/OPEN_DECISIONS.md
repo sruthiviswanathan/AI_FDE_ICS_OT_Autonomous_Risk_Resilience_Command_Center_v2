@@ -364,3 +364,18 @@ No OT write routes. `legacy_*` unchanged. BAD/UNCERTAIN not imputed.
 | OPEN-030 | *(guardrails slice closed)* `core.guardrails` vs untraced path | NFR-SEC planned_code is `src/ot_command/core/guardrails.py`. | ENH-09+ remaining `modern/*` (graph_slice, packet, traces) | FDE |
 
 `legacy_*` unchanged. No real OT connectors. No `restricted_answer_key/` read.
+
+---
+
+## ENH-09 | Assurance release candidate | 2026-09-16
+
+**Evidence used:** `evals/harness.py` 31/31 PASS; pytest 68 passed / 1 failed (`GET /graph/slice`) / 3 xfailed; CASCADE-001 ABSTAIN, 189.72 ms AI-disabled, 15 estimated explainer tokens.  
+**Assumptions:** Workshop TEVV is not ISO/IEC 42001 or EU AI Act certification. Token counts are `len(text)//4` until OPEN-028.  
+**Unknowns:** OPEN-001, OPEN-002, OPEN-006, OPEN-028, OPEN-029; graph slice.  
+**Did not conclude:** production deploy; signed SBOM; isolate execute.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-RISK-01/05/11 | Residual write / wrongful authorize / UI isolate pressure | Recorded in ASSURANCE_REPORT; **not** accepted as permission | REL/APP | OT-CISO + Safety + Product |
+
+C49/C52/C53/C54/C56 marked evidenced in `FDE_96_COVERAGE.csv` because harness + report + red-team tests ran. `legacy_*` unchanged.

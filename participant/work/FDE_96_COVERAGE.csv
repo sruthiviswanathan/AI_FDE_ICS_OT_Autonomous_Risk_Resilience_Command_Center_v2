@@ -29,7 +29,7 @@ C27,Brownfield modernization,2,"SDD-02, ENH, REL-02",Preserve evidence; coexist 
 C28,"Migration, coexistence, cutover, rollback",10,"SDD-11, SDD-14, REL-02",Rollback + shadow/pilot **advisory only**,specced
 C29,Architecture,2,"SDD-02, 09, 11, 14",As-is C4 → to-be C4 → approved C4,specced
 C30,ADRs,8,SDD-09 … SDD-14,Preliminary → final ADR register,specced
-C31,Software engineering,14,ENH-01…07,"Tests, source, CI, as-built C4",pending
+C31,Software engineering,14,ENH-01…07,"Tests, source, CI, as-built C4",evidenced
 C32,AI-assisted / Cursor engineering discipline,13,"SDD-14, ENH",Specs constrain code,specced
 C33,AI-system design,10,SDD-11,C4 + model routing + failure modes,specced
 C34,Model-selection and substitution,8,"SDD-09, SDD-11, ENH-07",Provider + routing + version pin,specced
@@ -47,14 +47,14 @@ C45,Privacy-by-Design,4,"SDD-05, SDD-07, SDD-13",Impact + access matrix + contro
 C46,Responsible AI,1,"SDD-01, 05, 08, ENH-09",Context → impact → RAI tests,specced
 C47,Human-factors and automation-bias,4,"SDD-05, SDD-08, SDD-12",Bias assessment + HITL forcing functions,specced
 C48,Governance,1,"SDD-01, 08, REL-01, REL-04",RACI → oversight → AIMS,specced
-C49,AI assurance case,7,"SDD-08, ENH-09",Claim–argument–evidence + report,specced
+C49,AI assurance case,7,"SDD-08, ENH-09",Claim–argument–evidence + report,evidenced
 C50,Regulatory and standards applicability,1,"SDD-01, 05, 08, REL","42001/42005/EU AI Act **as methods**, not certs",specced
 C51,"Legal, contractual, licensing and IP",4,"SDD-05, SDD-13, REL-04",Register + OPEN_DECISION,specced
-C52,Evaluation and TEVV,7,"SDD-08, ENH-09",Strategy then harness,specced
-C53,"Golden, edge, adversarial, failure datasets",7,"SDD-08, ENH-09",golden_cases + injects + cascade,specced
-C54,AI red teaming,15,"ENH-08, ENH-09","Injection, tool-misuse, loop tests",pending
+C52,Evaluation and TEVV,7,"SDD-08, ENH-09",Strategy then harness,evidenced
+C53,"Golden, edge, adversarial, failure datasets",7,"SDD-08, ENH-09",golden_cases + injects + cascade,evidenced
+C54,AI red teaming,15,"ENH-08, ENH-09","Injection, tool-misuse, loop tests",evidenced
 C55,Business-outcome evaluation,3,"SDD-04, SDD-08, REL-03",Criteria → thresholds → realisation,specced
-C56,Token efficiency,15,"ENH-09, REL-02",**Named eval metric** (not in PDF text),pending
+C56,Token efficiency,15,"ENH-09, REL-02",**Named eval metric** (not in PDF text),evidenced
 C57,Token economics,18,"REL-02, REL-03",Cost/availability reports,pending
 C58,AI FinOps,18,"ENH-10, REL-03",Cost dashboards + cost-to-value,pending
 C59,TCO,8,"SDD-09, REL-03",Build/buy + cost-to-value,specced

@@ -1,6 +1,6 @@
 PYTHON ?= python
 
-.PHONY: test diagnostics run verify sdd-gates redteam workshop-ci
+.PHONY: test diagnostics run verify sdd-gates redteam eval-harness workshop-ci
 test:
 	$(PYTHON) -m pytest -q
 
@@ -19,5 +19,8 @@ sdd-gates:
 redteam:
 	$(PYTHON) -m pytest -q tests/red_team tests/test_denied_control.py tests/test_authority.py
 
-workshop-ci: verify sdd-gates test
+eval-harness:
+	$(PYTHON) evals/harness.py
+
+workshop-ci: verify sdd-gates eval-harness test
 	@echo WORKSHOP_CI_OK

@@ -18,5 +18,7 @@ jobs:
         run: python scripts/verify_repo.py
       - name: sdd-gates
         run: python scripts/check_sdd_gates.py
+      - name: eval harness EVAL-001..031
+        run: python evals/harness.py
       - name: pytest
         run: python -m pytest -q
