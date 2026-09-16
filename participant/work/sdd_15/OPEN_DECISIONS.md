@@ -217,3 +217,14 @@ No new OPEN id. **Proposed ADR-14** autonomy pin to ACTION_TIERS. Multi-agent st
 | OPEN-029 | Authentication on FastAPI before non-localhost | `api.py` has no authn (ASI03 workshop gap) | Bind beyond loopback; plant-scoped IAM | FDE + OT-CISO |
 
 **Proposed ADR-15:** guardrails deterministic, non-bypassable by prompts. **ADR-16:** SBOM/AIBOM + exit = AI-disabled engines. `restricted_answer_key/` must remain absent.
+
+---
+
+## SDD-14 | OM-13 | 2026-09-16
+
+**Evidence used:** SDD-01…13; ADR-KG and ADR-01…16; SDD-08 EVAL-001…031; `policy.py`; `api.py`.  
+**Assumptions:** ADR promotion is engagement-accepted for ENH, not a production CAB. Workshop SLOs are engineering targets, not a close of OPEN-006 plant MTT.  
+**Unknowns:** OPEN-001…029 as listed in DELIVERY_SPEC §9 — **none closed by freeze**.  
+**Did not conclude:** implemented engines; named Authorizer; legal class.
+
+No new OPEN id. **ADR-KG and ADR-01…16 Accepted** for ENH. SDD-09 Option C / isolate-execute / multi-agent / decorative KG remain **rejected**. TRACEABILITY.csv is the C17 contract: untraced code is out of scope.
