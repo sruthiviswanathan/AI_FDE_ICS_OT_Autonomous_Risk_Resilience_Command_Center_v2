@@ -4,7 +4,7 @@ import { useApp } from "../context/AppContext";
 import { ProvenanceDrawer } from "./ProvenanceDrawer";
 import { useFetch } from "../hooks/useFetch";
 import { api } from "../api/client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const NAV: { group: string; items: { to: string; label: string }[] }[] = [
   { group: "Home", items: [{ to: "/", label: "Control Tower" }] },
@@ -53,8 +53,21 @@ const NAV: { group: string; items: { to: string; label: string }[] }[] = [
 
 export function Shell() {
   const ctx = useApp();
-  const { data: health } = useFetch(() => api.health(), []);
+  const healthQuery = useFetch(() => api.health(), []);
   const catalog = useFetch(() => api.scenarioCatalog(), []);
+  const health = healthQuery.data;
+  const apiMismatch = health && !health.api_version;
+  const apiDown = Boolean(healthQuery.error || catalog.error);
+
+  const [draftPlant, setDraftPlant] = useState(ctx.plantId);
+  const [draftAsset, setDraftAsset] = useState(ctx.assetId);
+  const [draftAlert, setDraftAlert] = useState(ctx.alertId);
+
+  useEffect(() => {
+    setDraftPlant(ctx.plantId);
+    setDraftAsset(ctx.assetId);
+    setDraftAlert(ctx.alertId);
+  }, [ctx.plantId, ctx.assetId, ctx.alertId, ctx.lookupKey]);
 
   useEffect(() => {
     if (catalog.data && !ctx.activeBinding) {
@@ -64,12 +77,27 @@ export function Shell() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [catalog.data]);
 
+  function runGlobalLookup() {
+    ctx.setPlantId(draftPlant.trim());
+    ctx.setAssetId(draftAsset.trim());
+    ctx.setAlertId(draftAlert.trim());
+    ctx.triggerLookup();
+  }
+
   return (
     <div className="shell">
+      {(apiDown || apiMismatch) && (
+        <div className="advisory-footer" style={{ margin: 0, borderRadius: 0 }}>
+          {apiDown
+            ? "API unreachable — start backend and check VITE_DEV_API_TARGET in .env.development.local"
+            : "Wrong API on proxy target — point VITE_DEV_API_TARGET to your uvicorn port and restart npm run dev"}
+        </div>
+      )}
       <header className="topbar">
         <h1>ICS/OT Command Center</h1>
         <div className="toggle">
           <span>Mode: {health?.mode || "…"}</span>
+          {health?.api_version && <span className="mono">API {health.api_version}</span>}
           <label>
             AI
             <select
@@ -83,19 +111,37 @@ export function Shell() {
         </div>
       </header>
 
-      <div className="context-bar">
+      <div className="context-bar lookup-bar">
         <label>
-          Plant
-          <input value={ctx.plantId} onChange={(e) => ctx.setPlantId(e.target.value)} />
+          Plant ID
+          <input
+            value={draftPlant}
+            onChange={(e) => setDraftPlant(e.target.value)}
+            placeholder="PLT-10"
+            onKeyDown={(e) => e.key === "Enter" && runGlobalLookup()}
+          />
         </label>
         <label>
-          Asset
-          <input value={ctx.assetId} onChange={(e) => ctx.setAssetId(e.target.value)} />
+          Asset ID
+          <input
+            value={draftAsset}
+            onChange={(e) => setDraftAsset(e.target.value)}
+            placeholder="OT-01016"
+            onKeyDown={(e) => e.key === "Enter" && runGlobalLookup()}
+          />
         </label>
         <label>
-          Alert
-          <input value={ctx.alertId} onChange={(e) => ctx.setAlertId(e.target.value)} />
+          Alert ID
+          <input
+            value={draftAlert}
+            onChange={(e) => setDraftAlert(e.target.value)}
+            placeholder="ALT-002783"
+            onKeyDown={(e) => e.key === "Enter" && runGlobalLookup()}
+          />
         </label>
+        <button type="button" className="primary" onClick={runGlobalLookup}>
+          Search
+        </button>
         <span className="badge amber">{ctx.scenario}</span>
         <ScenarioBadgeStrip />
       </div>

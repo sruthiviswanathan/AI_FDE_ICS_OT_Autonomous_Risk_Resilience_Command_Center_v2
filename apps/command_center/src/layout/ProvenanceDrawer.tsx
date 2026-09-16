@@ -1,11 +1,29 @@
 import { useState } from "react";
+import { api } from "../api/client";
+import { GraphCitationView } from "../components/GraphCitationView";
+import { GraphVisualView } from "../components/GraphVisualView";
+import { ErrorBlock, LoadingBlock } from "../components/StateViews";
 import { useApp } from "../context/AppContext";
+import { useFetch } from "../hooks/useFetch";
 
 const CHANNELS = ["STRUCTURED", "GRAPH", "VECTOR", "POLICY", "MEMORY"] as const;
 
 export function ProvenanceDrawer() {
-  const { provenancePin, lastPacket, aiEnabled } = useApp();
+  const { provenancePin, lastPacket, aiEnabled, plantId, assetId, alertId, lookupKey } = useApp();
   const [channel, setChannel] = useState<(typeof CHANNELS)[number]>("STRUCTURED");
+  const [graphView, setGraphView] = useState<"citations" | "visual">("visual");
+  const graph = useFetch(
+    () =>
+      channel === "GRAPH"
+        ? api.graphSlice({
+            query: "Q5",
+            plant_id: plantId,
+            asset_id: assetId || undefined,
+            alert_id: alertId || undefined,
+          })
+        : Promise.resolve(null),
+    [channel, plantId, assetId, alertId, lookupKey],
+  );
 
   const packet = (lastPacket?.recommendation || {}) as Record<string, unknown>;
   const evidence = (packet.evidence || []) as Record<string, unknown>[];
@@ -54,7 +72,40 @@ export function ProvenanceDrawer() {
           )}
         </div>
       )}
-      {channel === "GRAPH" && <p className="ai-off-note">Graph slice citations from incident context (Q5).</p>}
+      {channel === "GRAPH" && (
+        <div>
+          {graph.loading && <LoadingBlock label="Loading Q5 graph slice…" />}
+          {graph.error && <ErrorBlock message={graph.error} />}
+          {graph.data && (
+            <>
+              <div className="btn-row graph-view-toggle drawer-graph-toggle">
+                <button
+                  type="button"
+                  className={graphView === "visual" ? "active" : ""}
+                  onClick={() => setGraphView("visual")}
+                >
+                  Visual
+                </button>
+                <button
+                  type="button"
+                  className={graphView === "citations" ? "active" : ""}
+                  onClick={() => setGraphView("citations")}
+                >
+                  Citations
+                </button>
+              </div>
+              {graphView === "visual" ? (
+                <GraphVisualView data={graph.data} focusAssetId={assetId || undefined} variant="drawer" />
+              ) : (
+                <GraphCitationView data={graph.data} />
+              )}
+            </>
+          )}
+          {!graph.loading && !graph.error && !graph.data && (
+            <p className="ai-off-note">Graph slice unavailable for current context.</p>
+          )}
+        </div>
+      )}
       {channel === "VECTOR" && (
         <p className="ai-off-note">VECTOR retrieval disabled. Cannot drive isolation or policy tiers.</p>
       )}

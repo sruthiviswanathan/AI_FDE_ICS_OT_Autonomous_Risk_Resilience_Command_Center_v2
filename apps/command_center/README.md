@@ -30,7 +30,15 @@ npm install
 npm run dev
 ```
 
-Open http://127.0.0.1:5173 — Vite proxies `/api/*` to port 8000.
+Open http://127.0.0.1:5173 — Vite proxies `/api/*` to the backend (default port 8000).
+
+**Port conflict (Windows):** If `--port 8000` fails (`WinError 10013`) or `/health` lacks `api_version`, another service may own 8000. Run BE on 8001 and create `apps/command_center/.env.development.local`:
+
+```env
+VITE_DEV_API_TARGET=http://127.0.0.1:8001
+```
+
+Restart `npm run dev` after changing env files.
 
 **Integrated** (single port):
 

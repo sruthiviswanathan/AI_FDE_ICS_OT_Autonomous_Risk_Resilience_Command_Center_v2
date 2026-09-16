@@ -1,38 +1,38 @@
 import { api } from "../api/client";
+import { GraphSliceView } from "../components/GraphSliceView";
+import { PageLookup } from "../components/PageLookup";
 import { ErrorBlock, LoadingBlock, UntrustedBadge } from "../components/StateViews";
 import { useApp } from "../context/AppContext";
 import { useFetch } from "../hooks/useFetch";
 
 export function IncidentPage() {
-  const { plantId, assetId, alertId, scenario, setScenario } = useApp();
+  const { plantId, assetId, alertId, scenario, setScenario, lookupKey } = useApp();
   const graph = useFetch(
-    () => api.graphSlice({ query: "Q5", plant_id: plantId, asset_id: assetId, alert_id: alertId }),
-    [plantId, assetId, alertId],
+    () => api.graphSlice({ query: "Q5", plant_id: plantId, asset_id: assetId, alert_id: alertId || undefined }),
+    [plantId, assetId, alertId, lookupKey],
   );
   const scenarioData = useFetch(
     () => (scenario === "cascade_001" ? api.scenario("cascade_001") : Promise.resolve(null)),
     [scenario],
   );
   const timelineFixture = scenarioData.data?.timeline_fixture as { timeline?: { time: string; event: string }[] } | undefined;
-  const shift = useFetch(() => api.shiftNotes(), []);
-
-  if (graph.loading) return <LoadingBlock />;
+  const shift = useFetch(() => api.shiftNotes(), [lookupKey]);
 
   const timeline = timelineFixture?.timeline || [];
 
   return (
     <div>
       <h2 className="page-title">Incident Context Graph</h2>
+      <PageLookup />
       <div className="btn-row">
         <button type="button" className="primary" onClick={() => setScenario("cascade_001")}>
           Load CASCADE-001
         </button>
-        <span className="badge amber">{scenario}</span>
       </div>
 
       {scenario === "cascade_001" && timeline.length > 0 && (
         <>
-          <h3>Timeline</h3>
+          <h3 className="section-title">Timeline</h3>
           <div className="timeline">
             {timeline.map((t) => (
               <div key={t.time} className="timeline-item">
@@ -55,7 +55,7 @@ export function IncidentPage() {
       )}
 
       {shift.data && (
-        <div>
+        <div className="card untrusted-border">
           <h3>
             Shift handover <UntrustedBadge />
           </h3>
@@ -63,14 +63,14 @@ export function IncidentPage() {
         </div>
       )}
 
-      {graph.error ? <ErrorBlock message={graph.error} /> : null}
+      {graph.loading && <LoadingBlock />}
+      {graph.error && <ErrorBlock message={graph.error} />}
       {graph.data && (
-        <div className="card" style={{ marginTop: "0.75rem" }}>
-          <h3>Task-scoped graph slice (Q5)</h3>
-          <pre className="mono">{JSON.stringify(graph.data, null, 2).slice(0, 3000)}</pre>
+        <div style={{ marginTop: "0.75rem" }}>
+          <h3 className="section-title">Task-scoped graph (Q5)</h3>
+          <GraphSliceView data={graph.data} />
         </div>
       )}
-      <p className="ai-off-note">Forbidden: execute at 08:47 SOC step · ignore PE warning</p>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { api } from "../api/client";
 import { StaleBadge } from "../components/StateViews";
 import { ErrorBlock, LoadingBlock } from "../components/StateViews";
 import { useFetch } from "../hooks/useFetch";
+import { fmt } from "../utils/format";
 
 export function ControlTower() {
   const diag = useFetch(() => api.diagnostics(), []);
@@ -18,7 +19,10 @@ export function ControlTower() {
     <div>
       <h2 className="page-title">Risk &amp; Resilience Control Tower</h2>
       <div className="ctq-strip">
-        <span>SLO-OT: {(slo.data as { checks?: Record<string, { status?: string }> })?.checks?.["SLO-OT"]?.status || "…"}</span>
+        <span>
+          SLO-OT:{" "}
+          {(slo.data as { slos?: Record<string, { status?: string }> })?.slos?.["SLO-OT"]?.status || "…"}
+        </span>
         <span>Eval: 31/31 (harness)</span>
         <span>Legacy xfail: 3 (contrast only)</span>
         <StaleBadge />
@@ -30,7 +34,7 @@ export function ControlTower() {
             {entries.map(([k, v]) => (
               <div key={k} className="diag-item">
                 <div className="label">{k.replace(/_/g, " ")}</div>
-                <div className="value">{v}</div>
+                <div className="value">{fmt(v)}</div>
               </div>
             ))}
           </div>

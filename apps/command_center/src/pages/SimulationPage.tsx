@@ -4,6 +4,7 @@ import { DataTable } from "../components/DataTable";
 import { ErrorBlock, LoadingBlock } from "../components/StateViews";
 import { useApp } from "../context/AppContext";
 import { useFetch } from "../hooks/useFetch";
+import { fmt } from "../utils/format";
 
 export function SimulationPage() {
   const { applyScenario } = useApp();
@@ -71,7 +72,7 @@ export function SimulationPage() {
             cols={[
               { key: "id", header: "case", render: (r) => String(r.case_id) },
               { key: "status", header: "status", render: (r) => String(r.status) },
-              { key: "detail", header: "detail", render: (r) => String(r.detail || r.message || "") },
+              { key: "detail", header: "detail", render: (r) => fmt(r.detail ?? r.message) },
             ]}
           />
         </>

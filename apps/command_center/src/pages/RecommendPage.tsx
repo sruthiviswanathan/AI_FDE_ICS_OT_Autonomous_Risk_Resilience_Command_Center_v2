@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { api } from "../api/client";
+import { DetailGrid } from "../components/DetailGrid";
+import { PageLookup } from "../components/PageLookup";
 import { ErrorBlock, LoadingBlock } from "../components/StateViews";
 import { useApp } from "../context/AppContext";
+import { fmt } from "../utils/format";
 
 export function RecommendPage() {
   const { plantId, assetId, alertId, aiEnabled, setLastPacket, scenario, activeBinding } = useApp();
@@ -12,6 +15,10 @@ export function RecommendPage() {
   const ctqIsoComplete = activeBinding?.ctq_iso_complete !== false;
 
   async function runRecommend() {
+    if (!plantId || !assetId) {
+      setError("Plant ID and Asset ID are required");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -20,7 +27,7 @@ export function RecommendPage() {
         purpose: scenario === "cascade_001" ? "CASCADE-001 triage" : "incident triage",
         plant_id: plantId,
         asset_id: assetId,
-        alert_id: alertId,
+        alert_id: alertId || undefined,
         severity: "HIGH",
         process_context: "UNKNOWN",
       };
@@ -40,60 +47,68 @@ export function RecommendPage() {
   return (
     <div>
       <h2 className="page-title">Authority Gate / Recommendation</h2>
+      <PageLookup />
       <div className="btn-row">
         <button type="button" className="primary" onClick={runRecommend} disabled={loading}>
           Request draft packet
-        </button>
-        <button type="button" disabled title="Export only — no execute path">
-          Export packet
-        </button>
-        <button type="button" disabled={!result} onClick={() => navigator.clipboard.writeText(JSON.stringify(result, null, 2))}>
-          Copy summary
         </button>
       </div>
       {loading && <LoadingBlock label="Running deterministic workflow…" />}
       {error && <ErrorBlock message={error} />}
       {result && (
         <>
+          <h3 className="section-title">Workflow progress</h3>
           <div className="workflow-steps">
             {workflow.map((s, i) => (
               <span key={i} className="done">
-                {String(s.state || s.name || i)}
+                {fmt(s.state || s.name || `Step ${i + 1}`)}
               </span>
             ))}
           </div>
           <div className="card-grid">
             <div className="card">
               <h3>Recommendation</h3>
-              <div className="metric">{String(packet.recommendation)}</div>
-              <p>execute: {String(packet.execute)}</p>
-              <p>safe_state: {String(packet.safe_state || "UNKNOWN")}</p>
-              <p>process_impact: {String(packet.process_impact || "—")}</p>
-              <p>safety_impact: {String(packet.safety_impact || "—")}</p>
+              <div className="metric">{fmt(packet.recommendation)}</div>
+              <DetailGrid
+                items={[
+                  { label: "Execute", value: packet.execute },
+                  { label: "Safe state", value: packet.safe_state },
+                  { label: "Process impact", value: packet.process_impact },
+                  { label: "Safety impact", value: packet.safety_impact },
+                  { label: "Authorizable", value: packet.authorizable },
+                ]}
+              />
             </div>
             <div className="card">
-              <h3>Required authority (roles only — OPEN-001)</h3>
+              <h3>Required authority (OPEN-001)</h3>
               <ul>
                 {((packet.required_authority as string[]) || []).map((r) => (
                   <li key={r}>{r}</li>
                 ))}
               </ul>
-              <p>authorizable: {String(packet.authorizable)}</p>
+              {((packet.required_authority as string[]) || []).length === 0 && <p>—</p>}
             </div>
+            {Boolean(packet.missing_fields) && (
+              <div className="card">
+                <h3>Missing fields</h3>
+                <p>{fmt((packet.missing_fields as string[])?.join(", "))}</p>
+              </div>
+            )}
           </div>
           {!aiEnabled && (
-            <p className="ai-off-note">AI OFF — tables and deterministic packet only (EVAL-016).</p>
+            <p className="ai-off-note">AI OFF — deterministic packet only (EVAL-016).</p>
           )}
           <div className="advisory-footer">
-            Advisory only — no Execute Isolation · Write PLC · Modify SIS · One-click Authorize.
+            Advisory only — no Execute Isolation · Write PLC · Modify SIS.
             <div className="btn-row">
-              <button type="button" disabled={!ctqIsoComplete} title={!ctqIsoComplete ? "CTQ-ISO incomplete for CASCADE-001 (EVAL-020)" : undefined}>
+              <button type="button" disabled={!ctqIsoComplete} title={!ctqIsoComplete ? "CTQ-ISO incomplete (CASCADE-001)" : undefined}>
                 Authorize (disabled — OPEN-001)
               </button>
             </div>
           </div>
         </>
       )}
+      {!result && <p className="ai-off-note">Search for plant/asset, then request a draft packet.</p>}
     </div>
   );
 }

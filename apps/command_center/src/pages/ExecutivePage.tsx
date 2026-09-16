@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { api } from "../api/client";
 import { ErrorBlock, LoadingBlock, StaleBadge } from "../components/StateViews";
 import { useFetch } from "../hooks/useFetch";
+import { fmt } from "../utils/format";
 
 export function ExecutivePage() {
   const diag = useFetch(() => api.diagnostics(), []);
@@ -20,16 +21,19 @@ export function ExecutivePage() {
         <div className="card">
           <h3>Posture summary</h3>
           <ul>
-            <li>Asset state conflicts: {d.asset_state_conflicts}</li>
-            <li>Safety degraded: {d.safety_bypassed_or_degraded}</li>
-            <li>Recovery gaps: {d.recovery_stale_or_unknown_backup}</li>
-            <li>Unapproved vendor sessions: {d.unapproved_remote_sessions}</li>
+            <li>Asset state conflicts: {fmt(d.asset_state_conflicts)}</li>
+            <li>Safety degraded: {fmt(d.safety_bypassed_or_degraded)}</li>
+            <li>Recovery gaps: {fmt(d.recovery_stale_or_unknown_backup)}</li>
+            <li>Unapproved vendor sessions: {fmt(d.unapproved_remote_sessions)}</li>
           </ul>
         </div>
         <div className="card">
           <h3>CTQ checklist</h3>
           <ul>
-            <li>SLO-OT: {(slo.data as { checks?: Record<string, { status?: string }> })?.checks?.["SLO-OT"]?.status}</li>
+            <li>
+              SLO-OT:{" "}
+              {(slo.data as { slos?: Record<string, { status?: string }> })?.slos?.["SLO-OT"]?.status}
+            </li>
             <li>Eval harness: 31/31</li>
             <li>AI default: OFF (ADR-12)</li>
             <li>Execute routes: 0</li>

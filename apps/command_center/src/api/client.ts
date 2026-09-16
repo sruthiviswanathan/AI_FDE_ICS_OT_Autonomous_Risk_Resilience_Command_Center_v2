@@ -1,4 +1,5 @@
-const BASE = import.meta.env.VITE_API_URL || "/api";
+/** Dev: `/api` (Vite proxy). Integrated/single-port build: `` → `/health` on same host. */
+const BASE = import.meta.env.VITE_API_URL ?? (import.meta.env.DEV ? "/api" : "");
 
 export class ApiError extends Error {
   status: number;
@@ -21,7 +22,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  health: () => request<{ status: string; mode: string; ai_enabled: boolean }>("/health"),
+  health: () =>
+    request<{ status: string; mode: string; ai_enabled: boolean; api_version?: string }>("/health"),
   diagnostics: () => request<Record<string, number>>("/diagnostics"),
   opsSlo: () => request<Record<string, unknown>>("/ops/slo"),
   opsCost: () => request<Record<string, unknown>>("/ops/cost-per-incident"),

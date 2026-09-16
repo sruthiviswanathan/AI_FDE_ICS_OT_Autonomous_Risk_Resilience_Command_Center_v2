@@ -30,11 +30,13 @@ interface AppState {
   provenanceOpen: boolean;
   provenancePin: ProvenancePin | null;
   lastPacket: Record<string, unknown> | null;
+  lookupKey: number;
   setPlantId: (v: string) => void;
   setAssetId: (v: string) => void;
   setAlertId: (v: string) => void;
   setScenario: (v: ScenarioId) => void;
   applyScenario: (binding: ScenarioBinding) => void;
+  triggerLookup: () => void;
   setAiEnabled: (v: boolean) => void;
   setProvenanceOpen: (v: boolean) => void;
   pinProvenance: (p: ProvenancePin) => void;
@@ -53,6 +55,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [provenanceOpen, setProvenanceOpen] = useState(true);
   const [provenancePin, setProvenancePin] = useState<ProvenancePin | null>(null);
   const [lastPacket, setLastPacket] = useState<Record<string, unknown> | null>(null);
+  const [lookupKey, setLookupKey] = useState(0);
+
+  const triggerLookup = useCallback(() => setLookupKey((k) => k + 1), []);
 
   const applyScenario = useCallback((binding: ScenarioBinding) => {
     setScenario(binding.id as ScenarioId);
@@ -61,6 +66,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (binding.context.asset_id) setAssetId(binding.context.asset_id);
     setAlertId(binding.context.alert_id || "");
     setAiEnabled(binding.ai_enabled);
+    setLookupKey((k) => k + 1);
   }, []);
 
   const value = useMemo(
@@ -74,11 +80,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
       provenanceOpen,
       provenancePin,
       lastPacket,
+      lookupKey,
       setPlantId,
       setAssetId,
       setAlertId,
       setScenario,
       applyScenario,
+      triggerLookup,
       setAiEnabled,
       setProvenanceOpen,
       pinProvenance: (p: ProvenancePin) => {
@@ -87,7 +95,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       },
       setLastPacket,
     }),
-    [plantId, assetId, alertId, scenario, activeBinding, aiEnabled, provenanceOpen, provenancePin, lastPacket, applyScenario],
+    [plantId, assetId, alertId, scenario, activeBinding, aiEnabled, provenanceOpen, provenancePin, lastPacket, lookupKey, applyScenario, triggerLookup],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
