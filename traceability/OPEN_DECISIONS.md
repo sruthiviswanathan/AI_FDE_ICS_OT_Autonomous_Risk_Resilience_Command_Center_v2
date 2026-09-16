@@ -244,3 +244,18 @@ No new OPEN id. **ADR-KG and ADR-01…16 Accepted** for ENH. SDD-09 Option C / i
 | OPEN-010 | *(restated, not closed)* Canonical package `__version__` | `__init__.py` left at `0.1.0` vs pyproject `2.0.0`. Optional packaging alignment was not taken. | Packaging identity | FDE |
 
 No new OPEN id. ENH remediations queued. Isolation execute remains forbidden. `legacy_*` unchanged.
+
+---
+
+## ENH-01 | Tests before implementation | 2026-09-16
+
+**Evidence used:** `specs/TEST_PLAN.md`; playbook ENH-01…06 (`ot_command.core.*`); `traceability/TRACEABILITY.csv` planned_code `src/ot_command/modern/*.py`; `evals/golden_cases.jsonl` EVAL-001…031; `tests/test_known_legacy_defects.py` still strict xfail.  
+**Assumptions:** Tests are the contract. Engines not implemented this prompt. Isolation execute remains forbidden.  
+**Unknowns:** below.  
+**Did not conclude:** identity/risk/safety/recovery implementations; named Authorizer; restore-test day SLA.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-030 | Canonical implementation path `ot_command.core.*` vs `src/ot_command/modern/*.py` | ENH-01/02 playbook and tests import `core.identity` etc. TRACEABILITY.csv still lists `modern/identity.py`. No ADR invented to pick one. | ENH-02 file location; C17 trace until TRACEABILITY row updated | FDE |
+
+OPEN-001…029 and OPEN-RISK-01/05/11 remain open. `legacy_*` unchanged. No OT write routes added.
