@@ -97,3 +97,19 @@ def test_eval_007_cascade_does_not_isolate_execute():
     rec = _rec(result)
     assert rec not in EXECUTE_FORBIDDEN
     assert field(result, "executed") is not True
+
+
+def test_enh05_safety_routes_are_get_only():
+    from ot_command.api import app
+
+    found = {}
+    for route in app.routes:
+        path = getattr(route, "path", None)
+        methods = set(getattr(route, "methods", None) or [])
+        if path in {"/safety/conflicts", "/recommendations/{incident_id}"}:
+            found[path] = methods
+    assert "/safety/conflicts" in found
+    assert "/recommendations/{incident_id}" in found
+    for methods in found.values():
+        assert "GET" in methods
+        assert not (methods & {"POST", "PUT", "PATCH", "DELETE"})

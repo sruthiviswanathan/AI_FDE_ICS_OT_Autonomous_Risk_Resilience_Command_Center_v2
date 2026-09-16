@@ -304,3 +304,18 @@ No OT write routes. `legacy_*` unchanged. BAD/UNCERTAIN not imputed.
 | OPEN-030 | *(risk slice closed)* `core.risk` vs `modern/risk.py` | FR-003 planned_code is `src/ot_command/core/risk.py`. | ENH-05+ remaining `modern/*` | FDE |
 
 `legacy_rank` unchanged. No OT write routes.
+
+---
+
+## ENH-05 | Safety-aware containment | 2026-09-16
+
+**Evidence used:** ADR-04; `policy.py` isolate_endpoint=3 / recommend=1; ALT-002783 HIGH UNKNOWN on OT-01016; PLT-10-U06 MIN_LOAD; PLT-10-U06→U07 safety dep; handover “do not isolate … minimum stable load” (untrusted, fail-closed to ABSTAIN); EVAL-019/003/031/020/027/007.  
+**Assumptions:** Playbook outputs MONITOR | RECOMMEND_CONTAINMENT_REVIEW | ABSTAIN. Naked HIGH/CRIT without CTQ-ISO → ABSTAIN. MIN_LOAD / PE warning / UNKNOWN context → ABSTAIN. `executed` always false. Named Authorizer still OPEN-001 so `authorizable` is false.  
+**Unknowns:** OPEN-001; OPEN-008 isolation authority people; OPEN-018 Unit 04 plant binding.  
+**Did not conclude:** recovery engine; isolate execute; trip-suppression tool (still refuse via authority tests).
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-030 | *(containment slice closed)* `core.containment` vs `modern/safety.py` | FR-004 planned_code is `src/ot_command/core/containment.py`. | ENH-06+ remaining `modern/*` | FDE |
+
+`legacy_isolation_recommendation` unchanged (strict XFAIL). No OT write routes.

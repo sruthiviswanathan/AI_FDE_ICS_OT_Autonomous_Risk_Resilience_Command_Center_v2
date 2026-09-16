@@ -3,6 +3,7 @@ from .diagnostics import run_diagnostics
 from .core.identity import asset_context, identity_bundle, list_identity_conflicts
 from .core.telemetry import quality_summary, timeline
 from .core.risk import rank_all
+from .core.containment import recommendation_packet, safety_conflicts
 
 app=FastAPI(title='Synthetic ICS/OT Risk & Resilience API',version='2.0.0')
 
@@ -45,3 +46,14 @@ def risk_rank(limit: int = Query(default=50, ge=1, le=200)):
 @app.get('/risk/contextual')
 def risk_contextual(limit: int = Query(default=50, ge=1, le=200)):
     return rank_all(limit=limit)
+
+@app.get('/safety/conflicts')
+def safety_conflicts_route(limit: int = Query(default=50, ge=1, le=200)):
+    return safety_conflicts(limit=limit)
+
+@app.get('/recommendations/{incident_id}')
+def recommendation_route(incident_id: str):
+    try:
+        return recommendation_packet(incident_id)
+    except KeyError:
+        raise HTTPException(status_code=404, detail='unknown incident_id')
