@@ -259,3 +259,18 @@ No new OPEN id. ENH remediations queued. Isolation execute remains forbidden. `l
 | OPEN-030 | Canonical implementation path `ot_command.core.*` vs `src/ot_command/modern/*.py` | ENH-01/02 playbook and tests import `core.identity` etc. TRACEABILITY.csv still lists `modern/identity.py`. No ADR invented to pick one. | ENH-02 file location; C17 trace until TRACEABILITY row updated | FDE |
 
 OPEN-001…029 and OPEN-RISK-01/05/11 remain open. `legacy_*` unchanged. No OT write routes added.
+
+---
+
+## ENH-02 | Identity engine | 2026-09-16
+
+**Evidence used:** ADR-01, ADR-10; `data/raw/assets.csv` OT-00528 RETIRED/ONLINE; `data/raw/asset_aliases.csv` PLT-01-DCS_CONTROLLER-105 → OT-00012 and OT-00033; shadow 220 rows; `tests/test_identity.py`; `src/ot_command/core/identity.py`.  
+**Assumptions:** Numbered ENH-02 + tests select `ot_command.core.identity`. Files under `data/` are not written. v1 `operationalState` stays unmapped (OPEN-009).  
+**Unknowns:** OPEN-009 mapping; OPEN-015 shadow vs CMDB winner (still no winner).  
+**Did not conclude:** risk/telemetry/recovery engines; named Authorizer; OT writes.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-030 | *(identity slice closed)* `core.identity` vs `modern/identity.py` | FR-001 planned_code updated to `src/ot_command/core/identity.py`. Remaining ENH modules still listed as `modern/*` until those prompts. | ENH-03… telemetry/risk/… path | FDE |
+
+No data files overwritten. Isolation execute remains forbidden. `legacy_*` unchanged.

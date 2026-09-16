@@ -65,3 +65,27 @@ def test_adr10_v1_operational_state_is_not_observed_state():
             "UNSEEN",
             "INTERMITTENT",
         }
+    observations = field(bundle, "observations") or {}
+    v1 = field(observations, "v1") or {}
+    assert field(v1, "operationalState") != observed
+    assert field(v1, "operationalState") in (None, "")
+    v2 = field(observations, "v2") or {}
+    assert field(v2, "observed_state") == observed
+
+
+def test_enh02_identity_routes_are_get_only():
+    from ot_command.api import app
+
+    found = {}
+    for route in app.routes:
+        path = getattr(route, "path", None)
+        methods = set(getattr(route, "methods", None) or [])
+        if path in {"/identity/conflicts", "/assets/{id}/context", "/assets/{id}/identity"}:
+            found[path] = methods
+    assert "/identity/conflicts" in found
+    assert "/assets/{id}/context" in found
+    assert "/assets/{id}/identity" in found
+    for path, methods in found.items():
+        assert "GET" in methods
+        assert not (methods & {"POST", "PUT", "PATCH", "DELETE"})
+
