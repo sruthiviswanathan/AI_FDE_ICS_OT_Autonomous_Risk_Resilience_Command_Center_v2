@@ -16,6 +16,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src/
 COPY data/ ./data/
 COPY contracts/ ./contracts/
+COPY apps/command_center/scenario_bindings.json ./apps/command_center/scenario_bindings.json
+COPY scenarios/ ./scenarios/
 COPY --from=frontend /fe/dist/ ./apps/command_center/dist/
 
 ENV PYTHONPATH=/app/src

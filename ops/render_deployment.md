@@ -294,6 +294,7 @@ The **integrated single-container** path above avoids CORS and matches how the r
 | Health check failed | Wrong port | Set port to **8000** in service settings |
 | 502 / service unavailable | Container crash on start | Check **Runtime logs**; verify `PYTHONPATH` and `data/` present in image |
 | UI loads, API 404 on routes | Built with `VITE_API_URL=/api` | Rebuild without `VITE_API_URL` for integrated deploy |
+| `scenario bindings not found` | `scenario_bindings.json` missing from image | Confirm Dockerfile copies `apps/command_center/scenario_bindings.json` and `scenarios/`; redeploy |
 | Very slow first load | Free tier cold start | Normal after idle; pre-warm with `curl …/health` before demo |
 | Build timeout | Free tier limits | Retry deploy; ensure `.dockerignore` excludes `node_modules`, `.venv`, `tests` |
 
