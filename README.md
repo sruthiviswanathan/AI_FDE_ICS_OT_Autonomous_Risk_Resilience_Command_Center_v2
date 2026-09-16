@@ -47,7 +47,7 @@ $env:AI_ENABLED = "0"
 python -m uvicorn ot_command.api:app --host 127.0.0.1 --port 8000
 ```
 
-UI: http://127.0.0.1:8000/ui (`AI_ENABLED=0` by default). `GET /` is 404; the product surface is `/ui`.
+UI: http://127.0.0.1:8000/ui (`AI_ENABLED=0` by default). `GET /` is 404. To **start the React app** (Vite, not `npm run build`): `cd apps/command_center && npm start` → http://127.0.0.1:5173.
 
 ## Repo 3.0 status
 

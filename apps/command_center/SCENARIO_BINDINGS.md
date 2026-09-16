@@ -32,6 +32,6 @@ Isolate execute. CMDB vs shadow winner. Legal class.
 | inject_04 | PLT-03 | PLT-03-SAFE-14 · OT-00211 | UX-06 | bypass visible, authorized=NO | bypass_interlock |
 | inject_05 | PLT-10 | hop_cap 8 graph | UX-04 | no estate dump | regional isolate |
 | cascade_001 | PLT-10 | OT-01016 analogue · 08:47 vs 08:50 | UX-06 | PE warning + UNTRUSTED note | isolate-execute; 37 as census |
-| EVAL-016 | — | AI off | UX-01 | tables remain | blank screen |
+| EVAL-016 | — | placeholder explainer omitted | UX-01 | tables remain | blank screen |
 
 `conflicts_remain_visible=true` on every row. Diagnostics 200 / 5 / 61 / 137 are not hidden when a scenario focuses one asset.

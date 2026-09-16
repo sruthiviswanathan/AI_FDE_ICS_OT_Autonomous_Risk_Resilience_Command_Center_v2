@@ -1,0 +1,9 @@
+.venv
+.git
+.pytest_cache
+**/__pycache__
+**/node_modules
+apps/command_center/node_modules
+apps/command_center/.vite
+data/local
+.env

@@ -1,7 +1,9 @@
 PYTHON ?= python
 export AI_ENABLED ?= 0
 
-.PHONY: test diagnostics run verify sdd-gates redteam eval-harness workshop-ci ops-slo
+.PHONY: test diagnostics run verify sdd-gates redteam eval-harness workshop-ci ops-slo ui-build
+ui-build:
+	cd apps/command_center && npm ci && npm run build
 test:
 	$(PYTHON) -m pytest -q
 

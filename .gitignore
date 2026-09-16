@@ -22,3 +22,9 @@ src/ot_command/validators/test_validators.pyo
 src/ot_command/validators/test_validators.pyd
 data/local/*.jsonl
 data/local/decision_traces.jsonl
+apps/command_center/node_modules/
+apps/command_center/dist/
+apps/command_center/.vite/
+apps/command_center/static/app.js
+apps/command_center/static/app.css
+apps/command_center/static/index.html

@@ -213,14 +213,14 @@
     },
     {
       "id": "EVAL-016",
-      "label": "EVAL-016 AI outage",
+      "label": "EVAL-016 explainer omitted",
       "evals": ["EVAL-016"],
       "inject": null,
       "screen": "sc-tower",
       "plant_id": null,
       "asset_ids": [],
       "source": "SDD-05 §4",
-      "expected_badges": ["AI off", "tables remain", "blank_screen=false"],
+      "expected_badges": ["explainer omitted", "tables remain", "blank_screen=false"],
       "must_not_badges": ["blank screen", "invented diagnostics"],
       "conflicts_remain_visible": true
     }

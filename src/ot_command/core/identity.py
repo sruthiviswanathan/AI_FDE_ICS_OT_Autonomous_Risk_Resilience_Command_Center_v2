@@ -309,3 +309,77 @@ def list_identity_conflicts() -> dict:
         "winner": None,
         "canonical_source": None,
     }
+
+
+def search_identity(q: str, limit: int = 12) -> dict[str, Any]:
+    """Bounded alias/asset lookup. Not an estate dump. No CMDB winner."""
+    needle = (q or "").strip()
+    cap = min(max(int(limit or 12), 1), 20)
+    if len(needle) < 2:
+        return {
+            "q": needle,
+            "returned": 0,
+            "estate_dump": False,
+            "winner": None,
+            "hits": [],
+            "note": "query shorter than 2 is empty, not a 2016-asset dump",
+        }
+    data = _load()
+    upper = needle.upper()
+    hits: list[dict[str, Any]] = []
+    seen_alias: set[str] = set()
+    for alias, recs in data["by_alias"].items():
+        if upper not in alias.upper() and not any(upper in r.get("asset_id", "").upper() for r in recs):
+            continue
+        if alias in seen_alias:
+            continue
+        seen_alias.add(alias)
+        ids = list(dict.fromkeys(r["asset_id"] for r in recs))
+        plants = []
+        for aid in ids:
+            row = data["assets"].get(aid)
+            if row and row.get("plant_id") and row["plant_id"] not in plants:
+                plants.append(row["plant_id"])
+        hits.append(
+            {
+                "kind": "alias",
+                "id": alias,
+                "asset_ids": ids,
+                "plant_ids": plants,
+                "sources": [r.get("source") for r in recs],
+                "confidence": 0.5 if len(ids) > 1 else 1.0,
+                "winner": None,
+            }
+        )
+        if len(hits) >= cap:
+            break
+    if len(hits) < cap:
+        for aid, row in data["assets"].items():
+            if upper not in aid.upper():
+                continue
+            if any(aid in (h.get("asset_ids") or []) for h in hits):
+                continue
+            hits.append(
+                {
+                    "kind": "asset",
+                    "id": aid,
+                    "asset_ids": [aid],
+                    "plant_ids": [row.get("plant_id")] if row.get("plant_id") else [],
+                    "sources": ["assets.csv"],
+                    "registered_state": row.get("registered_state"),
+                    "observed_state": row.get("observed_state"),
+                    "confidence": 0.5 if _state_disagreement(row.get("registered_state", ""), row.get("observed_state", "")) else 1.0,
+                    "winner": None,
+                }
+            )
+            if len(hits) >= cap:
+                break
+    return {
+        "q": needle,
+        "returned": len(hits),
+        "estate_dump": False,
+        "winner": None,
+        "canonical_source": None,
+        "hits": hits[:cap],
+        "note": "remainder remain queryable — not cleaned; UNKNOWN is not permission",
+    }
