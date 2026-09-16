@@ -73,3 +73,19 @@ def test_eval_022_flags_fahrenheit_on_celsius_temp_tag():
     assert fx["unit"] in str(field(result, "unit") or fx["unit"])
     assert field(result, "usable_for_control") is not True
     assert field(result, "treated_as_celsius") is not True
+
+
+def test_enh03_telemetry_routes_are_get_only():
+    from ot_command.api import app
+
+    found = {}
+    for route in app.routes:
+        path = getattr(route, "path", None)
+        methods = set(getattr(route, "methods", None) or [])
+        if path in {"/telemetry/quality", "/telemetry/timeline"}:
+            found[path] = methods
+    assert "/telemetry/quality" in found
+    assert "/telemetry/timeline" in found
+    for methods in found.values():
+        assert "GET" in methods
+        assert not (methods & {"POST", "PUT", "PATCH", "DELETE"})

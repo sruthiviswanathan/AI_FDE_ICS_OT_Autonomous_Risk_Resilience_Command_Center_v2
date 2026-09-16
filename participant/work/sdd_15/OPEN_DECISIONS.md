@@ -274,3 +274,18 @@ OPEN-001…029 and OPEN-RISK-01/05/11 remain open. `legacy_*` unchanged. No OT w
 | OPEN-030 | *(identity slice closed)* `core.identity` vs `modern/identity.py` | FR-001 planned_code updated to `src/ot_command/core/identity.py`. Remaining ENH modules still listed as `modern/*` until those prompts. | ENH-03… telemetry/risk/… path | FDE |
 
 No data files overwritten. Isolation execute remains forbidden. `legacy_*` unchanged.
+
+---
+
+## ENH-03 | Telemetry | 2026-09-16
+
+**Evidence used:** ADR-02; `data/telemetry/tag_telemetry.jsonl` (ingest_time present; schema thin); `data/reference/tags.csv` `engineering_unit`; EVAL-004/009/015/022; `diagnostics.py` still uses `*_TEMP==C` (not the gold check).  
+**Assumptions:** Sort key is `event_time`. Ingest/received is lag/inversion only. GOOD ≠ ProcessHealthy (OPEN-026).  
+**Unknowns:** OPEN-009 contract vs record fields remain as evidence; plant MTT OPEN-006.  
+**Did not conclude:** risk/containment/recovery engines; unit conversion policy (no silent F→C).
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-030 | *(telemetry slice closed)* `core.telemetry` vs `modern/telemetry.py` | FR-002 planned_code is `src/ot_command/core/telemetry.py`. | ENH-04+ remaining `modern/*` rows | FDE |
+
+No OT write routes. `legacy_*` unchanged. BAD/UNCERTAIN not imputed.

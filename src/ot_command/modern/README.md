@@ -6,7 +6,7 @@ Repo 2.0 placeholder. ENH-01…10 implement engines **beside** `ot_command.legac
 - Do not change `legacy_rank` / `legacy_recovery_ready` / `legacy_isolation_recommendation`.
 - Do not add OT write APIs or isolate-execute tools.
 - Untraced modules are out of scope (`traceability/TRACEABILITY.csv`).
-- Start coding at ENH-01 against FR-001. Identity engine is `ot_command.core.identity` (ENH-02 / OPEN-030).
+- Start coding at ENH-01 against FR-001. Identity: `ot_command.core.identity`. Telemetry: `ot_command.core.telemetry` (ENH-03 / OPEN-030).
 
 ## Planned modules (not present yet)
 identity.py · telemetry.py · risk.py · safety.py · recovery.py · graph_slice.py · packet.py · traces.py · ai_disabled.py · provenance.py · authority.py · agent.py
