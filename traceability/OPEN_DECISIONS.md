@@ -445,6 +445,23 @@ No Execute Isolation / Write PLC added. `legacy_*` XFAIL unchanged.
 
 No invented fixture fields. `data/` not cleaned. `legacy_*` unchanged.
 
+---
+
+## APP-02 | Command Center UI | 2026-09-16
+
+**Evidence used:** `specs/PRD.md` UX-01…15; `specs/APP_ACCEPTANCE_TESTS.md` AT-F; `apps/command_center/index.html`; `GET /ui`; `GET /access/sessions`; `GET /ops/traces`; `GET /health` now includes `ai_enabled`.  
+**Assumptions:** HTML/JS workbench over gold GETs + packet POST is the App. Browser MCP not available; verification is pytest + HTTP GET/POST against uvicorn.  
+**Unknowns:** OPEN-001, OPEN-002, OPEN-006, OPEN-029.  
+**Did not conclude:** live OT; named Authorizer; dollar SLA; Execute Isolation.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-031 | *(closed for workshop)* `GET /access/sessions` is plant-scoped / capped; `all_plants_export=false` | Row GET exists; still not a production PAM console | Production session UX | FDE |
+| OPEN-029 | UI has no login | FastAPI still unauthenticated | Production App | OT-CISO |
+
+No Execute Isolation / Write PLC controls in markup. `legacy_*` unchanged.
+
+
 
 
 

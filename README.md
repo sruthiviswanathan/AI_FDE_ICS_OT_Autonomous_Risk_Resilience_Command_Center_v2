@@ -39,11 +39,13 @@ python -m ot_command.cli diagnostics
 pytest -q
 ```
 
-Optional read-only API:
+Optional read-only API and command-room UI:
 
 ```bash
 uvicorn ot_command.api:app --reload
 ```
+
+UI: http://127.0.0.1:8000/ui (`AI_ENABLED=0` by default).
 
 Set `PYTHONPATH=src` if your IDE does not infer it.
 

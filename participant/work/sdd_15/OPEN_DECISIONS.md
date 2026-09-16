@@ -445,6 +445,22 @@ No Execute Isolation / Write PLC added. `legacy_*` XFAIL unchanged.
 
 No invented fixture fields. `data/` not cleaned. `legacy_*` unchanged.
 
+---
+
+## APP-02 | Command Center UI | 2026-09-16
+
+**Evidence used:** `specs/PRD.md` UX-01…15; `apps/command_center/index.html`; `GET /ui`; `GET /access/sessions`; `GET /health.ai_enabled`.  
+**Assumptions:** Workshop UI is unauthenticated (OPEN-029).  
+**Unknowns:** OPEN-001, OPEN-002, OPEN-006, OPEN-029.  
+**Did not conclude:** live OT; Execute Isolation.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-031 | *(closed for workshop)* plant-scoped `GET /access/sessions` | Not a production PAM console | Production session UX | FDE |
+
+No Execute Isolation / Write PLC controls. `legacy_*` unchanged.
+
+
 
 
 

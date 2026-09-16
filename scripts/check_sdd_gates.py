@@ -58,6 +58,8 @@ REQUIRED = [
     "participant/work/prd/PRD.md",
     "participant/work/prd/APP_ACCEPTANCE_TESTS.md",
     "apps/command_center/fixtures/command_center_fixtures.json",
+    "apps/command_center/index.html",
+    "apps/command_center/static/app.js",
     "src/ot_command/modern/README.md",
     "src/ot_command/modern/AS_BUILT_C4.md",
     "assurance/README.md",

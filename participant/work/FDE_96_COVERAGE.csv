@@ -62,7 +62,7 @@ C60,Cost-per-successful-business-outcome,19,"SDD-04, REL-03",KPI from docs/05 + 
 C61,Performance and latency engineering,13,"SDD-11, SDD-14",NFRs; evals README latency,specced
 C62,Scalability and capacity engineering,13,"SDD-11, SDD-14",NFRs,specced
 C63,Reliability and resilience,10,"SDD-11, REL-01, REL-02",Failure-mode + chaos + recovery,specced
-C64,Graceful degradation and AI-disabled operation,10,"SDD-11, APP-02, REL-02",Failure-mode + UI fallback,specced
+C64,Graceful degradation and AI-disabled operation,10,"SDD-11, APP-02, REL-02",Failure-mode + UI fallback,evidenced
 C65,Observability,13,"SDD-14, ENH-10",Telemetry spec + dashboards,evidenced
 C66,AI / agent observability and traceability,13,"SDD-14, ENH-07, ENH-10",Decision traces; no hidden CoT,evidenced
 C67,Service management,16,REL-01,"Runbooks, SOPs, dashboards",pending

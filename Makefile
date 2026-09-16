@@ -10,6 +10,7 @@ diagnostics:
 
 run:
 	AI_ENABLED=$(AI_ENABLED) PYTHONPATH=src $(PYTHON) -m uvicorn ot_command.api:app --host 127.0.0.1 --port 8000
+	@echo UI http://127.0.0.1:8000/ui
 
 verify:
 	$(PYTHON) scripts/verify_repo.py
