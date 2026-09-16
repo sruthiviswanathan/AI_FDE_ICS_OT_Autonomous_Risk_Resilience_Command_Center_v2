@@ -380,3 +380,14 @@ No new OPEN id. FR-007/FR-011 documented as partial (packet/provenance embedded 
 **Did not conclude:** UI implementation; Playwright/e2e suite (APP-02 creates `product/UI_VERIFICATION.md`).
 
 No new OPEN id. Forbidden UI tests APP-AT-020/021 are blocking for app ship. Named Authorizer UI flow remains OPEN-001.
+
+---
+
+## APP-00 | OM-10/17 | 2026-09-16
+
+**Evidence used:** `apps/command_center/APP_FLOW.md`, `UI_WIREFRAMES.md`, `SCREEN_SPECIFICATIONS.md`; PRD §12 fifteen screens; APP_ACCEPTANCE_TESTS screen mapping; SDD-05 journeys A–D; CASCADE-001 dual-column dissent pattern.  
+**Assumptions:** Design-only — no UI code in APP-00; APP-02 implements routes in SCREEN_SPECIFICATIONS; chatbot-first explicitly rejected.  
+**Unknowns:** OPEN-001 Authorize UX; OPEN-029 auth gate screen; OPEN-028 explainer panel content.  
+**Did not conclude:** implementation; Playwright tests; visual design system tokens.
+
+No new OPEN id. Execute/PLC/SIS controls absent from all wireframes. AI toggle defaults OFF in chrome spec.

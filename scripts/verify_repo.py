@@ -39,6 +39,8 @@ for rel in ['README.md','AGENTS.md','requirements.txt','pyproject.toml','Dockerf
     if not (ROOT/rel).exists(): errors.append(f'missing {rel}')
 for rel in ['ops/RACI.md','ops/runbooks.md','ops/incident_rollback.md','ops/ai_incident_response.md','ops/bcdr.md','ops/production_readiness_checklist.md','ops/handover.md','ops/finops_cost_dashboard.md','ops/drift_management.md','participant/work/enh_10/REPO_3_0_GATE.md']:
     if not (ROOT/rel).exists(): errors.append(f'missing ENH-10 artifact {rel}')
+for rel in ['apps/command_center/APP_FLOW.md','apps/command_center/UI_WIREFRAMES.md','apps/command_center/SCREEN_SPECIFICATIONS.md']:
+    if not (ROOT/rel).exists(): errors.append(f'missing APP-00 artifact {rel}')
 # ENH-08: answer key must not ship; red-team tests present
 if (ROOT/'restricted_answer_key').exists():
     errors.append('restricted_answer_key/ must not exist in runtime tree')
