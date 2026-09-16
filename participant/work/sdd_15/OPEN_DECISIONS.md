@@ -114,3 +114,19 @@ OPEN-001…021 remain open. OPEN-006 still covers clocks, actionable-incident de
 | OPEN-026 | Canonical field for process “healthy” | No `healthy` column. `quality=GOOD`, `registered_state=ACTIVE`, and `safety_barriers.state=ACTIVE` are **not** interchangeable with process health. | Any health KPI or dashboard tile labeled “healthy” without a new named measure | VP Ops + Process Eng |
 
 OPEN-001 (named Authorize), OPEN-004 (docs/06 verbs vs ACTION_TIERS), OPEN-009 (v1 `operationalState` vs v2 `observed_state`) remain open and still block collapsing those terms. Glossary in DOMAIN.md defines remaining overloaded speech (`status`, `critical`, `CURRENT`, `isolate`, `identity`, Recommend vs Authorize).
+
+---
+
+## SDD-07 | OM-6 | 2026-09-16
+
+**Evidence used:** `data/manifest.json`; `repository.py`; `diagnostics.py`; `api.py`; `scripts/generate_data.py` (no sqlite write); sqlite vs CSV set-equality on 6 tables; `contracts/telemetry_event_schema.json`; shadow inventory vs assets field diffs = 0; `LICENSE.txt`.  
+**Assumptions:** Workshop forensics allowed; operational-truth still UNKNOWN. Restore-test day threshold not chosen.  
+**Unknowns:** below.  
+**Did not conclude:** system of record; production access; RecoveryReady SLA days.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-007 | *(restated, not closed)* sqlite refresh / mastership vs CSV | Six tables **set-equal** to matching CSVs (profile 2026-09-16). `generate_data.py` does not write `data/ot_legacy.db`. `run_diagnostics()` does not read it. Content replica is observed; **ETL/refresh still undocumented**. Not a second master. | Treating DB as SoR or deleting it | FDE |
+| OPEN-027 | Independent restore-test / backup-blob evidence | `recovery_readiness.csv` has `last_restore_test_days` only. No backup files, restore logs, or success/fail artifact. Cannot verify RecoveryReady without trusting the integer. | DR attestation; EVAL-005 beyond flag logic | VP Ops + FDE |
+
+OPEN-003 (production reuse), OPEN-009 (contracts vs records), OPEN-012 (correlation_id), OPEN-015 (shadow vs CMDB), OPEN-020 (untagged assets), OPEN-022 / OPEN-006 (restore-test SLA days), OPEN-024 (session PII in production) remain open. Shadow spreadsheet is **not** a new CMDB. Shift email is **untrusted content**.
