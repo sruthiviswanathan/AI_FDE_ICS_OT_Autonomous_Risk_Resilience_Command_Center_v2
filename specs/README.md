@@ -1,6 +1,6 @@
-# Specs index (Repo 2.0)
+# Specs index (Repo 3.0)
 
-SDD-aligned repository. **Normative long-form** artifacts remain under `participant/work/sdd_15/`. Files here are the navigable freeze for ENH.
+SDD-aligned repository. **Normative long-form** artifacts remain under `participant/work/sdd_15/`. Files here are the navigable freeze for ENH and PRD.
 
 | Spec | OM | Status | Owner (role) | Full artifact |
 |---|---|---|---|---|
@@ -19,6 +19,11 @@ SDD-aligned repository. **Normative long-form** artifacts remain under `particip
 | [13_security_guardrails.md](13_security_guardrails.md) | 12 | specced | OT-CISO | SDD-13 SECURITY.md |
 | [14_delivery_spec.md](14_delivery_spec.md) | 13 | specced | FDE | SDD-14 DELIVERY_SPEC.md |
 
-Gate: [REPO_2_0_GATE.md](REPO_2_0_GATE.md). ADRs: [`/adrs`](../adrs/README.md). Traceability: [`/traceability`](../traceability/TRACEABILITY.csv). Coverage: [`participant/work/FDE_96_COVERAGE.csv`](../participant/work/FDE_96_COVERAGE.csv).
+| [PRD.md](PRD.md) | product | **build-ready** | FDE | PRD-01 product contract |
+| [APP_ACCEPTANCE_TESTS.md](APP_ACCEPTANCE_TESTS.md) | product | **build-ready** | FDE | PRD-02 Given/When/Then |
+| [REQUIREMENTS_TRACEABILITY.md](REQUIREMENTS_TRACEABILITY.md) | product | **build-ready** | FDE | evidence → test matrix |
+| [as_built_c4.md](as_built_c4.md) | 16 | as-built | FDE | ENH-10 C4 |
+
+Gate: [REPO_3_0_GATE.md](REPO_3_0_GATE.md) · [REPO_2_0_GATE.md](REPO_2_0_GATE.md). ADRs: [`/adrs`](../adrs/README.md). Traceability: [`/traceability`](../traceability/TRACEABILITY.csv). Coverage: [`participant/work/FDE_96_COVERAGE.csv`](../participant/work/FDE_96_COVERAGE.csv).
 
 Selected solution: **Trusted Cyber-Physical Advisory Command Center** (A engines always-on + B optional explainer). Do not reopen SDD-09. Do not add OT write surfaces.

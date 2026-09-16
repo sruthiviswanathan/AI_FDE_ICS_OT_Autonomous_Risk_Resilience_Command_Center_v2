@@ -358,3 +358,25 @@ No new OPEN id. Golden harness **executed** (SDD-08 assumption “harness not im
 **Did not conclude:** live plant deploy; production auth (OPEN-029); LLM vendor (OPEN-028); customer UI (PRD-01).
 
 No new OPEN id. Repo 3.0 gate declares **PRD + App ready**. Legacy XFAIL preserved. `data/` contradictions not cleaned. Decision traces gitignored at runtime path.
+
+---
+
+## PRD-01 | OM-4/10/13 | 2026-09-16
+
+**Evidence used:** `specs/PRD.md`; `specs/REQUIREMENTS_TRACEABILITY.md`; Repo 3.0 engines/API; `assurance/ASSURANCE_REPORT.md`; `specs/04`–`14`; `docs/05_kpis_baseline.md`, `docs/06_security_safety_assurance.md`; SDD-05 journeys; 15 mandatory UI screens specified (not built).  
+**Assumptions:** PRD is build contract for APP-01/02; no new FR-IDs invented beyond TRACEABILITY.csv; numeric KPI/SLA targets remain OPEN-006; named Authorizer remains OPEN-001.  
+**Unknowns:** OPEN-001…010, 012…029, OPEN-RISK-01/05/11, OPEN-030 unchanged.  
+**Did not conclude:** customer UI implementation; production auth; model selection; legal class (OPEN-002).
+
+No new OPEN id. FR-007/FR-011 documented as partial (packet/provenance embedded in engines). APP must not add execute-isolation or OT write APIs.
+
+---
+
+## PRD-02 | OM-4/13 | 2026-09-16
+
+**Evidence used:** `specs/APP_ACCEPTANCE_TESTS.md` (APP-AT-001…024); maps EVAL-001…006, inject_01…06, cascade_001, prompt-injection, AI outage, anti-CVSS, stale restore, forbidden UI themes; backend checks cite harness/red-team/API tests already green in Repo 3.0.  
+**Assumptions:** UI checks deferred to APP-02; backend checks satisfied by `make ci` today; APP-AT-023/024 are release gates.  
+**Unknowns:** OPEN-001…010, 012…029, OPEN-RISK-01/05/11, OPEN-030 unchanged.  
+**Did not conclude:** UI implementation; Playwright/e2e suite (APP-02 creates `product/UI_VERIFICATION.md`).
+
+No new OPEN id. Forbidden UI tests APP-AT-020/021 are blocking for app ship. Named Authorizer UI flow remains OPEN-001.
