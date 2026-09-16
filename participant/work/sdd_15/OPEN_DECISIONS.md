@@ -98,3 +98,19 @@ OPEN-001…021 remain open. OPEN-006 still covers clocks, actionable-incident de
 | OPEN-024 | Production licensing/IP/SBOM and real-person data lawful basis | `LICENSE.txt` is workshop-only; FastAPI/Pydantic/pytest licenses not recopied; `api.py` has no authn; real IAM/session data would be personal data | Production deploy (already out of this repo) | Legal + FDE |
 
 **Qualification:** advisory use case **GO** with mandatory non-AI fallback. AI for consequential OT control remains **NO-GO**. OPEN-001 still blocks named-human execute.
+
+---
+
+## SDD-06 | OM-5 | 2026-09-16
+
+**Evidence used:** `data/raw/assets.csv` (no `device` column); `data/telemetry/tag_telemetry.jsonl` (`quality` only); `docs/06`; `policy.py`; SDD-06 DOMAIN.md.  
+**Assumptions:** Bounded contexts are language/ownership, not a datastore choice.  
+**Unknowns:** below.  
+**Did not conclude:** system of record; KG; ACTION_TIERS completion (still OPEN-004).
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-025 | Canonical grain for informal “device” | No `device` column in `assets.csv` or related raw files. Speech refers to physical boxes; data grain is `asset_id` + `asset_type`. | Any API or schema named Device | FDE + OT-CISO (inventory) |
+| OPEN-026 | Canonical field for process “healthy” | No `healthy` column. `quality=GOOD`, `registered_state=ACTIVE`, and `safety_barriers.state=ACTIVE` are **not** interchangeable with process health. | Any health KPI or dashboard tile labeled “healthy” without a new named measure | VP Ops + Process Eng |
+
+OPEN-001 (named Authorize), OPEN-004 (docs/06 verbs vs ACTION_TIERS), OPEN-009 (v1 `operationalState` vs v2 `observed_state`) remain open and still block collapsing those terms. Glossary in DOMAIN.md defines remaining overloaded speech (`status`, `critical`, `CURRENT`, `isolate`, `identity`, Recommend vs Authorize).
