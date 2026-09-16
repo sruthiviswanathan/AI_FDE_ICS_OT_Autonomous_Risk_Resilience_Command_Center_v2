@@ -460,6 +460,17 @@ No invented fixture fields. `data/` not cleaned. `legacy_*` unchanged.
 
 No Execute Isolation / Write PLC controls. `legacy_*` unchanged.
 
+---
+
+## APP-03 | Scenario rail | 2026-09-16
+
+**Evidence used:** golden_cases EVAL-001…006; inject_01…06; cascade_001; `scenario_bindings.json`.  
+**Assumptions:** `hide_conflicts=false`. CASCADE 37 is not a census (OPEN-019).  
+**Did not conclude:** isolate execute.
+
+`legacy_*` unchanged.
+
+
 
 
 

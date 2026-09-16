@@ -29,6 +29,7 @@ PYTHONPATH=src python scripts/generate_command_center_fixtures.py
 - Draft packet via `POST /recommend` only; refuse path for PLC/SIS demand
 - No Execute Isolation / Write PLC controls
 - Inject rail = fixture replay (`inject_01`…`06`, cascade_001, AI outage)
+- Scenario rail loads plant/asset/alert + expected/must_not badges (`SCENARIO_BINDINGS.md`). Conflicts are not hidden.
 - Shift notes labelled UNTRUSTED
 - Sessions: `GET /access/sessions` (not all-plants dump; not VPN disable)
 

@@ -33,6 +33,10 @@ def test_ui_files_exist_and_fifteen_screens_named():
     assert (UI / "static" / "app.css").exists()
     assert (UI / "static" / "app.js").exists()
     assert (UI / "fixtures" / "command_center_fixtures.json").exists()
+    assert (UI / "SCENARIO_BINDINGS.md").exists()
+    assert (UI / "fixtures" / "scenario_bindings.json").exists()
+    html = (UI / "index.html").read_text(encoding="utf-8")
+    assert 'id="scenario-rail"' in html
 
 
 def test_no_execute_isolation_or_write_plc_controls():
@@ -77,7 +81,34 @@ def test_sessions_route_is_observe_only():
     assert payload["unknown_is_not_approval"] is True
 
 
-def test_ui_and_sessions_are_get_only():
+def test_scenario_bindings_do_not_hide_conflicts_or_invent_execute():
+    import json
+
+    data = json.loads((UI / "fixtures" / "scenario_bindings.json").read_text(encoding="utf-8"))
+    assert data["hide_conflicts"] is False
+    assert data["beautify_demo"] is False
+    assert data["live_ot"] is False
+    ids = {s["id"] for s in data["scenarios"]}
+    for required in ("EVAL-001", "EVAL-002", "EVAL-003", "EVAL-004", "EVAL-005", "EVAL-006", "inject_01", "inject_06", "cascade_001", "EVAL-016"):
+        assert required in ids
+    for s in data["scenarios"]:
+        assert s["conflicts_remain_visible"] is True
+        assert "Execute Isolation" not in (s.get("expected_badges") or [])
+    js = (UI / "static" / "app.js").read_text(encoding="utf-8")
+    assert "applyScenario" in js
+    assert "hide_conflicts=false" in js
+
+
+def test_scenario_bindings_use_estate_ids():
+    import json
+
+    data = json.loads((UI / "fixtures" / "scenario_bindings.json").read_text(encoding="utf-8"))
+    by_id = {s["id"]: s for s in data["scenarios"]}
+    assert by_id["EVAL-001"]["asset_ids"] == ["OT-00012", "OT-00033"]
+    assert by_id["EVAL-003"]["alert_id"] == "ALT-002783"
+    assert by_id["EVAL-005"]["plant_id"] == "PLT-01"
+    assert "37 as verified census" in by_id["cascade_001"]["must_not_badges"]
+
     found = {}
     for route in app.routes:
         path = getattr(route, "path", None)

@@ -461,6 +461,22 @@ No invented fixture fields. `data/` not cleaned. `legacy_*` unchanged.
 
 No Execute Isolation / Write PLC controls in markup. `legacy_*` unchanged.
 
+---
+
+## APP-03 | Scenario rail | 2026-09-16
+
+**Evidence used:** `evals/golden_cases.jsonl`; `evals/scenarios.md`; `scenarios/cascade_001.json`; `apps/command_center/fixtures/scenario_bindings.json`; `SCENARIO_BINDINGS.md`.  
+**Assumptions:** Selecting a scenario loads bound plant/asset/alert and badges; it does not hide 200/5 identity conflicts or invent a 37-controller census.  
+**Unknowns:** OPEN-019.  
+**Did not conclude:** isolate execute; beautified demo.
+
+| ID | Decision needed | Why it is open (evidence) | Blocked work | Owner (role, unnamed) |
+|---|---|---|---|---|
+| OPEN-019 | CASCADE “37 controllers / 6 unknown firmware” set | Binding must_not treats 37 as unverified | Do not display as census | FDE |
+
+`hide_conflicts=false`. `legacy_*` unchanged.
+
+
 
 
 

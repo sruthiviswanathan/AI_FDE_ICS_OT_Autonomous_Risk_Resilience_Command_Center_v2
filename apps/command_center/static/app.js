@@ -28,7 +28,7 @@
     ["ai_outage", "AI outage"],
   ];
 
-  const state = { fx: null, ai: false, lastPacket: null };
+  const state = { fx: null, ai: false, lastPacket: null, bindings: [] };
 
   function el(id) { return document.getElementById(id); }
   function esc(v) {
@@ -79,6 +79,17 @@
     const fx = await get("/ui/fixtures/command_center_fixtures.json");
     state.fx = fx;
     el("shift-text").textContent = (fx.untrusted_shift_text && fx.untrusted_shift_text.text) || "UNTRUSTED file missing";
+    const bind = await get("/ui/fixtures/scenario_bindings.json");
+    state.bindings = bind.scenarios || [];
+    const sel = el("scenario-rail");
+    sel.innerHTML = '<option value="">(select — do not hide conflicts)</option>';
+    state.bindings.forEach((s) => {
+      const o = document.createElement("option");
+      o.value = s.id;
+      o.textContent = s.label;
+      sel.appendChild(o);
+    });
+    sel.addEventListener("change", () => applyScenario(sel.value).catch((e) => console.error(e)));
   }
 
   async function loadTower() {
@@ -99,9 +110,12 @@
 
   async function loadIdentity() {
     const conflicts = await get("/identity/conflicts");
+    const nAlias = (conflicts.alias_collisions || []).length;
+    const nReg = (conflicts.registered_vs_observed || []).length;
     const coll = (conflicts.alias_collisions || []).slice(0, 8).map((c) => [c.alias, (c.asset_ids || []).join(", "), (c.sources || []).join("|"), c.confidence, c.winner]);
     const reg = (conflicts.registered_vs_observed || []).slice(0, 12).map((r) => [r.asset_id, r.registered_state, r.observed_state]);
     el("identity-conflicts").innerHTML =
+      "<p class='muted'>winner=" + esc(conflicts.winner) + " · alias_collisions=" + nAlias + " · registered_vs_observed=" + nReg + " (table capped; remainder remain queryable — not cleaned)</p>" +
       "<h3>Alias collisions (winner=null)</h3>" + table(["alias", "asset_ids", "sources", "confidence", "winner"], coll) +
       "<h3>Registered vs observed</h3>" + table(["asset_id", "registered", "observed"], reg);
   }
@@ -208,8 +222,8 @@
     });
   }
 
-  async function loadSessions() {
-    const s = await get("/access/sessions?plant_id=PLT-10&limit=20");
+  async function loadSessions(plant) {
+    const s = await get("/access/sessions?plant_id=" + encodeURIComponent(plant || "PLT-10") + "&limit=20");
     const rows = (s.rows || []).map((r) => [r.session_id, r.asset_id, r.identity, r.method, r.approved_window, r.mfa]);
     el("sessions-view").innerHTML = kv({
       all_plants_export: s.all_plants_export,
@@ -221,8 +235,8 @@
     setProv({ source: s.source_path, fresh: "session clocks as recorded", unc: "UNKNOWN identity ≠ approval", proc: "plant scoped PLT-10", safe: "do not cut session in software", auth: "tier 3 human for access change" });
   }
 
-  async function loadRecovery() {
-    const rec = await get("/recovery/PLT-01");
+  async function loadRecovery(plant) {
+    const rec = await get("/recovery/" + encodeURIComponent(plant || "PLT-01"));
     const rows = (rec.components || []).map((c) => [c.component, c.backup_status, c.last_restore_test_days, c.runbook_status, c.dependency_verified, c.manual_fallback, c.recovery_ready, (c.blockers || []).join(";")]);
     el("recovery-view").innerHTML =
       "<p class='muted'>plant recovery_ready=" + esc(rec.recovery_ready) + " freshness_sla=" + esc(rec.freshness_sla) + "</p>" +
@@ -309,6 +323,85 @@
     setProv({ source: "GET /ops/cost-per-incident", fresh: "OPEN-006 BASELINE_PENDING", unc: "USD null", proc: "estate", safe: "do not sell CURRENT as ready", auth: "OT-CISO residual risk" });
   }
 
+  function renderBadges(b) {
+    const box = el("scenario-badges");
+    box.innerHTML = "";
+    if (!b) return;
+    (b.expected_badges || []).forEach((t) => {
+      const s = document.createElement("span");
+      s.className = "pill ok";
+      s.textContent = "expect: " + t;
+      box.appendChild(s);
+    });
+    (b.must_not_badges || []).forEach((t) => {
+      const s = document.createElement("span");
+      s.className = "pill mustnot";
+      s.textContent = "must_not: " + t;
+      box.appendChild(s);
+    });
+    if (b.conflicts_remain_visible) {
+      const s = document.createElement("span");
+      s.className = "pill warn";
+      s.textContent = "conflicts remain visible";
+      box.appendChild(s);
+    }
+  }
+
+  async function applyScenario(id) {
+    if (!id) {
+      el("scenario-context").textContent = "no scenario — estate conflicts remain visible";
+      renderBadges(null);
+      return;
+    }
+    const b = state.bindings.find((x) => x.id === id);
+    if (!b) return;
+    el("scenario-context").textContent = [
+      "plant=" + (b.plant_id || "—"),
+      "asset=" + ((b.asset_ids || []).join(",") || "—"),
+      "alert=" + (b.alert_id || "—"),
+      "unit=" + (b.unit_id || "—"),
+      "hide_conflicts=false",
+    ].join(" · ");
+    renderBadges(b);
+    show(b.screen);
+    setProv({
+      source: b.source,
+      fresh: "seed 20260910",
+      unc: "OPEN-019 census not assumed",
+      proc: b.plant_id || "—",
+      safe: (b.must_not_badges || []).join("; "),
+      auth: "observe/recommend only",
+    });
+    if (b.screen === "sc-identity") {
+      await loadIdentity();
+      await loadAliasPair();
+    } else if (b.screen === "sc-telemetry") {
+      await loadTelemetry();
+    } else if (b.screen === "sc-graph" || b.screen === "sc-incident") {
+      await loadGraph(b.plant_id || "PLT-10");
+    } else if (b.screen === "sc-risk") {
+      await loadRisk();
+    } else if (b.screen === "sc-safety") {
+      await loadSafety();
+      if (b.plant_id) await loadGraph(b.plant_id);
+    } else if (b.screen === "sc-sessions") {
+      await loadSessions(b.plant_id || "PLT-10");
+    } else if (b.screen === "sc-recovery") {
+      await loadRecovery(b.plant_id || "PLT-01");
+    } else if (b.screen === "sc-authority") {
+      await loadAuthority();
+      if (id === "EVAL-014") await refusePrompt();
+      else if (b.alert_id || (b.asset_ids || [])[0]) await draftPacket();
+    } else if (b.screen === "sc-tower") {
+      el("ai-toggle").checked = false;
+      applyAiMode();
+      await loadTower();
+      await loadIdentity();
+    }
+    if (b.inject) renderInject(b.inject);
+    else if (id === "cascade_001") renderInject("cascade_001");
+  }
+
   function renderInject(name) {
     const fx = state.fx || {};
     const map = {
@@ -345,7 +438,16 @@
       const b = document.createElement("button");
       b.type = "button";
       b.textContent = label;
-      b.addEventListener("click", () => renderInject(id));
+      b.addEventListener("click", () => {
+        const sid = id === "ai_outage" ? "EVAL-016" : id;
+        const sel = el("scenario-rail");
+        if (state.bindings.some((x) => x.id === sid)) {
+          sel.value = sid;
+          applyScenario(sid).catch((e) => console.error(e));
+        } else {
+          renderInject(id);
+        }
+      });
       ib.appendChild(b);
     });
     el("ai-toggle").checked = false;

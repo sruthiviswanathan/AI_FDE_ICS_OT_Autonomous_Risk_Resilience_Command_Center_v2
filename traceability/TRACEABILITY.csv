@@ -36,3 +36,4 @@ PRD-01,"4,10,13,19","C10,C11,C16",specs/PRD.md,EVAL-001..031,participant/work/pr
 PRD-02,"4,7,10","C11,C53",specs/APP_ACCEPTANCE_TESTS.md,EVAL-001..006;inject_01..06;cascade_001,participant/work/prd/APP_ACCEPTANCE_TESTS.md,T-MUSTNOT 100pct,no Execute Isolation; no Write PLC
 APP-01,14,C26,specs/PRD.md,EVAL-001;EVAL-002;EVAL-005,apps/command_center/fixtures/command_center_fixtures.json,fixture slice of bronze,no invented fields
 APP-02,"10,14","C64,C11",specs/PRD.md; specs/APP_ACCEPTANCE_TESTS.md,EVAL-016;EVAL-020,apps/command_center/index.html,AI-disabled UX,no Execute Isolation; no Write PLC
+APP-03,10,C11,apps/command_center/SCENARIO_BINDINGS.md,EVAL-001..006;inject_01..06;cascade_001,apps/command_center/fixtures/scenario_bindings.json,scenario rail badges,do not hide conflicts
