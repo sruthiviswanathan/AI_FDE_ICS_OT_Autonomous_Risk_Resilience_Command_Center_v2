@@ -189,3 +189,14 @@ OPEN-001 still blocks named-human Authorize records. OPEN-002 still blocks any â
 **Did not conclude:** implemented routes; UI; model pick.
 
 No new OPEN id. **Proposed ADR-11** read-only API; **ADR-12** AI-disabled as the product core; **ADR-13** explainer port must not mutate ACTION_TIERS or isolation/recovery predicates.
+
+---
+
+## SDD-12 | OM-11 | 2026-09-16
+
+**Evidence used:** `policy.py`; SDD-09 ADR-07; SDD-11; EVAL-006/014/020/023; CASCADE-001 08:47 as input.  
+**Assumptions:** One Incident Analyst optional; engines always; tier 2 stubs recommend-only.  
+**Unknowns:** OPEN-001 Authorize people; OPEN-004 verbs still absent from ACTION_TIERS (no extra tools invented).  
+**Did not conclude:** implemented agent loop.
+
+No new OPEN id. **Proposed ADR-14** autonomy pin to ACTION_TIERS. Multi-agent still **not selected**. `isolate_endpoint` execute is **not a tool**. AwaitAuthorization cannot close without a named human (OPEN-001) and still must not execute.
