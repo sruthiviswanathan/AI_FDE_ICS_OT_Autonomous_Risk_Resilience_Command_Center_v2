@@ -1,11 +1,11 @@
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ContextIdPickers } from "../components/ContextIdPickers";
 import { ScenarioBadgeStrip, ScenarioRail } from "../components/ScenarioRail";
 import { useApp } from "../context/AppContext";
 import { ProvenanceDrawer } from "./ProvenanceDrawer";
 import { useFetch } from "../hooks/useFetch";
 import { api } from "../api/client";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { usePersona } from "../hooks/usePersona";
 import {
   hasIncidentContext,
@@ -14,7 +14,6 @@ import {
   PERSONA_VIEWS,
   type PersonaId,
 } from "../personas/registry";
-import { Outlet } from "react-router-dom";
 
 export function Shell() {
   const ctx = useApp();
@@ -27,15 +26,6 @@ export function Shell() {
   const apiMismatch = health && !health.api_version;
   const apiDown = Boolean(healthQuery.error || catalog.error);
 
-  const healthSynced = useRef(false);
-  useEffect(() => {
-    if (health && !healthSynced.current) {
-      ctx.setAiEnabled(health.ai_enabled);
-      healthSynced.current = true;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [health]);
-
   useEffect(() => {
     if (catalog.data && !ctx.activeBinding) {
       const nominal = catalog.data.scenarios.find((s) => s.id === "nominal");
@@ -44,7 +34,6 @@ export function Shell() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [catalog.data]);
 
-  const narrativeUnavailable = ctx.aiEnabled && health && !health.ai_enabled;
   const incidentPinned = hasIncidentContext(ctx.alertId, ctx.scenario);
 
   function onPersonaChange(next: PersonaId) {
@@ -62,11 +51,6 @@ export function Shell() {
           {apiDown
             ? "API unreachable — start backend and check VITE_DEV_API_TARGET in .env.development.local"
             : "Wrong API on proxy target — point VITE_DEV_API_TARGET to your uvicorn port and restart npm run dev"}
-        </div>
-      )}
-      {narrativeUnavailable && (
-        <div className="advisory-footer" style={{ margin: 0, borderRadius: 0 }}>
-          Narrative unavailable — showing deterministic tables only (EVAL-016).
         </div>
       )}
       {incidentPinned && isFiltered && ctx.personaId !== "executive" && (
@@ -94,16 +78,6 @@ export function Shell() {
                   {p.label}
                 </option>
               ))}
-            </select>
-          </label>
-          <label className="topbar-control">
-            Narrative
-            <select
-              value={ctx.aiEnabled ? "on" : "off"}
-              onChange={(e) => ctx.setAiEnabled(e.target.value === "on")}
-            >
-              <option value="off">Off</option>
-              <option value="on">On</option>
             </select>
           </label>
           <span className="topbar-hint" title={view.description}>

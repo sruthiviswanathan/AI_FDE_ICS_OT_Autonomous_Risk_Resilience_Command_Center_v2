@@ -8,7 +8,6 @@ from pydantic import BaseModel, Field
 
 from .core import agent, authority, containment, data_layer, graph_slice, identity, ops, recovery, risk, telemetry
 from .core.agent import AgentValidationError
-from .core.ai_config import ai_enabled
 from .core.traces import read_traces
 from .diagnostics import run_diagnostics
 
@@ -34,7 +33,6 @@ def health():
     return {
         "status": "ok",
         "mode": "synthetic-read-only",
-        "ai_enabled": ai_enabled(),
         "api_version": "3.0.0",
     }
 

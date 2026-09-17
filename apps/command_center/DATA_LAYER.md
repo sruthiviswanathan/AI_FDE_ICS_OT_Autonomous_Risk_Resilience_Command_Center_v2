@@ -22,7 +22,7 @@ Derived views are built at request time (cached in-process): assets-by-id, recov
 ## Product API
 
 - OpenAPI: `contracts/openapi_command_center.yaml`
-- Health: `GET /health` → `{ status, mode, ai_enabled, api_version }`
+- Health: `GET /health` → `{ status, mode, api_version }`
 - Estate summary: `GET /data/views/estate`
 - Vendor sessions: `GET /data/views/vendor-sessions`
 

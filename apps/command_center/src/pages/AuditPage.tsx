@@ -55,7 +55,7 @@ export function AuditPage() {
           { key: "rec", header: "Recommendation", render: (r) => fmt(r.recommendation) },
           { key: "exec", header: "Execute", render: (r) => fmt(r.execute) },
           { key: "lat", header: "Latency (ms)", render: (r) => fmt(r.latency_ms) },
-          { key: "ai", header: "AI", render: (r) => fmt(r.ai_enabled) },
+          { key: "tokens", header: "Tokens", render: (r) => fmt(r.tokens) },
         ]}
       />
     </div>

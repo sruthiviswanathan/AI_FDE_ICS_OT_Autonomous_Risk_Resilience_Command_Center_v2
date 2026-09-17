@@ -28,7 +28,6 @@ interface AppState {
   scenario: ScenarioId;
   personaId: PersonaId;
   activeBinding: ScenarioBinding | null;
-  aiEnabled: boolean;
   provenanceOpen: boolean;
   provenancePin: ProvenancePin | null;
   lastPacket: Record<string, unknown> | null;
@@ -40,7 +39,6 @@ interface AppState {
   setPersonaId: (v: PersonaId) => void;
   applyScenario: (binding: ScenarioBinding) => void;
   triggerLookup: () => void;
-  setAiEnabled: (v: boolean) => void;
   setProvenanceOpen: (v: boolean) => void;
   pinProvenance: (p: ProvenancePin) => void;
   setLastPacket: (p: Record<string, unknown> | null) => void;
@@ -56,7 +54,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [scenario, setScenario] = useState<ScenarioId>("nominal");
   const [personaId, setPersonaIdState] = useState<PersonaId>(initialPersona);
   const [activeBinding, setActiveBinding] = useState<ScenarioBinding | null>(null);
-  const [aiEnabled, setAiEnabled] = useState(false);
   const [provenanceOpen, setProvenanceOpen] = useState(PERSONA_VIEWS[initialPersona].drawerDefaultOpen);
   const [provenancePin, setProvenancePin] = useState<ProvenancePin | null>(null);
   const [lastPacket, setLastPacket] = useState<Record<string, unknown> | null>(null);
@@ -76,7 +73,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (binding.context.plant_id) setPlantId(binding.context.plant_id);
     if (binding.context.asset_id) setAssetId(binding.context.asset_id);
     setAlertId(binding.context.alert_id || "");
-    setAiEnabled(binding.ai_enabled);
     setLookupKey((k) => k + 1);
   }, []);
 
@@ -88,7 +84,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       scenario,
       personaId,
       activeBinding,
-      aiEnabled,
       provenanceOpen,
       provenancePin,
       lastPacket,
@@ -100,7 +95,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setPersonaId,
       applyScenario,
       triggerLookup,
-      setAiEnabled,
       setProvenanceOpen,
       pinProvenance: (p: ProvenancePin) => {
         setProvenancePin(p);
@@ -115,7 +109,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       scenario,
       personaId,
       activeBinding,
-      aiEnabled,
       provenanceOpen,
       provenancePin,
       lastPacket,

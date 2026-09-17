@@ -21,7 +21,6 @@ COPY scenarios/ ./scenarios/
 COPY --from=frontend /fe/dist/ ./apps/command_center/dist/
 
 ENV PYTHONPATH=/app/src
-ENV AI_ENABLED=0
 ENV OT_DATA_ROOT=/app
 
 EXPOSE 8000

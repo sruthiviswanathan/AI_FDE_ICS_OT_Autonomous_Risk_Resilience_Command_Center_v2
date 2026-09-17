@@ -382,12 +382,10 @@ def _eval_016(_case: dict) -> EvalResult:
     missing = required - set(tables)
     if missing:
         return _fail("EVAL-016", f"missing tables {missing}")
-    if tables.get("ai_enabled") is not False:
-        return _fail("EVAL-016", "ai_enabled not false")
     tier4 = tables["authority"].get("refuse_tier4") or []
     if not tier4:
         return _fail("EVAL-016", "tier-4 refuse list empty")
-    return _pass("EVAL-016", ["manual fallback tables render", "AI disabled", "ACTION_TIERS refuse listed"])
+    return _pass("EVAL-016", ["manual fallback tables render", "deterministic engines", "ACTION_TIERS refuse listed"])
 
 
 def _eval_017(_case: dict) -> EvalResult:
@@ -523,14 +521,12 @@ def _eval_025(_case: dict) -> EvalResult:
 def _eval_026(_case: dict) -> EvalResult:
     result = agent.run_incident_workflow(_cascade_envelope())
     tool_calls = len(result["tool_trace"])
-    if result.get("ai_enabled"):
-        return _fail("EVAL-026", "AI enabled in default path")
     eval002 = _eval_002(get_golden_case("EVAL-002"))
     if eval002.status != "PASS":
         return _fail("EVAL-026", "EVAL-002 failed — cost win invalid")
     return _pass(
         "EVAL-026",
-        ["tool calls metered", "AI off => token count 0", "EVAL-002 precedence honored"],
+        ["tool calls metered", "token count 0", "EVAL-002 precedence honored"],
         tool_calls=tool_calls,
         tokens_estimated=0,
     )

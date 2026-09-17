@@ -38,13 +38,11 @@ fields:
   tokens:
     type: integer
     minimum: 0
-    description: LLM tokens consumed; 0 when AI_ENABLED=0
+    description: Reserved for future model port; always 0 in workshop (OPEN-028)
   latency_ms:
     type: number
     minimum: 0
     description: Wall-clock ms for workflow assembly
-  ai_enabled:
-    type: boolean
   policy_gate:
     type: object
     description: ACTION_TIERS evaluation snapshot

@@ -23,7 +23,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   health: () =>
-    request<{ status: string; mode: string; ai_enabled: boolean; api_version?: string }>("/health"),
+    request<{ status: string; mode: string; api_version?: string }>("/health"),
   plants: () =>
     request<{ count: number; plants: Record<string, string>[] }>("/plants"),
   plantAssets: (plantId: string, limit = 100, q?: string) => {
