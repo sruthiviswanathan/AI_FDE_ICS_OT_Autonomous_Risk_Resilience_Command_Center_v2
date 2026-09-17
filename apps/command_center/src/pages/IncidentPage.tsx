@@ -1,7 +1,7 @@
 import { api } from "../api/client";
 import { GraphSliceView } from "../components/GraphSliceView";
 import { PageLookup } from "../components/PageLookup";
-import { ErrorBlock, LoadingBlock, UntrustedBadge } from "../components/StateViews";
+import { ErrorBlock, GraphAsyncContent, LoadingBlock, UntrustedBadge } from "../components/StateViews";
 import { useApp } from "../context/AppContext";
 import { useFetch } from "../hooks/useFetch";
 
@@ -53,19 +53,23 @@ export function IncidentPage() {
         </div>
       )}
 
-      {graph.loading && <LoadingBlock />}
-      {graph.error && <ErrorBlock message={graph.error} />}
-      {graph.data && (
-        <div style={{ marginTop: "0.75rem" }}>
-          <h3 className="section-title">Task-scoped graph (Q5)</h3>
-          <GraphSliceView
-            data={graph.data}
-            showVisualToggle
-            defaultView="visual"
-            focusAssetId={assetId || undefined}
-          />
-        </div>
-      )}
+      <div style={{ marginTop: "0.75rem" }}>
+        <h3 className="section-title">Task-scoped graph (Q5)</h3>
+        <GraphAsyncContent
+          loading={graph.loading}
+          error={graph.error}
+          label="Loading incident cascade graph (Q5)…"
+        >
+          {graph.data && (
+            <GraphSliceView
+              data={graph.data}
+              showVisualToggle
+              defaultView="visual"
+              focusAssetId={assetId || undefined}
+            />
+          )}
+        </GraphAsyncContent>
+      </div>
     </div>
   );
 }

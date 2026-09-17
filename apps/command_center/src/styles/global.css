@@ -336,12 +336,81 @@ a {
 
 .state-block.skeleton {
   color: var(--text-dim);
+}
+
+.loading-block {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.loading-block.loading-inline,
+.loading-block.loading-compact {
+  padding: 0.45rem 0.65rem;
+  margin: 0.35rem 0;
+  border-style: solid;
+  background: var(--bg-elevated);
+}
+
+.loading-block.loading-graph {
+  min-height: 280px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-style: solid;
+  background: var(--bg-elevated);
+  text-align: center;
+}
+
+.loading-block.loading-default {
   animation: pulse 1.2s infinite;
+}
+
+.loading-spinner {
+  flex-shrink: 0;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+.loading-graph .loading-spinner {
+  width: 1.85rem;
+  height: 1.85rem;
+  border-width: 3px;
+}
+
+.loading-label {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+
+.loading-graph .loading-label {
+  max-width: 22rem;
+  line-height: 1.35;
+}
+
+.drawer .loading-block.loading-graph {
+  min-height: 220px;
+}
+
+.drill-graph-col .loading-block.loading-graph {
+  min-height: 320px;
 }
 
 @keyframes pulse {
   50% {
     opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 

@@ -2,7 +2,7 @@ import { api } from "../api/client";
 import { DataTable } from "../components/DataTable";
 import { GraphSliceView } from "../components/GraphSliceView";
 import { PageLookup } from "../components/PageLookup";
-import { ErrorBlock, LoadingBlock, SafetyBadge, UncertaintyBadge } from "../components/StateViews";
+import { ErrorBlock, GraphAsyncContent, LoadingBlock, SafetyBadge, UncertaintyBadge } from "../components/StateViews";
 import { useApp } from "../context/AppContext";
 import { useFetch } from "../hooks/useFetch";
 import { fmt } from "../utils/format";
@@ -57,12 +57,16 @@ export function SafetyPage() {
           />
         </>
       )}
-      {graph.data && (
-        <div style={{ marginTop: "0.75rem" }}>
-          <h3 className="section-title">Safety context (Q3)</h3>
-          <GraphSliceView data={graph.data} showVisualToggle defaultView="visual" />
-        </div>
-      )}
+      <div style={{ marginTop: "0.75rem" }}>
+        <h3 className="section-title">Safety context (Q3)</h3>
+        <GraphAsyncContent
+          loading={graph.loading}
+          error={graph.error}
+          label="Loading safety context graph (Q3)…"
+        >
+          {graph.data && <GraphSliceView data={graph.data} showVisualToggle defaultView="visual" />}
+        </GraphAsyncContent>
+      </div>
     </div>
   );
 }

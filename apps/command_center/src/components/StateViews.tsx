@@ -1,5 +1,39 @@
-export function LoadingBlock({ label = "Loading estate data…" }: { label?: string }) {
-  return <div className="state-block skeleton">{label}</div>;
+import type { ReactNode } from "react";
+
+export function LoadingBlock({
+  label = "Loading estate data…",
+  variant = "default",
+}: {
+  label?: string;
+  variant?: "default" | "graph" | "inline" | "compact";
+}) {
+  return (
+    <div
+      className={`state-block skeleton loading-block loading-${variant}`}
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <span className="loading-spinner" aria-hidden="true" />
+      <span className="loading-label">{label}</span>
+    </div>
+  );
+}
+
+export function GraphAsyncContent({
+  loading,
+  error,
+  label = "Loading graph…",
+  children,
+}: {
+  loading: boolean;
+  error?: string | null;
+  label?: string;
+  children: ReactNode;
+}) {
+  if (loading) return <LoadingBlock variant="graph" label={label} />;
+  if (error) return <ErrorBlock message={error} />;
+  return <>{children}</>;
 }
 
 export function ErrorBlock({ message }: { message: string }) {

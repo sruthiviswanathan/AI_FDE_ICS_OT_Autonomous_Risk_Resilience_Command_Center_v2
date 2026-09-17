@@ -114,7 +114,7 @@ export function IdentityPage() {
       <h2 className="page-title">Asset Identity Reconciliation</h2>
       <PageLookup fields={{ plant: false, alert: false }} />
 
-      {conflicts.loading && <LoadingBlock label="Loading plant identity conflicts…" />}
+      {conflicts.loading && <LoadingBlock variant="inline" label="Loading plant identity conflicts…" />}
       {conflicts.error && <ErrorBlock message={conflicts.error} />}
       {conflicts.data && (
         <>
@@ -146,7 +146,9 @@ export function IdentityPage() {
       {!assetId && !defaultingAsset && plantId && (
         <p className="ai-off-note">No assets available for plant {plantId}.</p>
       )}
-      {(defaultingAsset || (bundle.loading && assetId)) && <LoadingBlock label="Loading asset identity…" />}
+      {(defaultingAsset || (bundle.loading && assetId)) && (
+        <LoadingBlock variant="inline" label="Loading asset identity…" />
+      )}
       {bundle.error && <ErrorBlock message={bundle.error} />}
       {bundle.data && String(bundle.data.asset_uid) === assetId && (
         <>

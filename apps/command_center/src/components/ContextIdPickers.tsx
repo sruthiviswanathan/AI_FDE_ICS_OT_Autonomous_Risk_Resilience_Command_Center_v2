@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api, ApiError } from "../api/client";
 import { useApp } from "../context/AppContext";
+import { LoadingBlock } from "./StateViews";
 
 function catalogErrorMessage(err: unknown, label: string): string {
   if (err instanceof ApiError) {
@@ -176,8 +177,13 @@ export function ContextIdPickers({
         ? [{ alert_id: ctx.alertId, severity: undefined }]
         : [];
 
+  const catalogBusy = plantsLoading || assetsLoading || alertsLoading;
+
   return (
     <>
+      {catalogBusy && (
+        <LoadingBlock variant="compact" label="Refreshing context catalog…" />
+      )}
       {fields.plant !== false && (
         <label>
           Plant

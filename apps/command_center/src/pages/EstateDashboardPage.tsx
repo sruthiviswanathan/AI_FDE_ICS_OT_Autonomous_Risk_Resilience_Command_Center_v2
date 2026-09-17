@@ -12,7 +12,7 @@ import {
   postureComposite,
 } from "../components/PlantPostureBadges";
 import { GraphSliceView } from "../components/GraphSliceView";
-import { ErrorBlock, LoadingBlock, FreshnessBadge } from "../components/StateViews";
+import { ErrorBlock, GraphAsyncContent, LoadingBlock, FreshnessBadge } from "../components/StateViews";
 import { deriveGraphQuery } from "../utils/provenanceContext";
 import { useApp } from "../context/AppContext";
 import { useFetch } from "../hooks/useFetch";
@@ -456,17 +456,21 @@ export function EstateDashboardPage() {
                 <div className="drill-col drill-graph-col">
                   <h4 className="section-title">Neighborhood graph</h4>
                   <p className="ai-off-note">Hop-capped slice — not full estate topology (NFR-CAP)</p>
-                  {graph.loading && <LoadingBlock />}
-                  {graph.error && <ErrorBlock message={graph.error} />}
-                  {graph.data && (
-                    <GraphSliceView
-                      data={graph.data}
-                      showVisualToggle
-                      defaultView="visual"
-                      focusAssetId={localAssetId}
-                      expandable
-                    />
-                  )}
+                  <GraphAsyncContent
+                    loading={graph.loading}
+                    error={graph.error}
+                    label={`Loading neighborhood graph (${graphQuery})…`}
+                  >
+                    {graph.data && (
+                      <GraphSliceView
+                        data={graph.data}
+                        showVisualToggle
+                        defaultView="visual"
+                        focusAssetId={localAssetId}
+                        expandable
+                      />
+                    )}
+                  </GraphAsyncContent>
                 </div>
               </div>
             </div>

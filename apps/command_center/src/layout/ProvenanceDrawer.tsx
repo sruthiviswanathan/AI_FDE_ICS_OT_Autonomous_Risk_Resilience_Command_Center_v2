@@ -5,7 +5,7 @@ import { GraphVisualView } from "../components/GraphVisualView";
 import { ProvenanceMemoryView } from "../components/ProvenanceMemoryView";
 import { ProvenancePolicyView } from "../components/ProvenancePolicyView";
 import { ProvenanceStructuredView } from "../components/ProvenanceStructuredView";
-import { ErrorBlock, LoadingBlock } from "../components/StateViews";
+import { ErrorBlock, GraphAsyncContent, LoadingBlock } from "../components/StateViews";
 import { useApp } from "../context/AppContext";
 import { usePersona } from "../hooks/usePersona";
 import { useFetch } from "../hooks/useFetch";
@@ -124,37 +124,43 @@ export function ProvenanceDrawer() {
             {!plantId && " — select a plant"}
           </p>
           {!plantId && <p className="ai-off-note">Graph slice requires plant context.</p>}
-          {plantId && graph.loading && <LoadingBlock label={`Loading ${graphQuery} graph slice…`} />}
-          {plantId && graph.error && <ErrorBlock message={graph.error} />}
-          {plantId && graph.data && (
-            <>
-              <div className="btn-row graph-view-toggle drawer-graph-toggle">
-                <button
-                  type="button"
-                  className={graphView === "visual" ? "active" : ""}
-                  onClick={() => setGraphView("visual")}
-                >
-                  Visual
-                </button>
-                <button
-                  type="button"
-                  className={graphView === "citations" ? "active" : ""}
-                  onClick={() => setGraphView("citations")}
-                >
-                  Citations
-                </button>
-              </div>
-              {graphView === "visual" ? (
-                <GraphVisualView
-                  data={graph.data}
-                  focusAssetId={assetId || undefined}
-                  variant="drawer"
-                  expandable
-                />
-              ) : (
-                <GraphCitationView data={graph.data} />
+          {plantId && (
+            <GraphAsyncContent
+              loading={graph.loading}
+              error={graph.error}
+              label={`Loading ${graphQueryLabel(graphQuery)} graph (${graphQuery})…`}
+            >
+              {graph.data && (
+                <>
+                  <div className="btn-row graph-view-toggle drawer-graph-toggle">
+                    <button
+                      type="button"
+                      className={graphView === "visual" ? "active" : ""}
+                      onClick={() => setGraphView("visual")}
+                    >
+                      Visual
+                    </button>
+                    <button
+                      type="button"
+                      className={graphView === "citations" ? "active" : ""}
+                      onClick={() => setGraphView("citations")}
+                    >
+                      Citations
+                    </button>
+                  </div>
+                  {graphView === "visual" ? (
+                    <GraphVisualView
+                      data={graph.data}
+                      focusAssetId={assetId || undefined}
+                      variant="drawer"
+                      expandable
+                    />
+                  ) : (
+                    <GraphCitationView data={graph.data} />
+                  )}
+                </>
               )}
-            </>
+            </GraphAsyncContent>
           )}
         </div>
       )}
