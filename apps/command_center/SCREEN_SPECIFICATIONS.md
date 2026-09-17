@@ -36,15 +36,17 @@ Each screen specifies: purpose, personas, API, layout, card hierarchy, states, f
 | **ID** | `estate-dashboard` |
 | **Route** | `/estate` |
 | **Personas** | SOC Analyst, FDE, Full, Executive |
-| **API** | `GET /data/views/estate-by-plant`, `GET /plants/{id}/assets`, `GET /assets/{id}/alerts`, `GET /graph/slice` |
-| **Acceptance** | (Home estate spec) |
+| **API** | `GET /data/views/estate-by-plant`, `GET /diagnostics`, `GET /plants/{id}/assets`, `GET /assets/{id}/alerts`, `GET /graph/slice` |
+| **Acceptance** | `specs/Estate_Graphical_Interactive_View.md` |
 
-**Layout:** Inventory summary → plant heatmap grid → drill-down (assets, alerts, neighborhood graph).
+**Layout:** Estate diagnostics strip → interactive graph (default) or grid toggle → inventory summary → drill-down (assets, alerts, neighborhood graph).
 
 **Cards (priority):**
-1. Asset status + alerts-by-plant inventory summary
-2. Plant heatmap grid (18 tiles, region filter, sort)
-3. Drill-down tables + hop-capped Q1/Q4/Q5 slice
+1. Estate diagnostics KPI strip (conflicts, barriers, undocumented paths, recovery)
+2. **Interactive estate graph** (`EstateOverviewGraph`) — 18 plant nodes by region; color by posture layer; size by criticality or asset count; pan/zoom
+3. Plant heatmap grid (alternate view)
+4. Alerts-by-plant inventory summary
+5. Drill-down tables + hop-capped Q1/Q4/Q5 slice
 
 **States:** URL params `?plant=&asset=&alert=`; sync with context bar.
 

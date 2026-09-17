@@ -92,13 +92,50 @@ export function resolveInventorySummary(
 
 export type SortMode = "plant_id" | "elevated" | "alert_hc" | "conflicts";
 
-export const REGIONS = ["All", "NA", "EU", "APAC", "LATAM"] as const;
+export const REGIONS = ["All", "NA", "EU", "APAC", "LATAM", "MEA"] as const;
 export type RegionFilter = (typeof REGIONS)[number];
 
-export const REGION_ORDER = ["NA", "EU", "APAC", "LATAM"] as const;
+export const REGION_ORDER = ["NA", "EU", "APAC", "LATAM", "MEA"] as const;
 
 export function assetConflict(row: Record<string, string>): boolean {
   return row.registered_state === "ACTIVE" && (row.observed_state === "OFFLINE" || row.observed_state === "UNSEEN");
+}
+
+export type AssetSortMode = "asset_id" | "alerts_desc" | "conflicts_first" | "type" | "zone";
+
+export function filterAssets(assets: Record<string, string>[], query: string): Record<string, string>[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return assets;
+  return assets.filter((a) =>
+    [a.asset_id, a.asset_type, a.zone, a.registered_state, a.observed_state, a.owner]
+      .some((v) => String(v ?? "").toLowerCase().includes(q)),
+  );
+}
+
+export function sortAssets(assets: Record<string, string>[], mode: AssetSortMode): Record<string, string>[] {
+  const copy = [...assets];
+  switch (mode) {
+    case "alerts_desc":
+      return copy.sort(
+        (a, b) =>
+          Number(b.alert_count ?? 0) - Number(a.alert_count ?? 0) || a.asset_id.localeCompare(b.asset_id),
+      );
+    case "conflicts_first":
+      return copy.sort((a, b) => {
+        const diff = Number(assetConflict(b)) - Number(assetConflict(a));
+        return diff || a.asset_id.localeCompare(b.asset_id);
+      });
+    case "type":
+      return copy.sort(
+        (a, b) => (a.asset_type || "").localeCompare(b.asset_type || "") || a.asset_id.localeCompare(b.asset_id),
+      );
+    case "zone":
+      return copy.sort(
+        (a, b) => (a.zone || "").localeCompare(b.zone || "") || a.asset_id.localeCompare(b.asset_id),
+      );
+    default:
+      return copy.sort((a, b) => a.asset_id.localeCompare(b.asset_id));
+  }
 }
 
 export function postureCompositeRank(plant: PlantEstateRow): number {

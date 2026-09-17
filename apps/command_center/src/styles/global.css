@@ -1242,20 +1242,208 @@ button:disabled {
 
 .drill-down-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+.drill-col {
+  min-width: 0;
 }
 
 .drill-col h4 {
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.5rem;
+}
+
+.drill-table-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.65rem 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.drill-search {
+  flex: 1 1 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.drill-search .lookup-input {
+  max-width: none;
+  margin-bottom: 0;
+  width: 100%;
+}
+
+.drill-table-count {
+  margin: 0 0 0.45rem;
+}
+
+.drill-col .table-wrap {
+  max-height: min(440px, 48vh);
+  overflow: auto;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.drill-col .data-table {
+  font-size: 0.84rem;
+}
+
+.drill-col .data-table th,
+.drill-col .data-table td {
+  padding: 0.5rem 0.65rem;
+  vertical-align: top;
+}
+
+.drill-col .data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  box-shadow: 0 1px 0 var(--border);
 }
 
 .drill-graph-col {
-  min-width: 280px;
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+@media (max-width: 960px) {
+  .drill-down-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .estate-graph-panel {
   margin-top: 0.5rem;
+}
+
+.estate-view-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.estate-view-toggle h3 {
+  margin: 0;
+}
+
+.estate-diagnostics-strip {
+  margin-bottom: 0.75rem;
+}
+
+.estate-diagnostics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.estate-diag-anchor {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.45rem 0.55rem;
+  text-align: center;
+}
+
+.estate-diag-value {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--orange);
+  font-variant-numeric: tabular-nums;
+}
+
+.estate-diag-label {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-top: 0.15rem;
+  line-height: 1.25;
+}
+
+.estate-graph-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+.estate-graph-hint {
+  margin: 0 0 0.5rem;
+}
+
+.estate-graph-viewport {
+  height: min(400px, 42vh);
+  max-height: 400px;
+  overflow: hidden;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.estate-overview-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+
+.estate-overview-svg:active {
+  cursor: grabbing;
+}
+
+.estate-region-label {
+  fill: var(--text-dim);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.estate-plant-node {
+  cursor: pointer;
+  outline: none;
+}
+
+.estate-plant-node.dimmed {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.estate-plant-node:focus-visible circle:first-of-type {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.estate-node-id {
+  fill: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.estate-node-meta {
+  fill: var(--text-dim);
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.estate-graph-tooltip-inner {
+  background: rgba(13, 17, 23, 0.92);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.4rem 0.55rem;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: var(--text);
 }
 
 .lookup-input {
