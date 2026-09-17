@@ -121,11 +121,26 @@ export const api = {
   },
   identity: (id: string) => request<Record<string, unknown>>(`/assets/${id}/identity`),
   identityConflicts: () => request<Record<string, unknown>>("/identity/conflicts"),
-  telemetryQuality: () => request<Record<string, unknown>>("/telemetry/quality"),
-  telemetryTimeline: (tagId?: string) =>
-    request<Record<string, unknown>>(
-      `/telemetry/timeline?order=event_time${tagId ? `&tag_id=${encodeURIComponent(tagId)}` : ""}`,
-    ),
+  telemetryQuality: (params?: { plantId?: string; assetId?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.plantId) q.set("plant_id", params.plantId);
+    if (params?.assetId) q.set("asset_id", params.assetId);
+    const suffix = q.toString() ? `?${q}` : "";
+    return request<Record<string, unknown>>(`/telemetry/quality${suffix}`);
+  },
+  telemetryTimeline: (params?: {
+    tagId?: string;
+    plantId?: string;
+    assetId?: string;
+    limit?: number;
+  }) => {
+    const q = new URLSearchParams({ order: "event_time" });
+    if (params?.tagId) q.set("tag_id", params.tagId);
+    if (params?.plantId) q.set("plant_id", params.plantId);
+    if (params?.assetId) q.set("asset_id", params.assetId);
+    if (params?.limit !== undefined) q.set("limit", String(params.limit));
+    return request<Record<string, unknown>>(`/telemetry/timeline?${q}`);
+  },
   risk: (limit = 20) => request<Record<string, unknown>>(`/risk/contextual?limit=${limit}`),
   safetyConflicts: (plantId?: string) =>
     request<Record<string, unknown>>(

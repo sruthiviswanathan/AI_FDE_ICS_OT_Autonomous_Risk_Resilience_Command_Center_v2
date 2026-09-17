@@ -41,6 +41,13 @@ def test_happy_path_gold_reads():
     assert recovery.status_code == 200
     assert recovery.json()["plant_id"] == "PLT-01"
 
+    tele_estate = client.get("/telemetry/quality")
+    tele_plt01 = client.get("/telemetry/quality?plant_id=PLT-01")
+    assert tele_estate.status_code == 200
+    assert tele_plt01.status_code == 200
+    assert tele_plt01.json()["total_events"] < tele_estate.json()["total_events"]
+    assert tele_plt01.json()["scope"]["effective"]["plant_id"] == "PLT-01"
+
 
 def test_recommend_never_executes():
     payload = {

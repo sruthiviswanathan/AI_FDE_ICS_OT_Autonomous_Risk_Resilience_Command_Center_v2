@@ -114,15 +114,27 @@ def identity_conflicts():
 
 
 @app.get("/telemetry/quality")
-def telemetry_quality():
-    return telemetry.telemetry_quality_summary()
+def telemetry_quality(plant_id: str | None = None, asset_id: str | None = None):
+    return telemetry.telemetry_quality_summary(plant_id=plant_id, asset_id=asset_id)
 
 
 @app.get("/telemetry/timeline")
-def telemetry_timeline(tag_id: str | None = None, order: str = "event_time"):
+def telemetry_timeline(
+    tag_id: str | None = None,
+    plant_id: str | None = None,
+    asset_id: str | None = None,
+    order: str = "event_time",
+    limit: int = 200,
+):
     if order != "event_time":
         raise HTTPException(status_code=400, detail="only order=event_time is supported")
-    return telemetry.get_timeline(tag_id=tag_id, order=order)
+    return telemetry.get_timeline(
+        tag_id=tag_id,
+        plant_id=plant_id,
+        asset_id=asset_id,
+        order=order,
+        limit=limit,
+    )
 
 
 @app.get("/risk/contextual")

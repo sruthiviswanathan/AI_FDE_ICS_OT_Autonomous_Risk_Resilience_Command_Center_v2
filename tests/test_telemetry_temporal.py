@@ -34,6 +34,30 @@ def test_telemetry_quality_summary_matches_seeded_imperfections():
     assert summary["unit_mismatches"] >= 47
 
 
+def test_telemetry_quality_scoped_by_plant():
+    plt01 = telemetry.telemetry_quality_summary(plant_id="PLT-01")
+    plt10 = telemetry.telemetry_quality_summary(plant_id="PLT-10")
+    estate = telemetry.telemetry_quality_summary()
+    assert plt01["total_events"] < estate["total_events"]
+    assert plt10["total_events"] < estate["total_events"]
+    assert plt01["bad_or_uncertain"] != plt10["bad_or_uncertain"]
+    assert plt01["scope"]["effective"]["plant_id"] == "PLT-01"
+
+
+def test_telemetry_quality_falls_back_when_asset_untagged():
+    summary = telemetry.telemetry_quality_summary(plant_id="PLT-01", asset_id="OT-00001")
+    assert summary["total_events"] > 0
+    assert summary["bad_or_uncertain"] > 0
+    assert summary["scope"]["scope_note"]
+    assert summary["scope"]["effective"]["asset_id"] is None
+
+
+def test_telemetry_timeline_scoped_by_plant():
+    timeline = telemetry.get_timeline(plant_id="PLT-01", limit=20)
+    assert timeline["count"] <= 20
+    assert all(e["tag_id"].startswith("PLT-01-") for e in timeline["events"])
+
+
 def test_tag_telemetry_preserves_dual_clock_fields():
     sample = jsonl("data/telemetry/tag_telemetry.jsonl")[:5]
     ordered = telemetry.order_events(sample)
