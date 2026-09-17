@@ -54,6 +54,15 @@ def data_estate_view():
     return data_layer.estate_derived_view()
 
 
+@app.get("/data/views/estate-by-plant")
+def data_estate_by_plant(include_top_alerts: int = 3, severity_min: str | None = None):
+    """Per-plant estate aggregates for Home dashboard (inventory signals, not risk rank)."""
+    return data_layer.estate_by_plant_view(
+        include_top_alerts=include_top_alerts,
+        severity_min=severity_min,
+    )
+
+
 @app.get("/data/views/vendor-sessions")
 def data_vendor_sessions(limit: int = 50):
     """Vendor/remote access sessions with anomaly flags."""

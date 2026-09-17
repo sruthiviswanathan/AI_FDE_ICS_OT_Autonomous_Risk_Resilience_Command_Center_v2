@@ -42,6 +42,7 @@ export const INCIDENT_ROUTES = ["/incident", "/recommend"] as const;
 
 export const ALL_ROUTES = [
   "/",
+  "/estate",
   "/identity",
   "/telemetry",
   "/process",
@@ -65,6 +66,7 @@ export const PERSONA_VIEWS: Record<PersonaId, PersonaView> = {
     defaultRoute: "/",
     routes: [
       "/",
+      "/estate",
       "/identity",
       "/telemetry",
       "/risk",
@@ -106,7 +108,7 @@ export const PERSONA_VIEWS: Record<PersonaId, PersonaView> = {
     label: "Executive / VP Ops",
     description: "Estate posture, KPI trends, residual risk — read-only",
     defaultRoute: "/executive",
-    routes: ["/executive", "/kpi", "/recovery", "/recommend", "/"],
+    routes: ["/executive", "/kpi", "/recovery", "/recommend", "/", "/estate"],
     contextFields: { plant: true, asset: false, alert: false },
     provenanceDefaultChannel: "STRUCTURED",
     drawerDefaultOpen: false,
@@ -141,7 +143,10 @@ export const PERSONA_LIST: PersonaView[] = Object.values(PERSONA_VIEWS);
 export const APP_NAV: NavGroup[] = [
   {
     group: "Home",
-    items: [{ to: "/", label: "Control Tower", personas: ["soc_analyst", "fde", "full", "executive"] }],
+    items: [
+      { to: "/", label: "Control Tower", personas: ["soc_analyst", "fde", "full", "executive"] },
+      { to: "/estate", label: "Estate Dashboard", personas: ["soc_analyst", "fde", "full", "executive"] },
+    ],
   },
   {
     group: "Identity & data",

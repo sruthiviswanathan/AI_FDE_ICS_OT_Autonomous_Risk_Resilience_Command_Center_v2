@@ -101,6 +101,49 @@ def test_data_estate_view_derived_at_runtime():
     assert "derived_signals" in body
 
 
+def test_estate_by_plant_view():
+    resp = client.get("/data/views/estate-by-plant?include_top_alerts=5")
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["provenance"] == "runtime-derived"
+    assert body["plant_count"] == 18
+    assert len(body["plants"]) == 18
+    assert "methodology" in body
+    assert "not_operational_risk_rank" in body["methodology"]
+
+    assert body["total_alerts"] > 0
+    assert "asset_status_summary" in body
+    summary = body["asset_status_summary"]
+    assert summary["total_assets"] > 0
+    assert "by_registered_state" in summary
+    assert "by_observed_state" in summary
+
+    assert body["methodology"].get("posture_motto")
+    layer_keys = {
+        "cyber_exposure",
+        "process_ops_disagreement",
+        "safety_posture",
+        "recovery_credibility",
+        "evidence_quality",
+    }
+
+    plt10 = next(p for p in body["plants"] if p["plant_id"] == "PLT-10")
+    assert plt10["counts"]["assets"] > 0
+    assert plt10["counts"]["alerts_total"] > 0
+    assert plt10["signals"]["elevated"] is True
+    assert plt10["signals"]["posture_composite"] in {"red", "amber", "ok"}
+    assert set(plt10["posture_layers"].keys()) == layer_keys
+    assert plt10["signals"]["posture_composite"] != "ok"
+    assert len(plt10["signals"]["elevation_reasons"]) >= 1
+    assert "assets_by_observed_state" in plt10
+    assert "top_assets_by_alerts" in plt10
+
+    assets = client.get("/plants/PLT-10/assets?limit=5")
+    assert assets.status_code == 200
+    sample = assets.json()["assets"][0]
+    assert "alert_count" in sample
+
+
 def test_audit_traces_and_scenario_endpoints():
     traces = client.get("/audit/traces?limit=5")
     assert traces.status_code == 200
@@ -161,6 +204,7 @@ def test_openapi_matches_registered_routes():
         "/plants/{plant_id}/assets",
         "/assets/{asset_id}/alerts",
         "/data/sources",
+        "/data/views/estate-by-plant",
         "/assets/{id}/identity",
         "/risk/contextual",
         "/recommend",
@@ -170,7 +214,7 @@ def test_openapi_matches_registered_routes():
 
 def test_spa_fallback_serves_index_for_client_routes():
     """React Router paths must return index.html on refresh (Render / integrated deploy)."""
-    for path in ("/", "/incident", "/process", "/recovery"):
+    for path in ("/", "/estate", "/incident", "/process", "/recovery"):
         resp = client.get(path)
         assert resp.status_code == 200, path
         assert "text/html" in resp.headers.get("content-type", ""), path

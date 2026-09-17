@@ -19,6 +19,22 @@ def test_derived_views_consistent():
     assert estate["counts"]["assets"] == len(assets_by_id)
 
 
+def test_estate_by_plant_view():
+    view = data_layer.estate_by_plant_view(include_top_alerts=3)
+    assert view["plant_count"] == 18
+    assert view["total_alerts"] > 0
+    assert view["asset_status_summary"]["total_assets"] > 0
+    plt10 = next(p for p in view["plants"] if p["plant_id"] == "PLT-10")
+    assert plt10["counts"]["assets"] > 0
+    assert plt10["counts"]["alerts_total"] > 0
+    assert plt10["signals"]["elevated"] is True
+    assert plt10["signals"]["posture_composite"] != "ok"
+    assert "posture_layers" in plt10
+    assert "cyber_exposure" in plt10["posture_layers"]
+    assert "top_assets_by_alerts" in plt10
+    assert "methodology" in view
+
+
 def test_clear_cache_roundtrip():
     data_layer.clear_cache()
     reloaded = data_layer.load_assets()

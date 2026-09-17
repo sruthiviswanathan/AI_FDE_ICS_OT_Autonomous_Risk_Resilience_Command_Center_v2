@@ -4,6 +4,7 @@ import { PersonaRouteGuard } from "./components/PersonaRouteGuard";
 import { Shell } from "./layout/Shell";
 import { AuditPage } from "./pages/AuditPage";
 import { ControlTower } from "./pages/ControlTower";
+import { EstateDashboardPage } from "./pages/EstateDashboardPage";
 import { ExecutivePage } from "./pages/ExecutivePage";
 import { IdentityPage } from "./pages/IdentityPage";
 import { IncidentPage } from "./pages/IncidentPage";
@@ -25,6 +26,7 @@ export default function App() {
           <Route element={<Shell />}>
             <Route element={<PersonaRouteGuard />}>
               <Route index element={<ControlTower />} />
+              <Route path="estate" element={<EstateDashboardPage />} />
               <Route path="identity" element={<IdentityPage />} />
               <Route path="telemetry" element={<TelemetryPage />} />
               <Route path="process" element={<ProcessGraphPage />} />
