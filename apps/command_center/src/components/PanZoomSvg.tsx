@@ -7,6 +7,7 @@ export function PanZoomSvg({
   children,
   className,
   ariaLabel,
+  preserveAspectRatio = "xMidYMid meet",
 }: {
   width: number;
   height: number;
@@ -14,6 +15,7 @@ export function PanZoomSvg({
   children: ReactNode;
   className?: string;
   ariaLabel?: string;
+  preserveAspectRatio?: string;
 }) {
   const [view, setView] = useState({ x: 0, y: 0, scale: 1 });
   const dragRef = useRef<{ x: number; y: number; vx: number; vy: number; active: boolean } | null>(null);
@@ -79,6 +81,7 @@ export function PanZoomSvg({
     <svg
       className={className}
       viewBox={viewBox}
+      preserveAspectRatio={preserveAspectRatio}
       role="img"
       aria-label={ariaLabel}
       onWheel={onWheel}

@@ -61,7 +61,7 @@ export function VendorSessionsPage() {
                     onClick={() =>
                       pinProvenance({
                         source_path: String(sessions.data?.source_path),
-                        freshness: "workshop-static",
+                        label: "vendor_sessions",
                       })
                     }
                   >

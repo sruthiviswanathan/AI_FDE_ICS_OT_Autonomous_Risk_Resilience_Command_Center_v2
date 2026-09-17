@@ -232,6 +232,21 @@ paths:
     get:
       summary: Telemetry Quality
       operationId: telemetry_quality_telemetry_quality_get
+      parameters:
+      - name: plant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+      - name: asset_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
       responses:
         '200':
           description: Successful Response
@@ -251,6 +266,20 @@ paths:
           - type: string
           - type: 'null'
           title: Tag Id
+      - name: plant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+      - name: asset_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
       - name: order
         in: query
         required: false
@@ -258,6 +287,12 @@ paths:
           type: string
           default: event_time
           title: Order
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 200
       responses:
         '200':
           description: Successful Response

@@ -53,7 +53,7 @@ def _q1_identity(*, asset_id: str | None, alias: str | None) -> dict:
                     observed_state=candidate.get("observed_state"),
                 )
             )
-            edges.append(_edge("ALIAS_OF", bundle["alias"], aid, source=bundle.get("source")))
+            edges.append(_edge("ALIAS_OF", bundle["alias"], aid, record_source=bundle.get("source")))
         return {
             "query": "Q1",
             "nodes": nodes,
@@ -70,7 +70,7 @@ def _q1_identity(*, asset_id: str | None, alias: str | None) -> dict:
     for entry in bundle.get("aliases", []):
         alias_id = entry["alias"]
         nodes.append(_node(alias_id, "Alias", source=entry.get("source")))
-        edges.append(_edge("ALIAS_OF", alias_id, asset_id, source=entry.get("source")))
+        edges.append(_edge("ALIAS_OF", alias_id, asset_id, record_source=entry.get("source")))
     return {
         "query": "Q1",
         "nodes": nodes,

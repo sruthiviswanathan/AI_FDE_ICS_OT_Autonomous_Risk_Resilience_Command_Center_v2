@@ -209,20 +209,57 @@ def get_identity_bundle(asset_id: str) -> dict:
     }
 
 
-def list_identity_conflicts() -> dict:
+def list_identity_conflicts(*, plant_id: str | None = None) -> dict:
     assets = list(load_assets())
+    if plant_id:
+        assets = [a for a in assets if a.get("plant_id") == plant_id]
+
     alias_counts = Counter(r["alias"] for r in _alias_rows())
-    alias_collisions = sum(1 for count in alias_counts.values() if count > 1)
+    alias_index = _alias_index()
+    assets_by_id = _assets_by_id()
+
+    def alias_touches_scope(alias: str) -> bool:
+        if plant_id is None:
+            return True
+        return any(
+            assets_by_id.get(row["asset_id"], {}).get("plant_id") == plant_id
+            for row in alias_index.get(alias, [])
+        )
+
+    collision_aliases = sorted(
+        alias for alias, count in alias_counts.items() if count > 1 and alias_touches_scope(alias)
+    )
+    alias_collisions = len(collision_aliases)
     asset_state_conflicts = sum(
         1
         for a in assets
         if a["registered_state"] == "ACTIVE" and a["observed_state"] in {"OFFLINE", "UNSEEN"}
     )
-    collision_aliases = sorted(alias for alias, count in alias_counts.items() if count > 1)
+
+    conflict_rows: list[dict] = []
+    for asset in assets:
+        asset_id = asset["asset_id"]
+        registered = asset["registered_state"]
+        observed = asset["observed_state"]
+        for row in _build_conflicts(asset_id, registered, observed):
+            conflict_rows.append(
+                {
+                    **row,
+                    "asset_id": asset_id,
+                    "plant_id": asset.get("plant_id"),
+                    "registered_state": registered,
+                    "observed_state": observed,
+                    "state_conflict": _state_conflict(registered, observed),
+                }
+            )
+
     return {
+        "plant_id": plant_id,
         "alias_collisions": alias_collisions,
         "asset_state_conflicts": asset_state_conflicts,
         "collision_aliases": collision_aliases,
+        "conflicts": conflict_rows,
+        "conflict_count": len(conflict_rows),
         "winner": None,
     }
 

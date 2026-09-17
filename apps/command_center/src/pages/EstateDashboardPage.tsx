@@ -2,7 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api, type PlantEstateRow } from "../api/client";
 import { DataTable } from "../components/DataTable";
+import { EstateDiagnosticsStrip } from "../components/EstateDiagnosticsStrip";
 import { EstateInventorySummary } from "../components/EstateInventorySummary";
+import { EstateOverviewGraph } from "../components/EstateOverviewGraph";
 import {
   CompositePostureBadge,
   PlantPostureBadges,
@@ -10,14 +12,18 @@ import {
   postureComposite,
 } from "../components/PlantPostureBadges";
 import { GraphSliceView } from "../components/GraphSliceView";
-import { ErrorBlock, LoadingBlock, StaleBadge } from "../components/StateViews";
+import { ErrorBlock, GraphAsyncContent, LoadingBlock, FreshnessBadge } from "../components/StateViews";
+import { deriveGraphQuery } from "../utils/provenanceContext";
 import { useApp } from "../context/AppContext";
 import { useFetch } from "../hooks/useFetch";
 import {
   assetConflict,
+  filterAssets,
   heatIntensity,
   REGIONS,
+  sortAssets,
   sortPlants,
+  type AssetSortMode,
   type RegionFilter,
   type SortMode,
 } from "../utils/estateDashboard";
@@ -28,19 +34,16 @@ export function EstateDashboardPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const drillRef = useRef<HTMLDivElement>(null);
 
+  const [viewMode, setViewMode] = useState<"graph" | "grid">("graph");
   const [regionFilter, setRegionFilter] = useState<RegionFilter>("All");
   const [sortMode, setSortMode] = useState<SortMode>("elevated");
   const [assetSearch, setAssetSearch] = useState("");
-  const [debouncedAssetSearch, setDebouncedAssetSearch] = useState("");
+  const [assetSortMode, setAssetSortMode] = useState<AssetSortMode>("asset_id");
   const [localAssetId, setLocalAssetId] = useState(ctx.assetId);
 
   const estate = useFetch(() => api.estateByPlant({ includeTopAlerts: 5 }), []);
   const estateGlobal = useFetch(() => api.estate(), []);
-
-  useEffect(() => {
-    const t = window.setTimeout(() => setDebouncedAssetSearch(assetSearch.trim()), 250);
-    return () => window.clearTimeout(t);
-  }, [assetSearch]);
+  const diagnostics = useFetch(() => api.diagnostics(), []);
 
   useEffect(() => {
     const plant = searchParams.get("plant");
@@ -58,6 +61,11 @@ export function EstateDashboardPage() {
   useEffect(() => {
     setLocalAssetId(ctx.assetId);
   }, [ctx.assetId]);
+
+  useEffect(() => {
+    setAssetSearch("");
+    setAssetSortMode("asset_id");
+  }, [ctx.plantId]);
 
   const syncUrl = useCallback(
     (plant: string, asset: string, alert: string) => {
@@ -125,10 +133,15 @@ export function EstateDashboardPage() {
   const assetsQuery = useFetch(
     () =>
       ctx.plantId
-        ? api.plantAssets(ctx.plantId, 500, debouncedAssetSearch || undefined)
+        ? api.plantAssets(ctx.plantId, 500)
         : Promise.reject(new Error("No plant selected")),
-    [ctx.plantId, debouncedAssetSearch, ctx.lookupKey],
+    [ctx.plantId, ctx.lookupKey],
   );
+
+  const displayedAssets = useMemo(() => {
+    const rows = assetsQuery.data?.assets ?? [];
+    return sortAssets(filterAssets(rows, assetSearch), assetSortMode);
+  }, [assetsQuery.data, assetSearch, assetSortMode]);
 
   const alertsQuery = useFetch(
     () =>
@@ -138,7 +151,11 @@ export function EstateDashboardPage() {
     [localAssetId, ctx.lookupKey],
   );
 
-  const graphQuery = ctx.alertId ? "Q5" : localAssetId ? "Q1" : "Q4";
+  const graphQuery = deriveGraphQuery({
+    alertId: ctx.alertId,
+    assetId: localAssetId || ctx.assetId,
+    plantId: ctx.plantId,
+  });
   const graph = useFetch(
     () =>
       ctx.plantId
@@ -178,7 +195,7 @@ export function EstateDashboardPage() {
   return (
     <div>
       <h2 className="page-title">Estate Dashboard</h2>
-      <StaleBadge />
+      <FreshnessBadge freshness={estate.data?.freshness} />
       <p className="ai-off-note">
         <Link to="/">← Control Tower</Link>
         {" · "}
@@ -190,15 +207,28 @@ export function EstateDashboardPage() {
 
       {estate.data && (
         <>
-          <EstateInventorySummary
-            data={estate.data}
-            estateGlobal={estateGlobal.data}
-            selectedPlantId={ctx.plantId}
-            onSelectPlant={selectPlant}
-          />
+          <EstateDiagnosticsStrip data={diagnostics.data} />
 
           <div className="card estate-overview-card">
-            <h3>Estate map — layered posture</h3>
+            <div className="estate-view-toggle">
+              <h3>Estate map</h3>
+              <div className="btn-row">
+                <button
+                  type="button"
+                  className={viewMode === "graph" ? "chip active" : "chip"}
+                  onClick={() => setViewMode("graph")}
+                >
+                  Graph
+                </button>
+                <button
+                  type="button"
+                  className={viewMode === "grid" ? "chip active" : "chip"}
+                  onClick={() => setViewMode("grid")}
+                >
+                  Grid
+                </button>
+              </div>
+            </div>
             <PostureQuickLegend motto={estate.data.methodology.posture_motto} />
             <p className="ai-off-note" title={estate.data.methodology.posture_composite_rule}>
               {estate.data.methodology.not_operational_risk_rank}
@@ -215,53 +245,72 @@ export function EstateDashboardPage() {
                   {r}
                 </button>
               ))}
-              <label className="estate-sort">
-                Sort
-                <select value={sortMode} onChange={(e) => setSortMode(e.target.value as SortMode)}>
-                  <option value="plant_id">Plant ID</option>
-                  <option value="elevated">Elevated first</option>
-                  <option value="alert_hc">Alert HC (inventory)</option>
-                  <option value="conflicts">Asset conflicts</option>
-                </select>
-              </label>
+              {viewMode === "grid" ? (
+                <label className="estate-sort">
+                  Sort
+                  <select value={sortMode} onChange={(e) => setSortMode(e.target.value as SortMode)}>
+                    <option value="plant_id">Plant ID</option>
+                    <option value="elevated">Elevated first</option>
+                    <option value="alert_hc">Alert HC (inventory)</option>
+                    <option value="conflicts">Asset conflicts</option>
+                  </select>
+                </label>
+              ) : null}
             </div>
-            <div className="plant-heatmap-grid">
-              {filteredPlants.map((plant) => {
-                const selected = plant.plant_id === ctx.plantId;
-                const composite = postureComposite(plant);
-                const intensity = heatIntensity(plant);
-                const layerTooltip = plant.posture_layers
-                  ? Object.values(plant.posture_layers)
-                      .filter((l) => l && l.status !== "ok")
-                      .map((l) => l!.reason)
-                      .join(" · ")
-                  : "";
-                return (
-                  <button
-                    key={plant.plant_id}
-                    type="button"
-                    className={`plant-tile plant-tile-layered posture-${composite}${selected ? " selected" : ""}`}
-                    title={layerTooltip || "All five posture layers OK"}
-                    onClick={() => selectPlant(plant)}
-                  >
-                    <div className="plant-tile-head">
-                      <span className="mono">{plant.plant_id}</span>
-                      <CompositePostureBadge plant={plant} />
-                    </div>
-                    <div className="plant-tile-meta">
-                      {plant.region} · {plant.counts.assets} assets · {plant.counts.alerts_total} alerts
-                    </div>
-                    <PlantPostureBadges plant={plant} compact />
-                    <div
-                      className={`plant-tile-bar posture-bar-${composite}`}
-                      style={{ transform: `scaleX(${intensity})` }}
-                      aria-hidden
-                    />
-                  </button>
-                );
-              })}
-            </div>
+
+            {viewMode === "graph" ? (
+              <EstateOverviewGraph
+                plants={estate.data.plants}
+                selectedPlantId={ctx.plantId}
+                regionFilter={regionFilter}
+                onSelectPlant={selectPlant}
+              />
+            ) : (
+              <div className="plant-heatmap-grid">
+                {filteredPlants.map((plant) => {
+                  const selected = plant.plant_id === ctx.plantId;
+                  const composite = postureComposite(plant);
+                  const intensity = heatIntensity(plant);
+                  const layerTooltip = plant.posture_layers
+                    ? Object.values(plant.posture_layers)
+                        .filter((l) => l && l.status !== "ok")
+                        .map((l) => l!.reason)
+                        .join(" · ")
+                    : "";
+                  return (
+                    <button
+                      key={plant.plant_id}
+                      type="button"
+                      className={`plant-tile plant-tile-layered posture-${composite}${selected ? " selected" : ""}`}
+                      title={layerTooltip || "All five posture layers OK"}
+                      onClick={() => selectPlant(plant)}
+                    >
+                      <div className="plant-tile-head">
+                        <span className="mono">{plant.plant_id}</span>
+                        <CompositePostureBadge plant={plant} />
+                      </div>
+                      <div className="plant-tile-meta">
+                        {plant.region} · {plant.counts.assets} assets · {plant.counts.alerts_total} alerts
+                      </div>
+                      <PlantPostureBadges plant={plant} compact />
+                      <div
+                        className={`plant-tile-bar posture-bar-${composite}`}
+                        style={{ transform: `scaleX(${intensity})` }}
+                        aria-hidden
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
+
+          <EstateInventorySummary
+            data={estate.data}
+            estateGlobal={estateGlobal.data}
+            selectedPlantId={ctx.plantId}
+            onSelectPlant={selectPlant}
+          />
 
           {ctx.plantId && (
             <div className="card drill-down-panel" ref={drillRef}>
@@ -279,19 +328,43 @@ export function EstateDashboardPage() {
                 </div>
               )}
               <div className="drill-down-grid">
-                <div className="drill-col">
+                <div className="drill-col drill-table-col">
                   <h4 className="section-title">Assets</h4>
-                  <input
-                    className="lookup-input"
-                    placeholder="Search asset prefix…"
-                    value={assetSearch}
-                    onChange={(e) => setAssetSearch(e.target.value)}
-                  />
+                  <div className="drill-table-toolbar">
+                    <label className="drill-search">
+                      Search
+                      <input
+                        className="lookup-input"
+                        placeholder="ID, type, zone, state…"
+                        value={assetSearch}
+                        onChange={(e) => setAssetSearch(e.target.value)}
+                      />
+                    </label>
+                    <label className="estate-sort">
+                      Sort
+                      <select
+                        value={assetSortMode}
+                        onChange={(e) => setAssetSortMode(e.target.value as AssetSortMode)}
+                      >
+                        <option value="asset_id">Asset ID</option>
+                        <option value="alerts_desc">Alerts (high first)</option>
+                        <option value="conflicts_first">State conflicts first</option>
+                        <option value="type">Type</option>
+                        <option value="zone">Zone</option>
+                      </select>
+                    </label>
+                  </div>
+                  {assetsQuery.data && (
+                    <p className="ai-off-note drill-table-count">
+                      Showing {displayedAssets.length} of {assetsQuery.data.assets.length} assets
+                      {assetSearch.trim() ? ` matching “${assetSearch.trim()}”` : ""}
+                    </p>
+                  )}
                   {assetsQuery.loading && <LoadingBlock />}
                   {assetsQuery.error && <ErrorBlock message={assetsQuery.error} />}
-                  {assetsQuery.data && assetsQuery.data.assets.length > 0 ? (
+                  {assetsQuery.data && displayedAssets.length > 0 ? (
                     <DataTable
-                      rows={assetsQuery.data.assets}
+                      rows={displayedAssets}
                       rowKey={(r) => r.asset_id}
                       highlight={(r) => r.asset_id === localAssetId}
                       cols={[
@@ -327,12 +400,14 @@ export function EstateDashboardPage() {
                         },
                       ]}
                     />
+                  ) : assetsQuery.data && assetsQuery.data.assets.length > 0 ? (
+                    <p className="ai-off-note">No assets match your search.</p>
                   ) : (
                     assetsQuery.data && <p className="ai-off-note">No assets in catalog for this plant.</p>
                   )}
                 </div>
 
-                <div className="drill-col">
+                <div className="drill-col drill-table-col">
                   <h4 className="section-title">Alerts {localAssetId ? `· ${localAssetId}` : ""}</h4>
                   {alertsQuery.loading && <LoadingBlock />}
                   {alertsQuery.error && <ErrorBlock message={alertsQuery.error} />}
@@ -381,17 +456,21 @@ export function EstateDashboardPage() {
                 <div className="drill-col drill-graph-col">
                   <h4 className="section-title">Neighborhood graph</h4>
                   <p className="ai-off-note">Hop-capped slice — not full estate topology (NFR-CAP)</p>
-                  {graph.loading && <LoadingBlock />}
-                  {graph.error && <ErrorBlock message={graph.error} />}
-                  {graph.data && (
-                    <GraphSliceView
-                      data={graph.data}
-                      showVisualToggle
-                      defaultView="visual"
-                      focusAssetId={localAssetId}
-                      expandable
-                    />
-                  )}
+                  <GraphAsyncContent
+                    loading={graph.loading}
+                    error={graph.error}
+                    label={`Loading neighborhood graph (${graphQuery})…`}
+                  >
+                    {graph.data && (
+                      <GraphSliceView
+                        data={graph.data}
+                        showVisualToggle
+                        defaultView="visual"
+                        focusAssetId={localAssetId}
+                        expandable
+                      />
+                    )}
+                  </GraphAsyncContent>
                 </div>
               </div>
             </div>

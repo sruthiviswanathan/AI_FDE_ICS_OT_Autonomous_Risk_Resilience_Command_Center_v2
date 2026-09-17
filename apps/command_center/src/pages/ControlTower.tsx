@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api/client";
+import { EstateDiagnosticsStrip } from "../components/EstateDiagnosticsStrip";
 import { PlantPostureBadges } from "../components/PlantPostureBadges";
-import { StaleBadge, ErrorBlock, LoadingBlock } from "../components/StateViews";
+import { FreshnessBadge, ErrorBlock, LoadingBlock } from "../components/StateViews";
 import { useApp } from "../context/AppContext";
 import { useFetch } from "../hooks/useFetch";
 import { estateKpis, resolveInventorySummary } from "../utils/estateDashboard";
-import { fmt } from "../utils/format";
 
 export function ControlTower() {
   const ctx = useApp();
@@ -14,6 +14,7 @@ export function ControlTower() {
   const slo = useFetch(() => api.opsSlo(), []);
   const estate = useFetch(() => api.estateByPlant({ includeTopAlerts: 3 }), []);
   const estateGlobal = useFetch(() => api.estate(), []);
+  const authority = useFetch(() => api.authority(), []);
 
   const quickIncidents = useMemo(() => {
     if (!estate.data) return [];
@@ -41,9 +42,6 @@ export function ControlTower() {
   if (diag.loading || slo.loading) return <LoadingBlock />;
   if (diag.error) return <ErrorBlock message={diag.error} />;
 
-  const d = diag.data || {};
-  const entries = Object.entries(d);
-
   return (
     <div>
       <h2 className="page-title">Risk &amp; Resilience Control Tower</h2>
@@ -52,40 +50,25 @@ export function ControlTower() {
           SLO-OT:{" "}
           {(slo.data as { slos?: Record<string, { status?: string }> })?.slos?.["SLO-OT"]?.status || "…"}
         </span>
-        <span>Eval: 31/31 (harness)</span>
-        <span>Legacy xfail: 3 (contrast only)</span>
-        <StaleBadge />
+        {ctx.activeBinding?.eval_ids?.length ? (
+          <span>Scenario evals: {ctx.activeBinding.eval_ids.join(", ")}</span>
+        ) : (
+          <span className="ai-off-note">Load a scenario for eval context</span>
+        )}
+        <FreshnessBadge freshness={estate.data?.freshness} />
       </div>
 
+      <EstateDiagnosticsStrip data={diag.data} showAll />
+
       <div className="card-grid">
-        <div className="card">
-          <h3>Estate diagnostics ({entries.length})</h3>
-          <div className="diag-grid">
-            {entries.map(([k, v]) => (
-              <div key={k} className="diag-item">
-                <div className="label">{k.replace(/_/g, " ")}</div>
-                <div className="value">{fmt(v)}</div>
-              </div>
-            ))}
-          </div>
-        </div>
         <div className="card">
           <h3>Quick incidents</h3>
           {estate.loading && <p className="ai-off-note">Loading elevated plant alerts…</p>}
           {estate.error && <p className="ai-off-note">{estate.error}</p>}
           {!estate.loading && quickIncidents.length === 0 && (
-            <p>
-              <Link
-                to="/incident"
-                onClick={() => {
-                  ctx.setPlantId("PLT-10");
-                  ctx.setAssetId("OT-01016");
-                  ctx.setAlertId("ALT-002783");
-                  ctx.triggerLookup();
-                }}
-              >
-                ALT-002783 · PLT-10 · HIGH
-              </Link>
+            <p className="ai-off-note">
+              No elevated plant alerts in current estate view.{" "}
+              <Link to="/estate">Open Estate Dashboard</Link> or load a scenario from the rail.
             </p>
           )}
           {quickIncidents.map((row) => (
@@ -155,8 +138,23 @@ export function ControlTower() {
       </div>
 
       <div className="card" style={{ marginTop: "0.75rem" }}>
-        <h3>Open decisions (read-only)</h3>
-        <p className="mono">OPEN-001 Authorizer · OPEN-006 KPI · OPEN-028 model · OPEN-029 auth</p>
+        <h3>Policy &amp; scenario context</h3>
+        {authority.loading && <p className="ai-off-note">Loading authority catalog…</p>}
+        {authority.data && (
+          <>
+            <p className="ai-off-note">{String(authority.data.note || "")}</p>
+            <p className="mono">
+              Tier-3 actions: {((authority.data.human_authorize_tier3 as string[]) || []).length} · Tier-4
+              refuse: {((authority.data.refuse_tier4 as string[]) || []).length}
+            </p>
+          </>
+        )}
+        {ctx.activeBinding && (
+          <p className="mono" style={{ marginTop: "0.35rem" }}>
+            Scenario {ctx.activeBinding.id}: {ctx.activeBinding.title} · eval{" "}
+            {ctx.activeBinding.eval_ids.join(", ")}
+          </p>
+        )}
       </div>
     </div>
   );

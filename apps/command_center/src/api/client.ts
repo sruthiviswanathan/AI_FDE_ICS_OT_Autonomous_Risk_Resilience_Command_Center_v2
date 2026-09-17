@@ -107,6 +107,8 @@ export const api = {
     );
   },
   diagnostics: () => request<Record<string, number>>("/diagnostics"),
+  dataSources: () =>
+    request<{ sources: Record<string, unknown>[]; note?: string; mode?: string }>("/data/sources"),
   opsSlo: () => request<Record<string, unknown>>("/ops/slo"),
   opsCost: () => request<Record<string, unknown>>("/ops/cost-per-incident"),
   estate: () => request<Record<string, unknown>>("/data/views/estate"),
@@ -120,13 +122,36 @@ export const api = {
     return request<EstateByPlantResponse>(`/data/views/estate-by-plant${suffix}`);
   },
   identity: (id: string) => request<Record<string, unknown>>(`/assets/${id}/identity`),
-  identityConflicts: () => request<Record<string, unknown>>("/identity/conflicts"),
-  telemetryQuality: () => request<Record<string, unknown>>("/telemetry/quality"),
-  telemetryTimeline: (tagId?: string) =>
+  identityConflicts: (plantId?: string) =>
     request<Record<string, unknown>>(
-      `/telemetry/timeline?order=event_time${tagId ? `&tag_id=${encodeURIComponent(tagId)}` : ""}`,
+      `/identity/conflicts${plantId ? `?plant_id=${encodeURIComponent(plantId)}` : ""}`,
     ),
-  risk: (limit = 20) => request<Record<string, unknown>>(`/risk/contextual?limit=${limit}`),
+  telemetryQuality: (params?: { plantId?: string; assetId?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.plantId) q.set("plant_id", params.plantId);
+    if (params?.assetId) q.set("asset_id", params.assetId);
+    const suffix = q.toString() ? `?${q}` : "";
+    return request<Record<string, unknown>>(`/telemetry/quality${suffix}`);
+  },
+  telemetryTimeline: (params?: {
+    tagId?: string;
+    plantId?: string;
+    assetId?: string;
+    limit?: number;
+  }) => {
+    const q = new URLSearchParams({ order: "event_time" });
+    if (params?.tagId) q.set("tag_id", params.tagId);
+    if (params?.plantId) q.set("plant_id", params.plantId);
+    if (params?.assetId) q.set("asset_id", params.assetId);
+    if (params?.limit !== undefined) q.set("limit", String(params.limit));
+    return request<Record<string, unknown>>(`/telemetry/timeline?${q}`);
+  },
+  risk: (params?: { limit?: number; plantId?: string; assetId?: string }) => {
+    const q = new URLSearchParams({ limit: String(params?.limit ?? 20) });
+    if (params?.plantId) q.set("plant_id", params.plantId);
+    if (params?.assetId) q.set("asset_id", params.assetId);
+    return request<Record<string, unknown>>(`/risk/contextual?${q}`);
+  },
   safetyConflicts: (plantId?: string) =>
     request<Record<string, unknown>>(
       `/safety/conflicts${plantId ? `?plant_id=${encodeURIComponent(plantId)}` : ""}`,

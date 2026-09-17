@@ -2,7 +2,7 @@ import { api } from "../api/client";
 import { DataTable } from "../components/DataTable";
 import { GraphSliceView } from "../components/GraphSliceView";
 import { PageLookup } from "../components/PageLookup";
-import { ErrorBlock, LoadingBlock } from "../components/StateViews";
+import { ErrorBlock, GraphAsyncContent, LoadingBlock } from "../components/StateViews";
 import { useApp } from "../context/AppContext";
 import { useFetch } from "../hooks/useFetch";
 import { fmt } from "../utils/format";
@@ -54,12 +54,18 @@ export function RecoveryPage() {
           />
         </>
       )}
-      {graph.data && (
-        <div style={{ marginTop: "0.75rem" }}>
-          <h3 className="section-title">Recovery dependencies (Q4)</h3>
-          <GraphSliceView data={graph.data} showVisualToggle defaultView="visual" expandable />
-        </div>
-      )}
+      <div style={{ marginTop: "0.75rem" }}>
+        <h3 className="section-title">Recovery dependencies (Q4)</h3>
+        <GraphAsyncContent
+          loading={graph.loading}
+          error={graph.error}
+          label="Loading recovery dependency graph (Q4)…"
+        >
+          {graph.data && (
+            <GraphSliceView data={graph.data} showVisualToggle defaultView="visual" expandable />
+          )}
+        </GraphAsyncContent>
+      </div>
     </div>
   );
 }

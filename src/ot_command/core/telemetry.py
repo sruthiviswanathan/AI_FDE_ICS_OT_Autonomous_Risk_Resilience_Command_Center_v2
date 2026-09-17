@@ -6,7 +6,7 @@ from collections import Counter
 from datetime import datetime
 from functools import lru_cache
 
-from ot_command.core.data_layer import derived_telemetry_quality_keys, load_telemetry, source_path
+from ot_command.core.data_layer import load_telemetry, source_path
 from ot_command.repository import rows
 
 TELEMETRY_PATH = source_path("telemetry")
@@ -70,10 +70,66 @@ def flag_temporal_anomalies(events: list) -> list:
     return [e for e in order_events(events) if e.get("temporal_anomaly") or e.get("uncertainty")]
 
 
-def telemetry_quality_summary() -> dict:
-    tele = list(_all_telemetry())
+def _filter_events(
+    events: list[dict],
+    *,
+    plant_id: str | None = None,
+    asset_id: str | None = None,
+    tag_id: str | None = None,
+) -> list[dict]:
+    out = events
+    if tag_id:
+        out = [e for e in out if e.get("tag_id") == tag_id]
+    if plant_id:
+        prefix = f"{plant_id}-"
+        out = [e for e in out if str(e.get("tag_id", "")).startswith(prefix)]
+    if asset_id:
+        out = [e for e in out if e.get("asset_id") == asset_id]
+    return out
+
+
+def _duplicate_packets(events: list[dict]) -> int:
+    keys = Counter((x["tag_id"], x["event_time"], str(x["value"]), x["unit"]) for x in events)
+    return sum(v - 1 for v in keys.values() if v > 1)
+
+
+def _tagged_assets_for_plant(plant_id: str) -> set[str]:
+    prefix = f"{plant_id}-"
+    return {x["asset_id"] for x in _all_telemetry() if str(x.get("tag_id", "")).startswith(prefix)}
+
+
+def _scoped_events(
+    *,
+    plant_id: str | None = None,
+    asset_id: str | None = None,
+    tag_id: str | None = None,
+) -> tuple[list[dict], dict]:
+    """Resolve telemetry scope. Most CMDB assets have no historian tags — fall back plant-wide."""
+    all_events = list(_all_telemetry())
+    scope: dict = {
+        "requested": {"plant_id": plant_id, "asset_id": asset_id, "tag_id": tag_id},
+        "effective": {"plant_id": plant_id, "asset_id": asset_id, "tag_id": tag_id},
+        "scope_note": None,
+        "tagged_assets_in_plant": len(_tagged_assets_for_plant(plant_id)) if plant_id else None,
+    }
+    if tag_id:
+        return _filter_events(all_events, tag_id=tag_id), scope
+
+    tele = _filter_events(all_events, plant_id=plant_id, asset_id=asset_id)
+    if asset_id and not tele and plant_id:
+        tagged = _tagged_assets_for_plant(plant_id)
+        tele = _filter_events(all_events, plant_id=plant_id)
+        scope["effective"]["asset_id"] = None
+        scope["scope_note"] = (
+            f"Asset {asset_id} has no historian tags "
+            f"({len(tagged)} tagged assets in {plant_id}); showing plant scope."
+        )
+    return tele, scope
+
+
+def telemetry_quality_summary(*, plant_id: str | None = None, asset_id: str | None = None) -> dict:
+    tele, scope = _scoped_events(plant_id=plant_id, asset_id=asset_id)
     tags = _tag_engineering_units()
-    packet_keys = derived_telemetry_quality_keys()
     unit_mismatches = sum(
         1 for x in tele if tags.get(x["tag_id"]) and x["unit"] != tags[x["tag_id"]]
     )
@@ -88,9 +144,10 @@ def telemetry_quality_summary() -> dict:
 
     return {
         "bad_or_uncertain": sum(1 for x in tele if x["quality"] != "GOOD"),
-        "duplicate_packets": sum(v - 1 for v in packet_keys.values() if v > 1),
+        "duplicate_packets": _duplicate_packets(tele),
         "unit_mismatches": unit_mismatches,
         "total_events": len(tele),
+        "scope": scope,
         "ingest_lag_seconds": {
             "p50": sorted(ingest_lags)[len(ingest_lags) // 2] if ingest_lags else None,
             "max": max(ingest_lags) if ingest_lags else None,
@@ -102,13 +159,20 @@ def telemetry_quality_summary() -> dict:
     }
 
 
-def get_timeline(*, tag_id: str | None = None, order: str = "event_time") -> dict:
-    events = list(_all_telemetry())
-    if tag_id:
-        events = [e for e in events if e["tag_id"] == tag_id]
+def get_timeline(
+    *,
+    tag_id: str | None = None,
+    plant_id: str | None = None,
+    asset_id: str | None = None,
+    order: str = "event_time",
+    limit: int | None = None,
+) -> dict:
+    events, scope = _scoped_events(plant_id=plant_id, asset_id=asset_id, tag_id=tag_id)
     ordered = order_events(events, clock=order)
+    if limit is not None and limit > 0:
+        ordered = ordered[:limit]
     return {
-        "tag_id": tag_id,
+        "scope": scope,
         "order": order,
         "count": len(ordered),
         "events": ordered,
