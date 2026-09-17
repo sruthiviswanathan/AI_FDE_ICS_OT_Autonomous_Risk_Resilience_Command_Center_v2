@@ -1,16 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../api/client";
 import { GraphCitationView } from "../components/GraphCitationView";
 import { GraphVisualView } from "../components/GraphVisualView";
 import { ErrorBlock, LoadingBlock } from "../components/StateViews";
 import { useApp } from "../context/AppContext";
+import { usePersona } from "../hooks/usePersona";
 import { useFetch } from "../hooks/useFetch";
 
 const CHANNELS = ["STRUCTURED", "GRAPH", "VECTOR", "POLICY", "MEMORY"] as const;
 
 export function ProvenanceDrawer() {
-  const { provenancePin, lastPacket, aiEnabled, plantId, assetId, alertId, lookupKey } = useApp();
-  const [channel, setChannel] = useState<(typeof CHANNELS)[number]>("STRUCTURED");
+  const {
+    provenancePin,
+    lastPacket,
+    aiEnabled,
+    plantId,
+    assetId,
+    alertId,
+    lookupKey,
+    personaId,
+    provenanceOpen,
+    setProvenanceOpen,
+  } = useApp();
+  const { view } = usePersona();
+  const [channel, setChannel] = useState<(typeof CHANNELS)[number]>(view.provenanceDefaultChannel);
+
+  useEffect(() => {
+    setChannel(view.provenanceDefaultChannel);
+  }, [personaId, view.provenanceDefaultChannel]);
   const [graphView, setGraphView] = useState<"citations" | "visual">("visual");
   const health = useFetch(() => api.health(), []);
   const graph = useFetch(
@@ -29,6 +46,18 @@ export function ProvenanceDrawer() {
   const packet = (lastPacket?.recommendation || {}) as Record<string, unknown>;
   const evidence = (packet.evidence || []) as Record<string, unknown>[];
   const backendNarrative = health.data?.ai_enabled === true;
+
+  if (!provenanceOpen && view.id === "executive") {
+    return (
+      <aside className="drawer drawer-collapsed">
+        <h3>Provenance</h3>
+        <p className="ai-off-note">Collapsed for Executive view — expand when reviewing evidence.</p>
+        <button type="button" className="primary" onClick={() => setProvenanceOpen(true)}>
+          Show provenance drawer
+        </button>
+      </aside>
+    );
+  }
 
   return (
     <aside className={`drawer${channel === "GRAPH" ? " drawer-graph-active" : ""}`}>

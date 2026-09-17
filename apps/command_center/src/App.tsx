@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AppProvider } from "./context/AppContext";
+import { PersonaRouteGuard } from "./components/PersonaRouteGuard";
 import { Shell } from "./layout/Shell";
 import { AuditPage } from "./pages/AuditPage";
 import { ControlTower } from "./pages/ControlTower";
@@ -22,21 +23,23 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route element={<Shell />}>
-            <Route index element={<ControlTower />} />
-            <Route path="identity" element={<IdentityPage />} />
-            <Route path="telemetry" element={<TelemetryPage />} />
-            <Route path="process" element={<ProcessGraphPage />} />
-            <Route path="risk" element={<RiskPage />} />
-            <Route path="safety" element={<SafetyPage />} />
-            <Route path="sessions" element={<VendorSessionsPage />} />
-            <Route path="recovery" element={<RecoveryPage />} />
-            <Route path="incident" element={<IncidentPage />} />
-            <Route path="recommend" element={<RecommendPage />} />
-            <Route path="audit" element={<AuditPage />} />
-            <Route path="simulation" element={<SimulationPage />} />
-            <Route path="kpi" element={<KPIPage />} />
-            <Route path="executive" element={<ExecutivePage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route element={<PersonaRouteGuard />}>
+              <Route index element={<ControlTower />} />
+              <Route path="identity" element={<IdentityPage />} />
+              <Route path="telemetry" element={<TelemetryPage />} />
+              <Route path="process" element={<ProcessGraphPage />} />
+              <Route path="risk" element={<RiskPage />} />
+              <Route path="safety" element={<SafetyPage />} />
+              <Route path="sessions" element={<VendorSessionsPage />} />
+              <Route path="recovery" element={<RecoveryPage />} />
+              <Route path="incident" element={<IncidentPage />} />
+              <Route path="recommend" element={<RecommendPage />} />
+              <Route path="audit" element={<AuditPage />} />
+              <Route path="simulation" element={<SimulationPage />} />
+              <Route path="kpi" element={<KPIPage />} />
+              <Route path="executive" element={<ExecutivePage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

@@ -54,6 +54,8 @@ flowchart TB
 
 ### Primary nav (left rail)
 
+Persona selector in topbar filters nav (view only — OPEN-001). Persisted via `?persona=` and `localStorage` (`cc_persona`). **Full workshop view** shows all groups.
+
 | Group | Screen | Default persona |
 |-------|--------|-----------------|
 | **Home** | Control Tower | All |
@@ -63,6 +65,14 @@ flowchart TB
 | **Incident** | Incident Context Graph, Recommendation Gate | Analyst, PE, Safety |
 | **Evidence** | Hybrid Retrieval panel (drawer), Decision Trace | Analyst, FDE |
 | **Quality** | Inject / Simulation, KPI, Executive Brief | FDE, Executive |
+
+| Persona ID | Default landing | Context bar |
+|------------|-----------------|-------------|
+| `soc_analyst` | `/` | Plant · Asset · Alert |
+| `process_engineer` | `/process` | Plant · Asset |
+| `safety_owner` | `/safety` | Plant · Asset |
+| `executive` | `/executive` | Plant only |
+| `fde` / `full` | `/` | Full |
 
 Context bar persists across incident screens: `plant_id`, `asset_id`, `alert_id`, scenario badge (nominal / inject / cascade).
 
