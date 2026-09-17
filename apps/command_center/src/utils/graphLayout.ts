@@ -1,3 +1,5 @@
+import dagre from "dagre";
+
 export interface LayoutNode {
   id: string;
   type: string;
@@ -21,6 +23,12 @@ export interface PathRowLayout {
   source: NodePosition;
   target: NodePosition;
   rowY: number;
+}
+
+export interface DagreLayoutResult {
+  positions: Map<string, NodePosition>;
+  width: number;
+  height: number;
 }
 
 function adjacency(nodes: LayoutNode[], edges: LayoutEdge[]): Map<string, string[]> {
@@ -211,4 +219,90 @@ export function shortNodeLabel(id: string, maxLen = 14): string {
 
 export function nodeById(nodes: LayoutNode[]): Map<string, LayoutNode> {
   return new Map(nodes.map((n) => [n.id, n]));
+}
+
+export interface DagreLayoutOptions {
+  rankdir?: "TB" | "LR" | "BT" | "RL";
+  compact?: boolean;
+  nodeRank?: (node: LayoutNode) => number | undefined;
+}
+
+/** Dagre hierarchical layout — reduces edge crossings vs hub-and-spoke. */
+export function layoutDagreGraph(
+  nodes: LayoutNode[],
+  edges: LayoutEdge[],
+  options: DagreLayoutOptions = {},
+): DagreLayoutResult {
+  const positions = new Map<string, NodePosition>();
+  if (!nodes.length) return { positions, width: 320, height: 240 };
+
+  const compact = options.compact ?? false;
+  const nodeW = compact ? 72 : 120;
+  const nodeH = compact ? 52 : 72;
+
+  const g = new dagre.graphlib.Graph();
+  g.setDefaultEdgeLabel(() => ({}));
+  g.setGraph({
+    rankdir: options.rankdir ?? "LR",
+    nodesep: compact ? 28 : 48,
+    ranksep: compact ? 48 : 72,
+    marginx: compact ? 16 : 32,
+    marginy: compact ? 16 : 32,
+    acyclicer: "greedy",
+    ranker: "network-simplex",
+  });
+
+  for (const node of nodes) {
+    const rank = options.nodeRank?.(node);
+    g.setNode(node.id, {
+      width: nodeW,
+      height: nodeH,
+      ...(rank !== undefined ? { rank } : {}),
+    });
+  }
+
+  const nodeIds = new Set(nodes.map((n) => n.id));
+  for (const edge of edges) {
+    if (nodeIds.has(edge.source) && nodeIds.has(edge.target) && edge.source !== edge.target) {
+      g.setEdge(edge.source, edge.target);
+    }
+  }
+
+  dagre.layout(g);
+
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+
+  g.nodes().forEach((id) => {
+    const layout = g.node(id);
+    if (!layout) return;
+    minX = Math.min(minX, layout.x - nodeW / 2);
+    minY = Math.min(minY, layout.y - nodeH / 2);
+    maxX = Math.max(maxX, layout.x + nodeW / 2);
+    maxY = Math.max(maxY, layout.y + nodeH / 2);
+  });
+
+  const pad = compact ? 16 : 28;
+  const offsetX = Number.isFinite(minX) ? -minX + pad : pad;
+  const offsetY = Number.isFinite(minY) ? -minY + pad : pad;
+
+  g.nodes().forEach((id) => {
+    const layout = g.node(id);
+    if (!layout) return;
+    positions.set(id, { x: layout.x + offsetX, y: layout.y + offsetY });
+  });
+
+  return {
+    positions,
+    width: Math.max(compact ? 300 : 520, maxX - minX + pad * 2),
+    height: Math.max(compact ? 240 : 400, maxY - minY + pad * 2),
+  };
+}
+
+/** Q5 timeline ranks for dagre left-to-right cascade. */
+export function timelineRankForNode(node: LayoutNode, timeline: string[]): number | undefined {
+  if (!timeline.length) return undefined;
+  return timelineColumnForNode(node, timeline);
 }

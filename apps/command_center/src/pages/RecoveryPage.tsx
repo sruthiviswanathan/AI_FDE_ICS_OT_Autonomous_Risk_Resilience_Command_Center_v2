@@ -57,7 +57,7 @@ export function RecoveryPage() {
       {graph.data && (
         <div style={{ marginTop: "0.75rem" }}>
           <h3 className="section-title">Recovery dependencies (Q4)</h3>
-          <GraphSliceView data={graph.data} showVisualToggle defaultView="visual" />
+          <GraphSliceView data={graph.data} showVisualToggle defaultView="visual" expandable />
         </div>
       )}
     </div>

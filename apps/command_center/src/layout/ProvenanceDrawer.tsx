@@ -113,7 +113,12 @@ export function ProvenanceDrawer() {
                 </button>
               </div>
               {graphView === "visual" ? (
-                <GraphVisualView data={graph.data} focusAssetId={assetId || undefined} variant="drawer" />
+                <GraphVisualView
+                  data={graph.data}
+                  focusAssetId={assetId || undefined}
+                  variant="drawer"
+                  expandable
+                />
               ) : (
                 <GraphCitationView data={graph.data} />
               )}

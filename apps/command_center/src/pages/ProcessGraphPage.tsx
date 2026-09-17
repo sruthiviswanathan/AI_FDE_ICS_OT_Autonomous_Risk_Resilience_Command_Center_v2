@@ -24,6 +24,7 @@ export function ProcessGraphPage() {
           showVisualToggle
           defaultView="visual"
           focusAssetId={assetId || undefined}
+          expandable
         />
       )}
       <p className="ai-off-note">Hop cap 8 · Forbidden: regional isolate action</p>
