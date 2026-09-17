@@ -166,3 +166,16 @@ def test_openapi_matches_registered_routes():
         "/recommend",
     ):
         assert required in paths
+
+
+def test_spa_fallback_serves_index_for_client_routes():
+    """React Router paths must return index.html on refresh (Render / integrated deploy)."""
+    for path in ("/", "/incident", "/process", "/recovery"):
+        resp = client.get(path)
+        assert resp.status_code == 200, path
+        assert "text/html" in resp.headers.get("content-type", ""), path
+        assert "<!doctype html>" in resp.text.lower(), path
+
+    health = client.get("/health")
+    assert health.status_code == 200
+    assert health.json()["status"] == "ok"
