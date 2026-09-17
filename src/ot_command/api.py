@@ -3,7 +3,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from .core import agent, authority, containment, data_layer, graph_slice, identity, ops, recovery, risk, telemetry
@@ -288,7 +288,27 @@ def agent_workflow_demo():
     return agent.run_incident_workflow(envelope)
 
 
+def _register_spa_fallback(ui_dist: Path) -> None:
+    """Serve built UI assets and index.html for React Router deep links."""
+    index_html = ui_dist.resolve()
+    index_file = index_html / "index.html"
+    if not index_file.is_file():
+        return
+
+    @app.get("/{spa_path:path}", include_in_schema=False)
+    async def spa_fallback(spa_path: str = "") -> FileResponse:
+        if spa_path:
+            asset = (index_html / spa_path).resolve()
+            try:
+                asset.relative_to(index_html)
+            except ValueError as exc:
+                raise HTTPException(status_code=404, detail="Not Found") from exc
+            if asset.is_file():
+                return FileResponse(asset)
+        return FileResponse(index_file)
+
+
 if UI_DIST.is_dir():
-    app.mount("/", StaticFiles(directory=str(UI_DIST), html=True), name="ui")
+    _register_spa_fallback(UI_DIST)
 
 
