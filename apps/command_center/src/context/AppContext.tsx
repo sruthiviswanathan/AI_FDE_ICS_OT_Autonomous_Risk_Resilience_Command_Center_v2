@@ -48,9 +48,9 @@ const AppContext = createContext<AppState | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const initialPersona = loadStoredPersona();
-  const [plantId, setPlantId] = useState("PLT-10");
-  const [assetId, setAssetId] = useState("OT-01016");
-  const [alertId, setAlertId] = useState("ALT-002783");
+  const [plantId, setPlantId] = useState("PLT-01");
+  const [assetId, setAssetId] = useState("OT-00001");
+  const [alertId, setAlertId] = useState("ALT-001744");
   const [scenario, setScenario] = useState<ScenarioId>("nominal");
   const [personaId, setPersonaIdState] = useState<PersonaId>(initialPersona);
   const [activeBinding, setActiveBinding] = useState<ScenarioBinding | null>(null);

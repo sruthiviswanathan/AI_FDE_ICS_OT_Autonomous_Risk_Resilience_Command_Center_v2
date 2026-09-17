@@ -9,6 +9,72 @@ export class ApiError extends Error {
   }
 }
 
+export type PostureStatus = "ok" | "amber" | "red";
+
+export type PostureLayerKey =
+  | "cyber_exposure"
+  | "process_ops_disagreement"
+  | "safety_posture"
+  | "recovery_credibility"
+  | "evidence_quality";
+
+export interface PostureLayer {
+  status: PostureStatus;
+  reason: string;
+  count?: number;
+}
+
+export interface PlantEstateRow {
+  plant_id: string;
+  region: string;
+  country: string;
+  plant_type: string;
+  criticality: string;
+  counts: {
+    assets: number;
+    alerts_total: number;
+    alerts_high_critical: number;
+    alerts_open_or_triaged: number;
+    alerts_high_critical_open: number;
+    asset_state_conflicts: number;
+    safety_degraded_units: number;
+    recovery_stale: number;
+  };
+  signals: {
+    elevated: boolean;
+    elevation_reasons: string[];
+    posture_composite?: PostureStatus;
+  };
+  posture_layers?: Partial<Record<PostureLayerKey, PostureLayer>>;
+  top_alerts: Record<string, string>[];
+  assets_by_registered_state?: Record<string, number>;
+  assets_by_observed_state?: Record<string, number>;
+  top_assets_by_alerts?: { asset_id: string; alert_count: number }[];
+}
+
+export interface AssetStatusSummary {
+  total_assets: number;
+  by_registered_state: Record<string, number>;
+  by_observed_state: Record<string, number>;
+  state_conflicts: number;
+  registered_observed_pairs: { pair: string; count: number }[];
+}
+
+export interface EstateByPlantResponse {
+  provenance: string;
+  freshness: string;
+  plant_count: number;
+  total_alerts?: number;
+  asset_status_summary?: AssetStatusSummary;
+  plants: PlantEstateRow[];
+  methodology: {
+    elevated_rule: string;
+    posture_motto?: string;
+    posture_composite_rule?: string;
+    not_operational_risk_rank: string;
+  };
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     ...init,
@@ -44,6 +110,15 @@ export const api = {
   opsSlo: () => request<Record<string, unknown>>("/ops/slo"),
   opsCost: () => request<Record<string, unknown>>("/ops/cost-per-incident"),
   estate: () => request<Record<string, unknown>>("/data/views/estate"),
+  estateByPlant: (params?: { includeTopAlerts?: number; severityMin?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.includeTopAlerts !== undefined) {
+      q.set("include_top_alerts", String(params.includeTopAlerts));
+    }
+    if (params?.severityMin) q.set("severity_min", params.severityMin);
+    const suffix = q.toString() ? `?${q}` : "";
+    return request<EstateByPlantResponse>(`/data/views/estate-by-plant${suffix}`);
+  },
   identity: (id: string) => request<Record<string, unknown>>(`/assets/${id}/identity`),
   identityConflicts: () => request<Record<string, unknown>>("/identity/conflicts"),
   telemetryQuality: () => request<Record<string, unknown>>("/telemetry/quality"),

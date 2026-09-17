@@ -12,21 +12,43 @@ Each screen specifies: purpose, personas, API, layout, card hierarchy, states, f
 |-------|-------|
 | **ID** | `control-tower` |
 | **Personas** | All (default landing) |
-| **API** | `GET /health`, `GET /diagnostics`, `GET /ops/slo` |
+| **API** | `GET /health`, `GET /diagnostics`, `GET /ops/slo`, `GET /data/views/estate-by-plant` |
 | **Acceptance** | APP-AT-016, APP-AT-008 |
 
-**Layout:** CTQ strip → diagnostics grid (14 counters) → plant heatmap → open decisions footer.
+**Layout:** CTQ strip → diagnostics grid + quick incidents → compact estate summary (link to S01b) → open decisions footer.
 
 **Cards (priority):**
 1. SLO-OT / harness badge
 2. Identity & telemetry defect counts
-3. Safety & session counts
-4. Recovery stale counts
-5. Quick-incident list (links to S09/S11)
+3. Quick-incident list (links to S09/S11)
+4. Estate posture summary + CTA to Estate Dashboard
 
 **States:** Loading skeleton; stale `workshop-static` freshness label.
 
-**Forbidden:** Any OT action buttons.
+**Forbidden:** Any OT action buttons; full heatmap/drill-down on this screen.
+
+---
+
+## S01b — Estate Dashboard
+
+| Field | Value |
+|-------|-------|
+| **ID** | `estate-dashboard` |
+| **Route** | `/estate` |
+| **Personas** | SOC Analyst, FDE, Full, Executive |
+| **API** | `GET /data/views/estate-by-plant`, `GET /plants/{id}/assets`, `GET /assets/{id}/alerts`, `GET /graph/slice` |
+| **Acceptance** | (Home estate spec) |
+
+**Layout:** Inventory summary → plant heatmap grid → drill-down (assets, alerts, neighborhood graph).
+
+**Cards (priority):**
+1. Asset status + alerts-by-plant inventory summary
+2. Plant heatmap grid (18 tiles, region filter, sort)
+3. Drill-down tables + hop-capped Q1/Q4/Q5 slice
+
+**States:** URL params `?plant=&asset=&alert=`; sync with context bar.
+
+**Forbidden:** OT execute; CVSS-only plant ranking; whole-estate force graph.
 
 ---
 
