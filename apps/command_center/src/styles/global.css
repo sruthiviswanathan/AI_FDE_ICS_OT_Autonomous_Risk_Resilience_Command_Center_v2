@@ -73,7 +73,8 @@ a {
 }
 
 .context-bar input,
-.context-bar select {
+.context-bar select,
+.lookup-bar select {
   background: var(--bg);
   border: 1px solid var(--border);
   color: var(--text);
@@ -81,10 +82,29 @@ a {
   font-size: 0.8rem;
 }
 
+.lookup-bar select {
+  min-width: 140px;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.82rem;
+}
+
+.lookup-bar select:disabled {
+  opacity: 0.55;
+}
+
+.catalog-error {
+  max-width: 220px;
+  white-space: normal;
+}
+
 .body-grid {
   display: grid;
   grid-template-columns: var(--nav-w) 1fr var(--drawer-w);
   min-height: 0;
+}
+
+.body-grid:has(.drawer-graph-active) {
+  grid-template-columns: var(--nav-w) 1fr 340px;
 }
 
 .nav {
@@ -384,11 +404,18 @@ button:disabled {
 
 .drawer .graph-visual-drawer {
   max-height: 520px;
-  margin: 0 -0.15rem;
+  margin: 0;
+  overflow: hidden;
+  padding: 0.35rem;
+}
+
+.drawer .graph-visual-drawer .graph-visual {
+  min-height: 220px;
+  max-height: 480px;
 }
 
 .drawer .graph-visual-drawer .graph-node-label {
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .drawer .graph-legend {
@@ -425,6 +452,18 @@ button:disabled {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+}
+
+.toggle-stack {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+}
+
+.toggle-subtitle {
+  margin: 0;
+  max-width: 320px;
+  text-align: right;
 }
 
 .ai-off-note {

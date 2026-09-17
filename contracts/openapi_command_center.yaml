@@ -47,6 +47,101 @@ paths:
           content:
             application/json:
               schema: {}
+  /plants:
+    get:
+      summary: List Plants
+      description: All workshop plants (18 rows) sorted by plant_id.
+      operationId: list_plants_plants_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /plants/{plant_id}/assets:
+    get:
+      summary: List Plant Assets
+      operationId: list_plant_assets_plants__plant_id__assets_get
+      parameters:
+      - name: plant_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Plant Id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+          maximum: 500
+          title: Limit
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+          title: Q
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '404':
+          description: Plant Not Found
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /assets/{asset_id}/alerts:
+    get:
+      summary: List Asset Alerts
+      operationId: list_asset_alerts_assets__asset_id__alerts_get
+      parameters:
+      - name: asset_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Asset Id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 50
+          maximum: 200
+          title: Limit
+      - name: severity
+        in: query
+        required: false
+        schema:
+          type: string
+          title: Severity
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '404':
+          description: Asset Not Found
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /data/views/vendor-sessions:
     get:
       summary: Data Vendor Sessions

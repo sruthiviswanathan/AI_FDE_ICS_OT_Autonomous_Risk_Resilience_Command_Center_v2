@@ -96,7 +96,9 @@ export function RecommendPage() {
             )}
           </div>
           {!aiEnabled && (
-            <p className="ai-off-note">AI OFF — deterministic packet only (EVAL-016).</p>
+            <p className="ai-off-note">
+              Deterministic advisory only — ranks and draft packets from rule engines. Narrative port off (ADR-12).
+            </p>
           )}
           <div className="advisory-footer">
             Advisory only — no Execute Isolation · Write PLC · Modify SIS.

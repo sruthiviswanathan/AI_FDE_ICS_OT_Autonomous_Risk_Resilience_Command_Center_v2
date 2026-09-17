@@ -15,7 +15,7 @@
       },
       "badges": [
         { "id": "mode", "label": "synthetic-read-only", "tone": "neutral" },
-        { "id": "ai", "label": "AI OFF default", "tone": "neutral" }
+        { "id": "ai", "label": "Narrative OFF · engines on", "tone": "neutral" }
       ],
       "primary_routes": ["/", "/risk", "/identity"],
       "ai_enabled": false,
@@ -199,7 +199,7 @@
         "alert_id": "ALT-002783"
       },
       "badges": [
-        { "id": "ai_off", "label": "AI OFF", "tone": "neutral" },
+        { "id": "ai_off", "label": "Narrative OFF · engines on", "tone": "neutral" },
         { "id": "tables", "label": "deterministic tables visible", "tone": "green" },
         { "id": "no_blank", "label": "no blank screen", "tone": "green" },
         { "id": "refuse", "label": "ACTION_TIERS refuse tier 4", "tone": "neutral" }

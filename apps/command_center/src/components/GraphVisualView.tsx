@@ -3,12 +3,15 @@ import { fmt } from "../utils/format";
 import {
   layoutGraph,
   layoutPathRows,
+  layoutTimelineGraph,
   nodeById,
+  shouldLabelEdge,
   shortNodeLabel,
   type LayoutEdge,
   type LayoutNode,
   type NodePosition,
 } from "../utils/graphLayout";
+import { PanZoomSvg } from "./PanZoomSvg";
 
 const TYPE_COLORS: Record<string, string> = {
   Plant: "#4a9eff",
@@ -23,6 +26,8 @@ const TYPE_COLORS: Record<string, string> = {
   UntrustedNote: "#c0392b",
 };
 
+const LEGEND_TYPES = ["Plant", "Asset", "Alert", "Barrier", "Session", "Unit", "Tag", "RecoveryComponent", "UntrustedNote"];
+
 function nodeColor(node: LayoutNode): string {
   if (node.type === "RecoveryComponent") {
     return node.recovery_ready ? "#6bcb77" : "#e6a23c";
@@ -33,9 +38,9 @@ function nodeColor(node: LayoutNode): string {
   return TYPE_COLORS[node.type] || "#5dade2";
 }
 
-function nodeRadius(node: LayoutNode, hubId: string | undefined): number {
-  if (node.id === hubId || node.type === "Plant") return 32;
-  return 24;
+function nodeRadius(node: LayoutNode, hubId: string | undefined, drawer: boolean): number {
+  if (node.id === hubId || node.type === "Plant") return drawer ? 24 : 32;
+  return drawer ? 18 : 24;
 }
 
 function edgeLineEndpoints(from: NodePosition, to: NodePosition, inset: number) {
@@ -57,16 +62,16 @@ function GraphNodeGlyph({
   pos,
   r,
   focused,
-  showFullId = false,
+  labelMaxLen,
 }: {
   node: LayoutNode;
   pos: NodePosition;
   r: number;
   focused?: boolean;
-  showFullId?: boolean;
+  labelMaxLen: number;
 }) {
   const fill = nodeColor(node);
-  const label = showFullId ? node.id : shortNodeLabel(node.id);
+  const label = shortNodeLabel(node.id, labelMaxLen);
   const crit = node.production_criticality ? fmt(node.production_criticality) : null;
 
   return (
@@ -77,18 +82,43 @@ function GraphNodeGlyph({
         {node.id} ({node.type})
         {crit ? ` · criticality ${crit}` : ""}
       </title>
-      <text y={5} className="graph-node-type">
+      <text y={4} className="graph-node-type">
         {node.type === "RecoveryComponent" ? "RC" : node.type.slice(0, 4).toUpperCase()}
       </text>
-      <text y={r + 18} className="graph-node-label">
+      <text y={r + 16} className="graph-node-label">
         {label}
       </text>
       {crit && (
-        <text y={r + 32} className="graph-node-meta">
+        <text y={r + 28} className="graph-node-meta">
           crit: {crit}
         </text>
       )}
     </g>
+  );
+}
+
+function GraphLegend({ types, focusAssetId }: { types: string[]; focusAssetId?: string }) {
+  const ordered = LEGEND_TYPES.filter((t) => types.includes(t));
+  const extra = types.filter((t) => !LEGEND_TYPES.includes(t));
+  return (
+    <div className="graph-legend">
+      {[...ordered, ...extra].map((type) => (
+        <span key={type} className="graph-legend-item">
+          <span className="graph-legend-swatch" style={{ background: TYPE_COLORS[type] || "#5dade2" }} />
+          {type}
+        </span>
+      ))}
+      <span className="graph-legend-item">
+        <span className="graph-legend-line graph-edge-undoc" />
+        undocumented path
+      </span>
+      {focusAssetId && (
+        <span className="graph-legend-item">
+          <span className="graph-legend-ring" />
+          focus {focusAssetId}
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -105,20 +135,22 @@ function PathGraphVisual({
   variant?: "default" | "drawer";
   markerUndocId: string;
 }) {
-  const width = variant === "drawer" ? 520 : 960;
-  const { rows, height } = layoutPathRows(edges, width, variant === "drawer" ? 84 : 96);
+  const drawer = variant === "drawer";
+  const width = drawer ? 280 : 960;
+  const { rows, height } = layoutPathRows(edges, width, drawer ? 72 : 96);
   const lookup = nodeById(nodes);
 
   return (
-    <div className={`graph-visual-wrap graph-visual-path${variant === "drawer" ? " graph-visual-drawer" : ""}`}>
+    <div className={`graph-visual-wrap graph-visual-path${drawer ? " graph-visual-drawer" : ""}`}>
       <p className="graph-path-hint ai-off-note">
         Each row is one observed undocumented path. Source → target read left to right.
       </p>
-      <svg
+      <PanZoomSvg
         className="graph-visual"
-        viewBox={`0 0 ${width} ${height}`}
-        role="img"
-        aria-label={`Process path graph with ${edges.length} paths`}
+        width={width}
+        height={height}
+        enabled={nodes.length > 6}
+        ariaLabel={`Process path graph with ${edges.length} paths`}
       >
         <defs>
           <marker id={markerUndocId} markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
@@ -129,14 +161,11 @@ function PathGraphVisual({
         {rows.map(({ edge, source, target, rowY }, index) => {
           const sourceNode = lookup.get(edge.source) || { id: edge.source, type: "Asset" };
           const targetNode = lookup.get(edge.target) || { id: edge.target, type: "Asset" };
-          const r = variant === "drawer" ? 20 : 24;
-          const line = edgeLineEndpoints(source, target, r + 8);
-          const sourceFocus = Boolean(focusAssetId && edge.source === focusAssetId);
-          const targetFocus = Boolean(focusAssetId && edge.target === focusAssetId);
-
+          const r = drawer ? 16 : 24;
+          const line = edgeLineEndpoints(source, target, r + 6);
           return (
             <g key={`${edge.source}-${edge.target}-${index}`} className="graph-path-row">
-              <line x1={60} x2={width - 60} y1={rowY} y2={rowY} className="graph-path-row-guide" />
+              <line x1={40} x2={width - 40} y1={rowY} y2={rowY} className="graph-path-row-guide" />
               <line
                 x1={line.x1}
                 y1={line.y1}
@@ -145,32 +174,28 @@ function PathGraphVisual({
                 className="graph-edge graph-edge-undoc graph-path-edge"
                 markerEnd={`url(#${markerUndocId})`}
               />
-              <text x={(source.x + target.x) / 2} y={rowY - 14} className="graph-path-edge-label">
+              <text x={(source.x + target.x) / 2} y={rowY - 12} className="graph-path-edge-label">
                 undocumented path
               </text>
-              <GraphNodeGlyph node={sourceNode} pos={source} r={r} focused={sourceFocus} showFullId />
-              <GraphNodeGlyph node={targetNode} pos={target} r={r} focused={targetFocus} showFullId />
+              <GraphNodeGlyph
+                node={sourceNode}
+                pos={source}
+                r={r}
+                focused={Boolean(focusAssetId && edge.source === focusAssetId)}
+                labelMaxLen={drawer ? 10 : 14}
+              />
+              <GraphNodeGlyph
+                node={targetNode}
+                pos={target}
+                r={r}
+                focused={Boolean(focusAssetId && edge.target === focusAssetId)}
+                labelMaxLen={drawer ? 10 : 14}
+              />
             </g>
           );
         })}
-      </svg>
-
-      <div className="graph-legend">
-        <span className="graph-legend-item">
-          <span className="graph-legend-swatch" style={{ background: TYPE_COLORS.Asset }} />
-          Asset
-        </span>
-        <span className="graph-legend-item">
-          <span className="graph-legend-line graph-edge-undoc" />
-          undocumented · observed 24h
-        </span>
-        {focusAssetId && (
-          <span className="graph-legend-item">
-            <span className="graph-legend-ring" />
-            focus asset {focusAssetId}
-          </span>
-        )}
-      </div>
+      </PanZoomSvg>
+      <GraphLegend types={["Asset"]} focusAssetId={focusAssetId} />
     </div>
   );
 }
@@ -192,12 +217,17 @@ function NetworkGraphVisual({
   markerId: string;
   markerUndocId: string;
 }) {
-  const width = variant === "drawer" ? 520 : 960;
-  const height =
-    variant === "drawer"
-      ? Math.max(360, Math.min(520, 140 + nodes.length * 30))
-      : Math.max(420, Math.min(640, 160 + nodes.length * 36));
-  const positions = layoutGraph(nodes, edges, width, height, focusAssetId);
+  const drawer = variant === "drawer";
+  const width = drawer ? 280 : 960;
+  const height = drawer
+    ? Math.max(220, Math.min(360, 100 + nodes.length * 28))
+    : Math.max(420, Math.min(640, 160 + nodes.length * 36));
+
+  const markers = (data.scenario_markers as { timeline?: string[] } | undefined)?.timeline;
+  const useTimeline = data.query === "Q5" && markers && markers.length > 0;
+  const positions = useTimeline
+    ? layoutTimelineGraph(nodes, edges, width, height, markers, focusAssetId)
+    : layoutGraph(nodes, edges, width, height, focusAssetId);
 
   const hubId =
     focusAssetId ??
@@ -210,17 +240,22 @@ function NetworkGraphVisual({
 
   const types = [...new Set(nodes.map((n) => n.type))];
   const lookup = nodeById(nodes);
-  const showEdgeLabels = new Set(edges.map((e) => e.type)).size > 1;
-
-  const baseR = variant === "drawer" ? 22 : 28;
+  const baseR = drawer ? 18 : 28;
+  const labelMaxLen = drawer ? 10 : 14;
+  const panZoom = nodes.length > 6;
 
   return (
-    <div className={`graph-visual-wrap${variant === "drawer" ? " graph-visual-drawer" : ""}`}>
-      <svg
+    <div className={`graph-visual-wrap${drawer ? " graph-visual-drawer" : ""}`}>
+      {useTimeline && (
+        <p className="graph-path-hint ai-off-note">Timeline cascade — read left to right (vendor → barrier → isolate → destabilize).</p>
+      )}
+      {panZoom && <p className="graph-path-hint ai-off-note">Drag to pan · scroll to zoom</p>}
+      <PanZoomSvg
         className="graph-visual"
-        viewBox={`0 0 ${width} ${height}`}
-        role="img"
-        aria-label={`Graph slice ${fmt(data.query)} with ${nodes.length} nodes`}
+        width={width}
+        height={height}
+        enabled={panZoom}
+        ariaLabel={`Graph slice ${fmt(data.query)} with ${nodes.length} nodes`}
       >
         <defs>
           <marker id={markerId} markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
@@ -237,6 +272,7 @@ function NetworkGraphVisual({
           if (!from || !to) return null;
           const undocumented = edge.documented === "NO";
           const line = edgeLineEndpoints(from, to, baseR);
+          const labelEdge = shouldLabelEdge(edge.type, edges);
           return (
             <g key={`${edge.source}-${edge.target}-${index}`}>
               <line
@@ -247,8 +283,8 @@ function NetworkGraphVisual({
                 className={undocumented ? "graph-edge graph-edge-undoc" : "graph-edge"}
                 markerEnd={undocumented ? `url(#${markerUndocId})` : `url(#${markerId})`}
               />
-              {showEdgeLabels && (
-                <text x={(from.x + to.x) / 2} y={(from.y + to.y) / 2 - 8} className="graph-edge-label">
+              {labelEdge && (
+                <text x={(from.x + to.x) / 2} y={(from.y + to.y) / 2 - 6} className="graph-edge-label">
                   {fmt(edge.type)}
                 </text>
               )}
@@ -264,25 +300,14 @@ function NetworkGraphVisual({
               key={node.id}
               node={lookup.get(node.id) || node}
               pos={pos}
-              r={nodeRadius(node, hubId) - (variant === "drawer" ? 4 : 0)}
+              r={nodeRadius(node, hubId, drawer)}
               focused={Boolean(focusAssetId && node.id === focusAssetId)}
+              labelMaxLen={labelMaxLen}
             />
           );
         })}
-      </svg>
-
-      <div className="graph-legend">
-        {types.map((type) => (
-          <span key={type} className="graph-legend-item">
-            <span className="graph-legend-swatch" style={{ background: TYPE_COLORS[type] || "#5dade2" }} />
-            {type}
-          </span>
-        ))}
-        <span className="graph-legend-item">
-          <span className="graph-legend-line graph-edge-undoc" />
-          undocumented path
-        </span>
-      </div>
+      </PanZoomSvg>
+      <GraphLegend types={types} focusAssetId={focusAssetId} />
     </div>
   );
 }

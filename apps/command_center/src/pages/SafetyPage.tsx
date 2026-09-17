@@ -60,7 +60,7 @@ export function SafetyPage() {
       {graph.data && (
         <div style={{ marginTop: "0.75rem" }}>
           <h3 className="section-title">Safety context (Q3)</h3>
-          <GraphSliceView data={graph.data} />
+          <GraphSliceView data={graph.data} showVisualToggle defaultView="visual" />
         </div>
       )}
     </div>

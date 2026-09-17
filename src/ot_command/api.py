@@ -69,6 +69,30 @@ def data_vendor_sessions(limit: int = 50):
     }
 
 
+@app.get("/plants")
+def list_plants():
+    plants = data_layer.list_plants()
+    return {"count": len(plants), "plants": plants}
+
+
+@app.get("/plants/{plant_id}/assets")
+def list_plant_assets(plant_id: str, limit: int = 100, q: str | None = None):
+    if plant_id not in data_layer.derived_plants_by_id():
+        raise HTTPException(status_code=404, detail=f"plant {plant_id} not found")
+    cap = min(max(limit, 1), 500)
+    assets = data_layer.list_assets_for_plant(plant_id, limit=cap, q=q)
+    return {"plant_id": plant_id, "count": len(assets), "limit": cap, "assets": assets}
+
+
+@app.get("/assets/{asset_id}/alerts")
+def list_asset_alerts(asset_id: str, limit: int = 50, severity: str | None = None):
+    if asset_id not in data_layer.derived_assets_by_id():
+        raise HTTPException(status_code=404, detail=f"asset {asset_id} not found")
+    cap = min(max(limit, 1), 200)
+    alerts = data_layer.list_alerts_for_asset(asset_id, limit=cap, severity=severity)
+    return {"asset_id": asset_id, "count": len(alerts), "limit": cap, "alerts": alerts}
+
+
 @app.get("/assets/{id}/identity")
 def asset_identity(id: str):
     try:

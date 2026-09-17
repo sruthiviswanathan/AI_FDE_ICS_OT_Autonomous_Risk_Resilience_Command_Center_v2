@@ -12,6 +12,7 @@ export function ProvenanceDrawer() {
   const { provenancePin, lastPacket, aiEnabled, plantId, assetId, alertId, lookupKey } = useApp();
   const [channel, setChannel] = useState<(typeof CHANNELS)[number]>("STRUCTURED");
   const [graphView, setGraphView] = useState<"citations" | "visual">("visual");
+  const health = useFetch(() => api.health(), []);
   const graph = useFetch(
     () =>
       channel === "GRAPH"
@@ -27,18 +28,17 @@ export function ProvenanceDrawer() {
 
   const packet = (lastPacket?.recommendation || {}) as Record<string, unknown>;
   const evidence = (packet.evidence || []) as Record<string, unknown>[];
+  const backendNarrative = health.data?.ai_enabled === true;
 
   return (
-    <aside className="drawer">
+    <aside className={`drawer${channel === "GRAPH" ? " drawer-graph-active" : ""}`}>
       <h3>Provenance &amp; Retrieval</h3>
       {provenancePin ? (
         <div className="card" style={{ marginBottom: "0.5rem" }}>
           <div className="mono">{provenancePin.source_path}</div>
           {provenancePin.record_id && <div>id: {provenancePin.record_id}</div>}
           {provenancePin.confidence !== undefined && <div>confidence: {provenancePin.confidence}</div>}
-          <div>
-            freshness: {provenancePin.freshness || "workshop-static"}
-          </div>
+          <div>freshness: {provenancePin.freshness || "workshop-static"}</div>
         </div>
       ) : (
         <p className="ai-off-note">Click a source_path in tables to pin evidence.</p>
@@ -114,14 +114,28 @@ export function ProvenanceDrawer() {
       )}
       {channel === "MEMORY" && <p className="ai-off-note">Decision traces append-only — not hidden CoT authority.</p>}
 
-      {aiEnabled ? (
-        <div className="card" style={{ marginTop: "0.5rem" }}>
-          <strong>Optional explainer</strong>
-          <p className="ai-off-note">Narrative is advisory only (OPEN-028). Engines remain authoritative.</p>
-        </div>
-      ) : (
-        <p className="ai-off-note">AI OFF — deterministic tables only (ADR-12).</p>
-      )}
+      <div className="card narrative-status" style={{ marginTop: "0.5rem" }}>
+        {aiEnabled && backendNarrative ? (
+          <>
+            <strong>Narrative port reserved</strong>
+            <p className="ai-off-note">
+              Not connected. Tables and draft packets below are authoritative. Engines do not require a model (ADR-13).
+            </p>
+          </>
+        ) : aiEnabled && !backendNarrative ? (
+          <>
+            <strong>Narrative unavailable</strong>
+            <p className="ai-off-note">Backend reports ai_enabled=false — deterministic tables only (EVAL-016).</p>
+          </>
+        ) : (
+          <>
+            <strong>Deterministic advisory only</strong>
+            <p className="ai-off-note">
+              Ranks, recovery, and draft packets from rule engines. No narrative layer (ADR-12).
+            </p>
+          </>
+        )}
+      </div>
     </aside>
   );
 }

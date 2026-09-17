@@ -1,10 +1,11 @@
 import { NavLink, Outlet } from "react-router-dom";
+import { ContextIdPickers } from "../components/ContextIdPickers";
 import { ScenarioBadgeStrip, ScenarioRail } from "../components/ScenarioRail";
 import { useApp } from "../context/AppContext";
 import { ProvenanceDrawer } from "./ProvenanceDrawer";
 import { useFetch } from "../hooks/useFetch";
 import { api } from "../api/client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const NAV: { group: string; items: { to: string; label: string }[] }[] = [
   { group: "Home", items: [{ to: "/", label: "Control Tower" }] },
@@ -59,15 +60,14 @@ export function Shell() {
   const apiMismatch = health && !health.api_version;
   const apiDown = Boolean(healthQuery.error || catalog.error);
 
-  const [draftPlant, setDraftPlant] = useState(ctx.plantId);
-  const [draftAsset, setDraftAsset] = useState(ctx.assetId);
-  const [draftAlert, setDraftAlert] = useState(ctx.alertId);
-
+  const healthSynced = useRef(false);
   useEffect(() => {
-    setDraftPlant(ctx.plantId);
-    setDraftAsset(ctx.assetId);
-    setDraftAlert(ctx.alertId);
-  }, [ctx.plantId, ctx.assetId, ctx.alertId, ctx.lookupKey]);
+    if (health && !healthSynced.current) {
+      ctx.setAiEnabled(health.ai_enabled);
+      healthSynced.current = true;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [health]);
 
   useEffect(() => {
     if (catalog.data && !ctx.activeBinding) {
@@ -77,12 +77,7 @@ export function Shell() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [catalog.data]);
 
-  function runGlobalLookup() {
-    ctx.setPlantId(draftPlant.trim());
-    ctx.setAssetId(draftAsset.trim());
-    ctx.setAlertId(draftAlert.trim());
-    ctx.triggerLookup();
-  }
+  const narrativeUnavailable = ctx.aiEnabled && health && !health.ai_enabled;
 
   return (
     <div className="shell">
@@ -93,55 +88,34 @@ export function Shell() {
             : "Wrong API on proxy target — point VITE_DEV_API_TARGET to your uvicorn port and restart npm run dev"}
         </div>
       )}
+      {narrativeUnavailable && (
+        <div className="advisory-footer" style={{ margin: 0, borderRadius: 0 }}>
+          Narrative unavailable — showing deterministic tables only (EVAL-016).
+        </div>
+      )}
       <header className="topbar">
         <h1>ICS/OT Command Center</h1>
-        <div className="toggle">
+        <div className="toggle toggle-stack">
           <span>Mode: {health?.mode || "…"}</span>
           {health?.api_version && <span className="mono">API {health.api_version}</span>}
           <label>
-            AI
+            Advisory narrative
             <select
               value={ctx.aiEnabled ? "on" : "off"}
               onChange={(e) => ctx.setAiEnabled(e.target.value === "on")}
             >
-              <option value="off">OFF</option>
-              <option value="on">ON</option>
+              <option value="off">Off</option>
+              <option value="on">On</option>
             </select>
           </label>
+          <span className="ai-off-note toggle-subtitle">
+            Deterministic engines active · Narrative layer not connected (OPEN-028)
+          </span>
         </div>
       </header>
 
       <div className="context-bar lookup-bar">
-        <label>
-          Plant ID
-          <input
-            value={draftPlant}
-            onChange={(e) => setDraftPlant(e.target.value)}
-            placeholder="PLT-10"
-            onKeyDown={(e) => e.key === "Enter" && runGlobalLookup()}
-          />
-        </label>
-        <label>
-          Asset ID
-          <input
-            value={draftAsset}
-            onChange={(e) => setDraftAsset(e.target.value)}
-            placeholder="OT-01016"
-            onKeyDown={(e) => e.key === "Enter" && runGlobalLookup()}
-          />
-        </label>
-        <label>
-          Alert ID
-          <input
-            value={draftAlert}
-            onChange={(e) => setDraftAlert(e.target.value)}
-            placeholder="ALT-002783"
-            onKeyDown={(e) => e.key === "Enter" && runGlobalLookup()}
-          />
-        </label>
-        <button type="button" className="primary" onClick={runGlobalLookup}>
-          Search
-        </button>
+        <ContextIdPickers />
         <span className="badge amber">{ctx.scenario}</span>
         <ScenarioBadgeStrip />
       </div>
