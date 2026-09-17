@@ -16,6 +16,12 @@ ROOT = Path(__file__).resolve().parents[3]
 
 # Playbook logical names → repo paths (do not rewrite data/ contradictions).
 CANONICAL_SOURCES: dict[str, dict[str, str]] = {
+    "plants": {
+        "logical_name": "plants.csv",
+        "path": "data/reference/plants.csv",
+        "format": "csv",
+        "grain": "plant_id",
+    },
     "assets": {
         "logical_name": "assets.csv",
         "path": "data/raw/assets.csv",
@@ -52,6 +58,12 @@ CANONICAL_SOURCES: dict[str, dict[str, str]] = {
         "format": "csv",
         "grain": "session_id",
     },
+    "cyber_alerts": {
+        "logical_name": "cyber_alerts.csv",
+        "path": "data/raw/cyber_alerts.csv",
+        "format": "csv",
+        "grain": "alert_id",
+    },
 }
 
 
@@ -68,13 +80,19 @@ def source_path(key: str) -> str:
 def clear_cache() -> None:
     """Drop cached raw/derived views (tests or hot reload)."""
     for fn in (
+        load_plants,
         load_assets,
         load_telemetry,
         load_vulnerabilities,
         load_safety_barriers,
         load_recovery_readiness,
         load_vendor_sessions,
+        load_cyber_alerts,
+        derived_plants_by_id,
         derived_assets_by_id,
+        derived_assets_by_plant,
+        derived_alerts_by_id,
+        derived_alerts_by_asset,
         derived_vulnerabilities,
         derived_safety_barriers_by_unit,
         derived_degraded_barriers_by_unit,
@@ -87,8 +105,18 @@ def clear_cache() -> None:
 
 
 @lru_cache(maxsize=1)
+def load_plants() -> tuple[dict, ...]:
+    return tuple(rows(source_path("plants")))
+
+
+@lru_cache(maxsize=1)
 def load_assets() -> tuple[dict, ...]:
     return tuple(rows(source_path("assets")))
+
+
+@lru_cache(maxsize=1)
+def load_cyber_alerts() -> tuple[dict, ...]:
+    return tuple(rows(source_path("cyber_alerts")))
 
 
 @lru_cache(maxsize=1)
@@ -117,8 +145,60 @@ def load_vendor_sessions() -> tuple[dict, ...]:
 
 
 @lru_cache(maxsize=1)
+def derived_plants_by_id() -> dict[str, dict]:
+    return {r["plant_id"]: dict(r) for r in load_plants()}
+
+
+@lru_cache(maxsize=1)
 def derived_assets_by_id() -> dict[str, dict]:
     return {r["asset_id"]: dict(r) for r in load_assets()}
+
+
+@lru_cache(maxsize=1)
+def derived_assets_by_plant() -> dict[str, list[dict]]:
+    by_plant: dict[str, list[dict]] = defaultdict(list)
+    for row in load_assets():
+        by_plant[row["plant_id"]].append(dict(row))
+    for plant_id in by_plant:
+        by_plant[plant_id].sort(key=lambda r: r["asset_id"])
+    return dict(by_plant)
+
+
+@lru_cache(maxsize=1)
+def derived_alerts_by_id() -> dict[str, dict]:
+    return {r["alert_id"]: dict(r) for r in load_cyber_alerts()}
+
+
+@lru_cache(maxsize=1)
+def derived_alerts_by_asset() -> dict[str, list[dict]]:
+    by_asset: dict[str, list[dict]] = defaultdict(list)
+    for row in load_cyber_alerts():
+        by_asset[row["asset_id"]].append(dict(row))
+    for asset_id in by_asset:
+        by_asset[asset_id].sort(key=lambda r: r["alert_id"], reverse=True)
+    return dict(by_asset)
+
+
+def list_plants() -> list[dict]:
+    return sorted(derived_plants_by_id().values(), key=lambda r: r["plant_id"])
+
+
+def list_assets_for_plant(plant_id: str, *, limit: int = 100, q: str | None = None) -> list[dict]:
+    assets = derived_assets_by_plant().get(plant_id, [])
+    if q:
+        prefix = q.strip().upper()
+        assets = [a for a in assets if a["asset_id"].upper().startswith(prefix)]
+    return assets[:limit]
+
+
+def list_alerts_for_asset(
+    asset_id: str, *, limit: int = 50, severity: str | None = None
+) -> list[dict]:
+    alerts = list(derived_alerts_by_asset().get(asset_id, []))
+    if severity:
+        sev = severity.strip().upper()
+        alerts = [a for a in alerts if a.get("severity", "").upper() == sev]
+    return alerts[:limit]
 
 
 @lru_cache(maxsize=1)
@@ -192,12 +272,14 @@ def sources_catalog() -> dict:
     """Introspection for UI/API — canonical sources only."""
     entries = []
     loaders = {
+        "plants": load_plants,
         "assets": load_assets,
         "telemetry": load_telemetry,
         "vulnerabilities": load_vulnerabilities,
         "safety_barriers": load_safety_barriers,
         "recovery_readiness": load_recovery_readiness,
         "vendor_sessions": load_vendor_sessions,
+        "cyber_alerts": load_cyber_alerts,
     }
     for key, meta in CANONICAL_SOURCES.items():
         path = meta["path"]

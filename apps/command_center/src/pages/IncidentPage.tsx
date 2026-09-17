@@ -68,7 +68,12 @@ export function IncidentPage() {
       {graph.data && (
         <div style={{ marginTop: "0.75rem" }}>
           <h3 className="section-title">Task-scoped graph (Q5)</h3>
-          <GraphSliceView data={graph.data} />
+          <GraphSliceView
+            data={graph.data}
+            showVisualToggle
+            defaultView="visual"
+            focusAssetId={assetId || undefined}
+          />
         </div>
       )}
     </div>

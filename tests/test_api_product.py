@@ -88,12 +88,14 @@ def test_data_sources_catalog():
     body = resp.json()
     keys = {s["source_key"] for s in body["sources"]}
     assert keys == {
+        "plants",
         "assets",
         "telemetry",
         "vulnerabilities",
         "safety_barriers",
         "recovery_readiness",
         "vendor_sessions",
+        "cyber_alerts",
     }
     for entry in body["sources"]:
         assert entry["fixture_dependent"] is False
@@ -134,11 +136,42 @@ def test_audit_traces_and_scenario_endpoints():
     assert notes.json()["trust"] == "UNTRUSTED"
 
 
+def test_list_plants_and_cascade_catalog():
+    plants = client.get("/plants")
+    assert plants.status_code == 200
+    body = plants.json()
+    assert body["count"] == 18
+    assert body["plants"][0]["plant_id"] == "PLT-01"
+
+    assets = client.get("/plants/PLT-10/assets?limit=500")
+    assert assets.status_code == 200
+    asset_body = assets.json()
+    assert asset_body["plant_id"] == "PLT-10"
+    assert asset_body["count"] > 0
+    assert all(a.get("plant_id") == "PLT-10" for a in asset_body["assets"])
+
+    missing_plant = client.get("/plants/PLT-999/assets")
+    assert missing_plant.status_code == 404
+
+    sample_asset = asset_body["assets"][0]["asset_id"]
+    alerts = client.get(f"/assets/{sample_asset}/alerts?limit=50")
+    assert alerts.status_code == 200
+    alert_body = alerts.json()
+    assert alert_body["asset_id"] == sample_asset
+    assert alert_body["count"] >= 0
+
+    missing_asset = client.get("/assets/OT-DOES-NOT-EXIST/alerts")
+    assert missing_asset.status_code == 404
+
+
 def test_openapi_matches_registered_routes():
     spec = app.openapi()
     paths = set(spec.get("paths", {}))
     for required in (
         "/health",
+        "/plants",
+        "/plants/{plant_id}/assets",
+        "/assets/{asset_id}/alerts",
         "/data/sources",
         "/assets/{id}/identity",
         "/risk/contextual",

@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { loadStoredPersona, persistPersona, PERSONA_VIEWS, type PersonaId } from "../personas/registry";
 import type { ScenarioBinding } from "../scenarios/types";
 
 export type ScenarioId =
@@ -25,6 +26,7 @@ interface AppState {
   assetId: string;
   alertId: string;
   scenario: ScenarioId;
+  personaId: PersonaId;
   activeBinding: ScenarioBinding | null;
   aiEnabled: boolean;
   provenanceOpen: boolean;
@@ -35,6 +37,7 @@ interface AppState {
   setAssetId: (v: string) => void;
   setAlertId: (v: string) => void;
   setScenario: (v: ScenarioId) => void;
+  setPersonaId: (v: PersonaId) => void;
   applyScenario: (binding: ScenarioBinding) => void;
   triggerLookup: () => void;
   setAiEnabled: (v: boolean) => void;
@@ -46,18 +49,26 @@ interface AppState {
 const AppContext = createContext<AppState | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const initialPersona = loadStoredPersona();
   const [plantId, setPlantId] = useState("PLT-10");
   const [assetId, setAssetId] = useState("OT-01016");
   const [alertId, setAlertId] = useState("ALT-002783");
   const [scenario, setScenario] = useState<ScenarioId>("nominal");
+  const [personaId, setPersonaIdState] = useState<PersonaId>(initialPersona);
   const [activeBinding, setActiveBinding] = useState<ScenarioBinding | null>(null);
   const [aiEnabled, setAiEnabled] = useState(false);
-  const [provenanceOpen, setProvenanceOpen] = useState(true);
+  const [provenanceOpen, setProvenanceOpen] = useState(PERSONA_VIEWS[initialPersona].drawerDefaultOpen);
   const [provenancePin, setProvenancePin] = useState<ProvenancePin | null>(null);
   const [lastPacket, setLastPacket] = useState<Record<string, unknown> | null>(null);
   const [lookupKey, setLookupKey] = useState(0);
 
   const triggerLookup = useCallback(() => setLookupKey((k) => k + 1), []);
+
+  const setPersonaId = useCallback((id: PersonaId) => {
+    setPersonaIdState(id);
+    persistPersona(id);
+    setProvenanceOpen(PERSONA_VIEWS[id].drawerDefaultOpen);
+  }, []);
 
   const applyScenario = useCallback((binding: ScenarioBinding) => {
     setScenario(binding.id as ScenarioId);
@@ -75,6 +86,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       assetId,
       alertId,
       scenario,
+      personaId,
       activeBinding,
       aiEnabled,
       provenanceOpen,
@@ -85,6 +97,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setAssetId,
       setAlertId,
       setScenario,
+      setPersonaId,
       applyScenario,
       triggerLookup,
       setAiEnabled,
@@ -95,7 +108,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
       },
       setLastPacket,
     }),
-    [plantId, assetId, alertId, scenario, activeBinding, aiEnabled, provenanceOpen, provenancePin, lastPacket, lookupKey, applyScenario, triggerLookup],
+    [
+      plantId,
+      assetId,
+      alertId,
+      scenario,
+      personaId,
+      activeBinding,
+      aiEnabled,
+      provenanceOpen,
+      provenancePin,
+      lastPacket,
+      lookupKey,
+      applyScenario,
+      triggerLookup,
+      setPersonaId,
+    ],
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

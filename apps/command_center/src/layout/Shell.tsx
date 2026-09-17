@@ -1,73 +1,40 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { ContextIdPickers } from "../components/ContextIdPickers";
 import { ScenarioBadgeStrip, ScenarioRail } from "../components/ScenarioRail";
 import { useApp } from "../context/AppContext";
 import { ProvenanceDrawer } from "./ProvenanceDrawer";
 import { useFetch } from "../hooks/useFetch";
 import { api } from "../api/client";
-import { useEffect, useState } from "react";
-
-const NAV: { group: string; items: { to: string; label: string }[] }[] = [
-  { group: "Home", items: [{ to: "/", label: "Control Tower" }] },
-  {
-    group: "Identity & data",
-    items: [
-      { to: "/identity", label: "Identity Reconciliation" },
-      { to: "/telemetry", label: "Telemetry Quality" },
-    ],
-  },
-  {
-    group: "Risk & safety",
-    items: [
-      { to: "/risk", label: "Contextual Risk" },
-      { to: "/safety", label: "Safety vs Security" },
-      { to: "/sessions", label: "Vendor Sessions" },
-    ],
-  },
-  {
-    group: "Process & recovery",
-    items: [
-      { to: "/process", label: "Process Graph" },
-      { to: "/recovery", label: "Recovery Graph" },
-    ],
-  },
-  {
-    group: "Incident",
-    items: [
-      { to: "/incident", label: "Incident Context" },
-      { to: "/recommend", label: "Recommendation Gate" },
-    ],
-  },
-  {
-    group: "Evidence",
-    items: [{ to: "/audit", label: "Decision Trace" }],
-  },
-  {
-    group: "Quality",
-    items: [
-      { to: "/simulation", label: "Inject / Simulation" },
-      { to: "/kpi", label: "KPI Before/After" },
-      { to: "/executive", label: "Executive Brief" },
-    ],
-  },
-];
+import { useEffect, useRef } from "react";
+import { usePersona } from "../hooks/usePersona";
+import {
+  hasIncidentContext,
+  isRouteAllowed,
+  PERSONA_LIST,
+  PERSONA_VIEWS,
+  type PersonaId,
+} from "../personas/registry";
+import { Outlet } from "react-router-dom";
 
 export function Shell() {
   const ctx = useApp();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { nav, view, isFiltered, setPersona } = usePersona();
   const healthQuery = useFetch(() => api.health(), []);
   const catalog = useFetch(() => api.scenarioCatalog(), []);
   const health = healthQuery.data;
   const apiMismatch = health && !health.api_version;
   const apiDown = Boolean(healthQuery.error || catalog.error);
 
-  const [draftPlant, setDraftPlant] = useState(ctx.plantId);
-  const [draftAsset, setDraftAsset] = useState(ctx.assetId);
-  const [draftAlert, setDraftAlert] = useState(ctx.alertId);
-
+  const healthSynced = useRef(false);
   useEffect(() => {
-    setDraftPlant(ctx.plantId);
-    setDraftAsset(ctx.assetId);
-    setDraftAlert(ctx.alertId);
-  }, [ctx.plantId, ctx.assetId, ctx.alertId, ctx.lookupKey]);
+    if (health && !healthSynced.current) {
+      ctx.setAiEnabled(health.ai_enabled);
+      healthSynced.current = true;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [health]);
 
   useEffect(() => {
     if (catalog.data && !ctx.activeBinding) {
@@ -77,11 +44,15 @@ export function Shell() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [catalog.data]);
 
-  function runGlobalLookup() {
-    ctx.setPlantId(draftPlant.trim());
-    ctx.setAssetId(draftAsset.trim());
-    ctx.setAlertId(draftAlert.trim());
-    ctx.triggerLookup();
+  const narrativeUnavailable = ctx.aiEnabled && health && !health.ai_enabled;
+  const incidentPinned = hasIncidentContext(ctx.alertId, ctx.scenario);
+
+  function onPersonaChange(next: PersonaId) {
+    setPersona(next);
+    const nextView = PERSONA_VIEWS[next];
+    if (!isRouteAllowed(location.pathname, next, ctx.alertId, ctx.scenario)) {
+      navigate(nextView.defaultRoute, { replace: true });
+    }
   }
 
   return (
@@ -93,62 +64,63 @@ export function Shell() {
             : "Wrong API on proxy target — point VITE_DEV_API_TARGET to your uvicorn port and restart npm run dev"}
         </div>
       )}
+      {narrativeUnavailable && (
+        <div className="advisory-footer" style={{ margin: 0, borderRadius: 0 }}>
+          Narrative unavailable — showing deterministic tables only (EVAL-016).
+        </div>
+      )}
+      {incidentPinned && isFiltered && ctx.personaId !== "executive" && (
+        <div className="advisory-footer incident-banner" style={{ margin: 0, borderRadius: 0 }}>
+          Incident context loaded —{" "}
+          <Link to="/incident">Open Incident Graph</Link>
+          {" · "}
+          <Link to="/recommend">Recommendation Gate</Link>
+        </div>
+      )}
       <header className="topbar">
         <h1>ICS/OT Command Center</h1>
-        <div className="toggle">
-          <span>Mode: {health?.mode || "…"}</span>
-          {health?.api_version && <span className="mono">API {health.api_version}</span>}
-          <label>
-            AI
+        <div className="topbar-controls">
+          <span className="topbar-meta">Mode: {health?.mode || "…"}</span>
+          {health?.api_version && <span className="topbar-meta mono">API {health.api_version}</span>}
+          <label className="topbar-control">
+            Persona
+            <select
+              value={ctx.personaId}
+              title={view.description}
+              onChange={(e) => onPersonaChange(e.target.value as PersonaId)}
+            >
+              {PERSONA_LIST.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="topbar-control">
+            Narrative
             <select
               value={ctx.aiEnabled ? "on" : "off"}
               onChange={(e) => ctx.setAiEnabled(e.target.value === "on")}
             >
-              <option value="off">OFF</option>
-              <option value="on">ON</option>
+              <option value="off">Off</option>
+              <option value="on">On</option>
             </select>
           </label>
+          <span className="topbar-hint" title={view.description}>
+            View filter only (OPEN-001)
+          </span>
         </div>
       </header>
 
       <div className="context-bar lookup-bar">
-        <label>
-          Plant ID
-          <input
-            value={draftPlant}
-            onChange={(e) => setDraftPlant(e.target.value)}
-            placeholder="PLT-10"
-            onKeyDown={(e) => e.key === "Enter" && runGlobalLookup()}
-          />
-        </label>
-        <label>
-          Asset ID
-          <input
-            value={draftAsset}
-            onChange={(e) => setDraftAsset(e.target.value)}
-            placeholder="OT-01016"
-            onKeyDown={(e) => e.key === "Enter" && runGlobalLookup()}
-          />
-        </label>
-        <label>
-          Alert ID
-          <input
-            value={draftAlert}
-            onChange={(e) => setDraftAlert(e.target.value)}
-            placeholder="ALT-002783"
-            onKeyDown={(e) => e.key === "Enter" && runGlobalLookup()}
-          />
-        </label>
-        <button type="button" className="primary" onClick={runGlobalLookup}>
-          Search
-        </button>
+        <ContextIdPickers fields={view.contextFields} />
         <span className="badge amber">{ctx.scenario}</span>
         <ScenarioBadgeStrip />
       </div>
 
       <div className="body-grid">
         <nav className="nav">
-          {NAV.map((g) => (
+          {nav.map((g) => (
             <div key={g.group}>
               <div className="nav-group">{g.group}</div>
               {g.items.map((item) => (
@@ -158,7 +130,14 @@ export function Shell() {
               ))}
             </div>
           ))}
-          {catalog.data && <ScenarioRail scenarios={catalog.data.scenarios} />}
+          {isFiltered && (
+            <button type="button" className="persona-full-link" onClick={() => onPersonaChange("full")}>
+              Show all screens (Full view)
+            </button>
+          )}
+          {view.scenarioRailVisible && catalog.data && (
+            <ScenarioRail scenarios={catalog.data.scenarios} />
+          )}
         </nav>
         <main className="main">
           <Outlet />

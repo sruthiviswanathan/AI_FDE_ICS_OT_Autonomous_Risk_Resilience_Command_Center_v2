@@ -24,6 +24,22 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export const api = {
   health: () =>
     request<{ status: string; mode: string; ai_enabled: boolean; api_version?: string }>("/health"),
+  plants: () =>
+    request<{ count: number; plants: Record<string, string>[] }>("/plants"),
+  plantAssets: (plantId: string, limit = 100, q?: string) => {
+    const params = new URLSearchParams({ limit: String(limit) });
+    if (q) params.set("q", q);
+    return request<{ plant_id: string; count: number; limit: number; assets: Record<string, string>[] }>(
+      `/plants/${encodeURIComponent(plantId)}/assets?${params}`,
+    );
+  },
+  assetAlerts: (assetId: string, limit = 50, severity?: string) => {
+    const params = new URLSearchParams({ limit: String(limit) });
+    if (severity) params.set("severity", severity);
+    return request<{ asset_id: string; count: number; limit: number; alerts: Record<string, string>[] }>(
+      `/assets/${encodeURIComponent(assetId)}/alerts?${params}`,
+    );
+  },
   diagnostics: () => request<Record<string, number>>("/diagnostics"),
   opsSlo: () => request<Record<string, unknown>>("/ops/slo"),
   opsCost: () => request<Record<string, unknown>>("/ops/cost-per-incident"),

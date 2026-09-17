@@ -132,9 +132,81 @@ export function layoutPathRows(
   };
 }
 
-export function shortNodeLabel(id: string): string {
+const TIMELINE_TYPE_ORDER: { keyword: string; types: string[] }[] = [
+  { keyword: "vendor session", types: ["Session"] },
+  { keyword: "barrier", types: ["Barrier"] },
+  { keyword: "isolate", types: ["Alert"] },
+  { keyword: "destabilize", types: ["UntrustedNote"] },
+];
+
+function timelineColumnForNode(node: LayoutNode, timeline: string[]): number {
+  const idLower = node.id.toLowerCase();
+  for (let i = 0; i < timeline.length; i += 1) {
+    const marker = timeline[i].toLowerCase();
+    const rule = TIMELINE_TYPE_ORDER.find((r) => marker.includes(r.keyword));
+    if (rule?.types.includes(node.type)) return i;
+    if (idLower.includes(marker.split(" ").pop() || "")) return i;
+  }
+  if (node.type === "Asset") return Math.max(0, Math.floor(timeline.length / 2));
+  if (node.type === "Tag" || node.type === "Unit") return Math.max(0, Math.floor(timeline.length / 2));
+  return timeline.length;
+}
+
+/** Left-to-right cascade layout for Q5 incident slices with scenario_markers.timeline. */
+export function layoutTimelineGraph(
+  nodes: LayoutNode[],
+  edges: LayoutEdge[],
+  width: number,
+  height: number,
+  timeline: string[],
+  focusNodeId?: string,
+): Map<string, NodePosition> {
+  const positions = new Map<string, NodePosition>();
+  if (!nodes.length) return positions;
+
+  const columns = timeline.length + 1;
+  const buckets: LayoutNode[][] = Array.from({ length: columns }, () => []);
+
+  for (const node of nodes) {
+    const col = timeline.length ? timelineColumnForNode(node, timeline) : 0;
+    buckets[col].push(node);
+  }
+
+  const padX = 56;
+  const padY = 48;
+  const innerW = width - padX * 2;
+  const innerH = height - padY * 2;
+  const colGap = columns > 1 ? innerW / (columns - 1) : 0;
+
+  buckets.forEach((bucket, colIndex) => {
+    const x = columns === 1 ? width / 2 : padX + colGap * colIndex;
+    const rowGap = bucket.length > 1 ? innerH / (bucket.length - 1) : 0;
+    bucket.forEach((node, rowIndex) => {
+      const y = bucket.length === 1 ? height / 2 : padY + rowGap * rowIndex;
+      positions.set(node.id, { x, y });
+    });
+  });
+
+  if (focusNodeId && positions.has(focusNodeId)) {
+    const pos = positions.get(focusNodeId)!;
+    positions.set(focusNodeId, { ...pos, y: height / 2 });
+  }
+
+  return positions;
+}
+
+const SAFETY_CRITICAL_EDGES = new Set(["PROTECTS", "ALERT_ON", "SESSION_ON", "RECOVERY_FOR"]);
+
+export function shouldLabelEdge(edgeType: string, allEdges: LayoutEdge[]): boolean {
+  if (SAFETY_CRITICAL_EDGES.has(edgeType)) return true;
+  const types = new Set(allEdges.map((e) => e.type));
+  return types.size > 1;
+}
+
+export function shortNodeLabel(id: string, maxLen = 14): string {
   const tail = id.includes(":") ? id.split(":").pop()! : id;
-  return tail.length > 14 ? `${tail.slice(0, 12)}…` : tail;
+  if (tail.length <= maxLen) return tail;
+  return `${tail.slice(0, maxLen - 1)}…`;
 }
 
 export function nodeById(nodes: LayoutNode[]): Map<string, LayoutNode> {
