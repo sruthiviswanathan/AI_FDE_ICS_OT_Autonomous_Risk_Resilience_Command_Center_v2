@@ -24,11 +24,13 @@ export function GraphSliceView({
   showVisualToggle = false,
   defaultView = "details",
   focusAssetId,
+  expandable = false,
 }: {
   data: Record<string, unknown>;
   showVisualToggle?: boolean;
   defaultView?: GraphViewMode;
   focusAssetId?: string;
+  expandable?: boolean;
 }) {
   const [view, setView] = useState<GraphViewMode>(defaultView);
   const nodes = (data.nodes as GraphNode[]) || [];
@@ -67,7 +69,7 @@ export function GraphSliceView({
       )}
 
       {view === "visual" && canVisualize ? (
-        <GraphVisualView data={data} focusAssetId={focusAssetId} />
+        <GraphVisualView data={data} focusAssetId={focusAssetId} expandable={expandable} />
       ) : (
         <>
       <h3 className="section-title">Nodes ({nodes.length})</h3>

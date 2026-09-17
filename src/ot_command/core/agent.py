@@ -6,7 +6,6 @@ import time
 from uuid import uuid4
 
 from ot_command.core import authority, containment, identity, recovery, risk, telemetry
-from ot_command.core.ai_config import ai_enabled
 from ot_command.core.guardrails import (
     assert_loop_bounded,
     assert_tool_trace_safe,
@@ -225,8 +224,6 @@ def run_incident_workflow(envelope: dict) -> dict:
             "required_authority": recommendation.get("required_authority"),
             "execute": False,
             "named_authorizer": "OPEN-001",
-            "ai_enabled": ai_enabled(),
-            "manual_fallback": "Engines render tables when AI_ENABLED=0 (ADR-12)",
         },
         tool_calls=[],
     )
@@ -250,8 +247,6 @@ def run_incident_workflow(envelope: dict) -> dict:
         "recovery_preview": recovery_view,
         "authority_preview": authority_view,
         "human_review": review,
-        "ai_enabled": ai_enabled(),
-        "explainer": None if not ai_enabled() else {"status": "optional_off_by_default"},
     }
 
     elapsed_ms = round((time.perf_counter() - workflow_start) * 1000, 2)
@@ -264,9 +259,8 @@ def run_incident_workflow(envelope: dict) -> dict:
             "tool_trace": tool_trace,
             "recommendation": recommendation.get("recommendation"),
             "execute": False,
-            "tokens": 0 if not ai_enabled() else None,
+            "tokens": 0,
             "latency_ms": elapsed_ms,
-            "ai_enabled": ai_enabled(),
             "workflow_steps": len(workflow_states),
             "tool_call_count": len(tool_trace),
             "policy_gate": {
@@ -285,11 +279,10 @@ def run_incident_workflow(envelope: dict) -> dict:
 
 
 def manual_fallback_tables() -> dict:
-    """AI-disabled path (EVAL-016): deterministic tables without LLM."""
+    """Deterministic tables for EVAL-016 — engines do not require an LLM (ADR-12)."""
     return {
         "identity_conflicts": identity.list_identity_conflicts(),
         "telemetry_quality": telemetry.telemetry_quality_summary(),
         "recovery_plt_01": recovery.get_plant_recovery_view("PLT-01"),
         "authority": authority.catalog(),
-        "ai_enabled": False,
     }

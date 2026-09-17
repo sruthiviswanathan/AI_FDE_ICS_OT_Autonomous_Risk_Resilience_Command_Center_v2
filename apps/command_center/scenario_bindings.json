@@ -15,10 +15,9 @@
       },
       "badges": [
         { "id": "mode", "label": "synthetic-read-only", "tone": "neutral" },
-        { "id": "ai", "label": "Narrative OFF · engines on", "tone": "neutral" }
+        { "id": "engines", "label": "Deterministic engines", "tone": "neutral" }
       ],
       "primary_routes": ["/", "/risk", "/identity"],
-      "ai_enabled": false,
       "show_conflicts": true,
       "ctq_iso_complete": true
     },
@@ -45,7 +44,6 @@
         { "id": "execute", "label": "execute=false", "tone": "neutral" }
       ],
       "primary_routes": ["/incident", "/recommend", "/safety"],
-      "ai_enabled": false,
       "show_conflicts": true,
       "show_untrusted_shift_notes": true,
       "ctq_iso_complete": false,
@@ -69,7 +67,6 @@
         { "id": "shadow", "label": "shadow FINAL_v8 evidence only", "tone": "red" }
       ],
       "primary_routes": ["/identity", "/"],
-      "ai_enabled": false,
       "show_conflicts": true,
       "must_not_hide": ["shadow overlay", "alias collisions", "cmdb_winner=false"]
     },
@@ -92,7 +89,6 @@
         { "id": "dual_clock", "label": "event_time + ingest_time", "tone": "neutral" }
       ],
       "primary_routes": ["/telemetry"],
-      "ai_enabled": false,
       "show_conflicts": true,
       "must_not_hide": ["BAD quality rows", "unit mismatch flags"]
     },
@@ -114,7 +110,6 @@
         { "id": "unknown_id", "label": "UNKNOWN identity ≠ approval", "tone": "red" }
       ],
       "primary_routes": ["/sessions", "/recommend"],
-      "ai_enabled": false,
       "show_conflicts": true,
       "must_not_hide": ["unapproved_window NO", "unknown identity sessions"]
     },
@@ -138,7 +133,6 @@
         { "id": "aging", "label": "aging KPI BASELINE_PENDING", "tone": "neutral" }
       ],
       "primary_routes": ["/safety"],
-      "ai_enabled": false,
       "show_conflicts": true,
       "must_not_hide": ["bypassed_unauthorized barriers", "degraded state"]
     },
@@ -160,7 +154,6 @@
         { "id": "no_regional", "label": "no regional isolate", "tone": "neutral" }
       ],
       "primary_routes": ["/process", "/recovery"],
-      "ai_enabled": false,
       "show_conflicts": true,
       "must_not_hide": ["undocumented paths", "RecoveryReady false despite CURRENT"]
     },
@@ -183,7 +176,6 @@
         { "id": "no_live_restore", "label": "no live restore UI", "tone": "neutral" }
       ],
       "primary_routes": ["/recovery"],
-      "ai_enabled": false,
       "show_conflicts": true,
       "must_not_hide": ["blockers list", "IDENTITY not ready"]
     },
@@ -199,13 +191,12 @@
         "alert_id": "ALT-002783"
       },
       "badges": [
-        { "id": "ai_off", "label": "Narrative OFF · engines on", "tone": "neutral" },
+        { "id": "engines", "label": "Deterministic engines", "tone": "neutral" },
         { "id": "tables", "label": "deterministic tables visible", "tone": "green" },
         { "id": "no_blank", "label": "no blank screen", "tone": "green" },
         { "id": "refuse", "label": "ACTION_TIERS refuse tier 4", "tone": "neutral" }
       ],
       "primary_routes": ["/", "/identity", "/telemetry", "/recovery", "/recommend"],
-      "ai_enabled": false,
       "show_conflicts": true,
       "must_not_hide": ["diagnostics counters", "conflict counts"]
     }

@@ -1,7 +1,5 @@
 """Product API integration tests (APP-01)."""
 
-import os
-
 import pytest
 from fastapi.testclient import TestClient
 
@@ -11,24 +9,14 @@ from tests.helpers.access import FORBIDDEN_POST_PATHS
 client = TestClient(app)
 
 
-def test_health_includes_ai_disabled_by_default():
-    os.environ.pop("AI_ENABLED", None)
+def test_health_payload():
     resp = client.get("/health")
     assert resp.status_code == 200
     body = resp.json()
     assert body["status"] == "ok"
     assert body["mode"] == "synthetic-read-only"
-    assert body["ai_enabled"] is False
     assert body["api_version"] == "3.0.0"
-
-
-def test_health_ai_enabled_when_env_set():
-    os.environ["AI_ENABLED"] = "1"
-    try:
-        resp = client.get("/health")
-        assert resp.json()["ai_enabled"] is True
-    finally:
-        os.environ.pop("AI_ENABLED", None)
+    assert "ai_enabled" not in body
 
 
 def test_missing_identity_returns_404():
@@ -54,8 +42,7 @@ def test_happy_path_gold_reads():
     assert recovery.json()["plant_id"] == "PLT-01"
 
 
-def test_recommend_ai_disabled_no_execute():
-    os.environ.pop("AI_ENABLED", None)
+def test_recommend_never_executes():
     payload = {
         "actor": "SOC analyst",
         "purpose": "incident triage",
@@ -68,7 +55,8 @@ def test_recommend_ai_disabled_no_execute():
     resp = client.post("/recommend", json=payload)
     assert resp.status_code == 200
     body = resp.json()
-    assert body.get("ai_enabled") is False
+    assert "ai_enabled" not in body
+    assert "explainer" not in body
     packet = body.get("recommendation") or {}
     assert packet.get("execute") is False
     assert packet.get("recommendation") not in {"ISOLATE", "EXECUTE"}

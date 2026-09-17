@@ -120,13 +120,11 @@ def cost_per_incident() -> dict:
             "avg_tokens_per_incident": 0,
             "avg_latency_ms": None,
             "p95_latency_ms": None,
-            "ai_enabled_rate": 0,
             "note": "No traces yet — POST /recommend to append",
         }
 
     tokens = [int(t.get("tokens") or 0) for t in traces]
     latencies = [float(t["latency_ms"]) for t in traces if t.get("latency_ms") is not None]
-    ai_on = sum(1 for t in traces if t.get("ai_enabled") is True)
     count = len(traces)
     total_tokens = sum(tokens)
 
@@ -137,7 +135,6 @@ def cost_per_incident() -> dict:
         "avg_tokens_per_incident": round(total_tokens / count, 2),
         "avg_latency_ms": round(sum(latencies) / len(latencies), 2) if latencies else None,
         "p95_latency_ms": _percentile(latencies, 95),
-        "ai_enabled_rate": round(ai_on / count, 4),
         "counter_metric": "EVAL-002 correctness precedes cost wins (EVAL-026)",
         "kpi_source": "docs/05_kpis_baseline.md — AI cost per analyzed incident",
     }

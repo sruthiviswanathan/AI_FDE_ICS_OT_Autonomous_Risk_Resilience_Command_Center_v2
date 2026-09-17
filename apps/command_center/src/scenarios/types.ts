@@ -24,7 +24,6 @@ export interface ScenarioBinding {
   context: ScenarioContext;
   badges: ScenarioBadge[];
   primary_routes: string[];
-  ai_enabled: boolean;
   show_conflicts: boolean;
   ctq_iso_complete?: boolean;
   show_untrusted_shift_notes?: boolean;

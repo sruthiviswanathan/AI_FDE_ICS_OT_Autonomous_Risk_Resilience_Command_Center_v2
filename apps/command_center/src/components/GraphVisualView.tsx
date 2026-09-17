@@ -1,12 +1,13 @@
-import { useId } from "react";
+import { useId, useState } from "react";
+import { GraphExpandModal } from "./GraphExpandModal";
 import { fmt } from "../utils/format";
 import {
-  layoutGraph,
+  layoutDagreGraph,
   layoutPathRows,
-  layoutTimelineGraph,
   nodeById,
   shouldLabelEdge,
   shortNodeLabel,
+  timelineRankForNode,
   type LayoutEdge,
   type LayoutNode,
   type NodePosition,
@@ -128,12 +129,14 @@ function PathGraphVisual({
   focusAssetId,
   variant = "default",
   markerUndocId,
+  interactive = true,
 }: {
   nodes: LayoutNode[];
   edges: LayoutEdge[];
   focusAssetId?: string;
   variant?: "default" | "drawer";
   markerUndocId: string;
+  interactive?: boolean;
 }) {
   const drawer = variant === "drawer";
   const width = drawer ? 280 : 960;
@@ -149,7 +152,7 @@ function PathGraphVisual({
         className="graph-visual"
         width={width}
         height={height}
-        enabled={nodes.length > 6}
+        enabled={interactive && !drawer && nodes.length > 6}
         ariaLabel={`Process path graph with ${edges.length} paths`}
       >
         <defs>
@@ -208,6 +211,7 @@ function NetworkGraphVisual({
   variant = "default",
   markerId,
   markerUndocId,
+  interactive = true,
 }: {
   nodes: LayoutNode[];
   edges: LayoutEdge[];
@@ -216,18 +220,21 @@ function NetworkGraphVisual({
   variant?: "default" | "drawer";
   markerId: string;
   markerUndocId: string;
+  interactive?: boolean;
 }) {
   const drawer = variant === "drawer";
-  const width = drawer ? 280 : 960;
-  const height = drawer
-    ? Math.max(220, Math.min(360, 100 + nodes.length * 28))
-    : Math.max(420, Math.min(640, 160 + nodes.length * 36));
-
   const markers = (data.scenario_markers as { timeline?: string[] } | undefined)?.timeline;
   const useTimeline = data.query === "Q5" && markers && markers.length > 0;
-  const positions = useTimeline
-    ? layoutTimelineGraph(nodes, edges, width, height, markers, focusAssetId)
-    : layoutGraph(nodes, edges, width, height, focusAssetId);
+  const query = String(data.query ?? "");
+
+  const dagreLayout = layoutDagreGraph(nodes, edges, {
+    rankdir: query === "Q4" ? "TB" : "LR",
+    compact: drawer,
+    nodeRank: useTimeline ? (node) => timelineRankForNode(node, markers!) : undefined,
+  });
+  const positions = dagreLayout.positions;
+  const width = dagreLayout.width;
+  const height = dagreLayout.height;
 
   const hubId =
     focusAssetId ??
@@ -242,7 +249,7 @@ function NetworkGraphVisual({
   const lookup = nodeById(nodes);
   const baseR = drawer ? 18 : 28;
   const labelMaxLen = drawer ? 10 : 14;
-  const panZoom = nodes.length > 6;
+  const panZoom = interactive && !drawer && nodes.length > 5;
 
   return (
     <div className={`graph-visual-wrap${drawer ? " graph-visual-drawer" : ""}`}>
@@ -316,42 +323,72 @@ export function GraphVisualView({
   data,
   focusAssetId,
   variant = "default",
+  expandable = false,
 }: {
   data: Record<string, unknown>;
   focusAssetId?: string;
   variant?: "default" | "drawer";
+  expandable?: boolean;
 }) {
+  const [expanded, setExpanded] = useState(false);
   const uid = useId().replace(/:/g, "");
   const markerId = `graph-arrow-${uid}`;
   const markerUndocId = `graph-arrow-undoc-${uid}`;
   const nodes = (data.nodes as LayoutNode[]) || [];
   const edges = (data.edges as LayoutEdge[]) || [];
+  const queryLabel = fmt(data.query);
 
   if (!nodes.length) {
     return <p className="ai-off-note">No nodes in this slice.</p>;
   }
 
-  if (data.query === "Q2" && edges.length > 0) {
-    return (
+  const previewInteractive = !expandable;
+
+  const graphBody =
+    data.query === "Q2" && edges.length > 0 ? (
       <PathGraphVisual
         nodes={nodes}
         edges={edges}
         focusAssetId={focusAssetId}
         variant={variant}
         markerUndocId={markerUndocId}
+        interactive={previewInteractive}
+      />
+    ) : (
+      <NetworkGraphVisual
+        nodes={nodes}
+        edges={edges}
+        data={data}
+        focusAssetId={focusAssetId}
+        variant={variant}
+        markerId={markerId}
+        markerUndocId={markerUndocId}
+        interactive={previewInteractive}
       />
     );
+
+  if (!expandable) {
+    return graphBody;
   }
 
   return (
-    <NetworkGraphVisual
-      nodes={nodes}
-      edges={edges}
-      data={data}
-      focusAssetId={focusAssetId}
-      variant={variant}
-      markerId={markerId}
-      markerUndocId={markerUndocId}
-    />
+    <>
+      <button
+        type="button"
+        className="graph-expand-preview"
+        onClick={() => setExpanded(true)}
+        aria-label={`Open enlarged graph for ${queryLabel}`}
+      >
+        {graphBody}
+        <span className="graph-expand-hint">Click to enlarge</span>
+      </button>
+      <GraphExpandModal
+        open={expanded}
+        onClose={() => setExpanded(false)}
+        title={`Graph slice ${queryLabel}`}
+      >
+        <GraphVisualView data={data} focusAssetId={focusAssetId} variant="default" />
+      </GraphExpandModal>
+    </>
   );
 }

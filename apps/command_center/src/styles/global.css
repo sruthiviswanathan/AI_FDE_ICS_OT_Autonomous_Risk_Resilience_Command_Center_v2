@@ -445,16 +445,104 @@ button:disabled {
   color: var(--accent);
 }
 
-.drawer .graph-visual-drawer {
-  max-height: 520px;
+.graph-expand-preview {
+  display: block;
+  width: 100%;
   margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+}
+
+.graph-expand-preview:hover,
+.graph-expand-preview:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.graph-expand-hint {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.68rem;
+  color: var(--accent);
+  text-align: center;
+}
+
+.graph-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(8, 12, 18, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.graph-modal-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  max-width: min(980px, 94vw);
+  max-height: 90vh;
+  width: 100%;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.graph-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.graph-modal-title {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.graph-modal-close {
+  flex-shrink: 0;
+  border-color: var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  padding: 0.3rem 0.65rem;
+  font-size: 0.75rem;
+}
+
+.graph-modal-close:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.graph-modal-body {
+  overflow: auto;
+  padding: 0.75rem;
+}
+
+.graph-modal-body .graph-visual-wrap {
+  max-height: none;
+}
+
+.drawer .graph-visual-drawer {
+  max-height: 560px;
+  margin: 0;
+  overflow: auto;
   padding: 0.35rem;
 }
 
 .drawer .graph-visual-drawer .graph-visual {
-  min-height: 220px;
-  max-height: 480px;
+  min-height: 240px;
+  max-height: 520px;
+  width: 100%;
 }
 
 .drawer .graph-visual-drawer .graph-node-label {

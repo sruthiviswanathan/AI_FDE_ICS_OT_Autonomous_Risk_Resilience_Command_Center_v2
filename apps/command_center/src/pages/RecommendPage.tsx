@@ -7,7 +7,7 @@ import { useApp } from "../context/AppContext";
 import { fmt } from "../utils/format";
 
 export function RecommendPage() {
-  const { plantId, assetId, alertId, aiEnabled, setLastPacket, scenario, activeBinding } = useApp();
+  const { plantId, assetId, alertId, setLastPacket, scenario, activeBinding } = useApp();
   const [result, setResult] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -95,11 +95,6 @@ export function RecommendPage() {
               </div>
             )}
           </div>
-          {!aiEnabled && (
-            <p className="ai-off-note">
-              Deterministic advisory only — ranks and draft packets from rule engines. Narrative port off (ADR-12).
-            </p>
-          )}
           <div className="advisory-footer">
             Advisory only — no Execute Isolation · Write PLC · Modify SIS.
             <div className="btn-row">

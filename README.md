@@ -123,7 +123,7 @@ This tree is **production-oriented (synthetic)** and **PRD + App ready**. Struct
 | Specs      | Refined freeze + as-built C4 (`specs/as_built_c4.md`)              |
 | Validation | 31/31 golden evals, red team, readiness checklist                  |
 | API        | Read-only gold GETs + local `POST /recommend`, `POST /eval/run`    |
-| AI         | Disabled by default (`AI_ENABLED=0`) — deterministic core (ADR-12) |
+| Engines    | Deterministic rule engines only — no LLM in workshop (ADR-12) |
 
 
 **Legacy behavior preserved:** `legacy_`* and three strict XFAIL tests unchanged. Seeded `data/` contradictions not cleaned. No OT execute surfaces.

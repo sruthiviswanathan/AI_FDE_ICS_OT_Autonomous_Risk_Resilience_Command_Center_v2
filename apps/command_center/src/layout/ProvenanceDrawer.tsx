@@ -10,26 +10,16 @@ import { useFetch } from "../hooks/useFetch";
 const CHANNELS = ["STRUCTURED", "GRAPH", "VECTOR", "POLICY", "MEMORY"] as const;
 
 export function ProvenanceDrawer() {
-  const {
-    provenancePin,
-    lastPacket,
-    aiEnabled,
-    plantId,
-    assetId,
-    alertId,
-    lookupKey,
-    personaId,
-    provenanceOpen,
-    setProvenanceOpen,
-  } = useApp();
+  const { provenancePin, lastPacket, plantId, assetId, alertId, lookupKey, personaId, provenanceOpen, setProvenanceOpen } =
+    useApp();
   const { view } = usePersona();
   const [channel, setChannel] = useState<(typeof CHANNELS)[number]>(view.provenanceDefaultChannel);
 
   useEffect(() => {
     setChannel(view.provenanceDefaultChannel);
   }, [personaId, view.provenanceDefaultChannel]);
+
   const [graphView, setGraphView] = useState<"citations" | "visual">("visual");
-  const health = useFetch(() => api.health(), []);
   const graph = useFetch(
     () =>
       channel === "GRAPH"
@@ -45,7 +35,6 @@ export function ProvenanceDrawer() {
 
   const packet = (lastPacket?.recommendation || {}) as Record<string, unknown>;
   const evidence = (packet.evidence || []) as Record<string, unknown>[];
-  const backendNarrative = health.data?.ai_enabled === true;
 
   if (!provenanceOpen && view.id === "executive") {
     return (
@@ -124,7 +113,12 @@ export function ProvenanceDrawer() {
                 </button>
               </div>
               {graphView === "visual" ? (
-                <GraphVisualView data={graph.data} focusAssetId={assetId || undefined} variant="drawer" />
+                <GraphVisualView
+                  data={graph.data}
+                  focusAssetId={assetId || undefined}
+                  variant="drawer"
+                  expandable
+                />
               ) : (
                 <GraphCitationView data={graph.data} />
               )}
@@ -142,29 +136,6 @@ export function ProvenanceDrawer() {
         <div className="mono">policy.py:ACTION_TIERS · tier 1 recommend · tier 3 requires human Authorize (OPEN-001)</div>
       )}
       {channel === "MEMORY" && <p className="ai-off-note">Decision traces append-only — not hidden CoT authority.</p>}
-
-      <div className="card narrative-status" style={{ marginTop: "0.5rem" }}>
-        {aiEnabled && backendNarrative ? (
-          <>
-            <strong>Narrative port reserved</strong>
-            <p className="ai-off-note">
-              Not connected. Tables and draft packets below are authoritative. Engines do not require a model (ADR-13).
-            </p>
-          </>
-        ) : aiEnabled && !backendNarrative ? (
-          <>
-            <strong>Narrative unavailable</strong>
-            <p className="ai-off-note">Backend reports ai_enabled=false — deterministic tables only (EVAL-016).</p>
-          </>
-        ) : (
-          <>
-            <strong>Deterministic advisory only</strong>
-            <p className="ai-off-note">
-              Ranks, recovery, and draft packets from rule engines. No narrative layer (ADR-12).
-            </p>
-          </>
-        )}
-      </div>
     </aside>
   );
 }
