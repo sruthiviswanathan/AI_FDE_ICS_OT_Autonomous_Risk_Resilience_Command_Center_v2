@@ -59,7 +59,11 @@ export function ContextIdPickers({
     api
       .plants()
       .then((res) => {
-        if (!cancelled) setPlants(res.plants);
+        if (cancelled) return;
+        setPlants(res.plants);
+        if (res.plants.length > 0 && !res.plants.some((p) => p.plant_id === ctx.plantId)) {
+          ctx.setPlantId(res.plants[0].plant_id);
+        }
       })
       .catch((err) => {
         if (!cancelled) setPlantsError(catalogErrorMessage(err, "Plants"));
@@ -82,7 +86,7 @@ export function ContextIdPickers({
       .then((res) => {
         if (cancelled) return;
         setAssets(res.assets);
-        if (!res.assets.some((a) => a.asset_id === ctx.assetId)) {
+        if (ctx.assetId && !res.assets.some((a) => a.asset_id === ctx.assetId)) {
           ctx.setAssetId(res.assets[0]?.asset_id || "");
         }
       })
@@ -111,7 +115,7 @@ export function ContextIdPickers({
       .then((res) => {
         if (cancelled) return;
         setAlerts(res.alerts);
-        if (!res.alerts.some((a) => a.alert_id === ctx.alertId)) {
+        if (ctx.alertId && !res.alerts.some((a) => a.alert_id === ctx.alertId)) {
           ctx.setAlertId(res.alerts[0]?.alert_id || "");
         }
       })
@@ -132,7 +136,6 @@ export function ContextIdPickers({
 
   function onPlantChange(value: string) {
     ctx.setPlantId(value);
-    if (fields.asset !== false) ctx.setAssetId("");
     if (fields.alert !== false) ctx.setAlertId("");
     ctx.triggerLookup();
   }
@@ -204,6 +207,9 @@ export function ContextIdPickers({
           >
             {assetsLoading && assetOptions.length === 0 && <option value="">Loading…</option>}
             {!assetsLoading && assetOptions.length === 0 && <option value="">No assets</option>}
+            {!assetsLoading && assetOptions.length > 0 && (
+              <option value="">All assets (plant-wide)</option>
+            )}
             {assetOptions.map((a) => (
               <option key={a.asset_id} value={a.asset_id}>
                 {a.asset_id}
@@ -223,6 +229,9 @@ export function ContextIdPickers({
           >
             {alertsLoading && alertOptions.length === 0 && <option value="">Loading…</option>}
             {!alertsLoading && alertOptions.length === 0 && <option value="">No alerts</option>}
+            {!alertsLoading && alertOptions.length > 0 && (
+              <option value="">No alert selected</option>
+            )}
             {alertOptions.map((a) => (
               <option key={a.alert_id} value={a.alert_id}>
                 {a.alert_id}

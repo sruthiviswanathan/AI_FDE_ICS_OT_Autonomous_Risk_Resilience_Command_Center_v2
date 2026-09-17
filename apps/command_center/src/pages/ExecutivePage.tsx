@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { api } from "../api/client";
-import { ErrorBlock, LoadingBlock, StaleBadge } from "../components/StateViews";
+import { ErrorBlock, FreshnessBadge, LoadingBlock } from "../components/StateViews";
 import { useFetch } from "../hooks/useFetch";
 import { fmt } from "../utils/format";
 
 export function ExecutivePage() {
   const diag = useFetch(() => api.diagnostics(), []);
   const slo = useFetch(() => api.opsSlo(), []);
+  const estate = useFetch(() => api.estateByPlant({ includeTopAlerts: 0 }), []);
 
   if (diag.loading) return <LoadingBlock />;
   if (diag.error) return <ErrorBlock message={diag.error} />;
@@ -16,7 +17,7 @@ export function ExecutivePage() {
   return (
     <div>
       <h2 className="page-title">Executive Brief</h2>
-      <StaleBadge />
+      <FreshnessBadge freshness={estate.data?.freshness} />
       <div className="card-grid">
         <div className="card">
           <h3>Posture summary</h3>
@@ -34,7 +35,10 @@ export function ExecutivePage() {
               SLO-OT:{" "}
               {(slo.data as { slos?: Record<string, { status?: string }> })?.slos?.["SLO-OT"]?.status}
             </li>
-            <li>Eval harness: 31/31</li>
+            <li>
+              SLO-EVAL:{" "}
+              {(slo.data as { slos?: Record<string, { status?: string }> })?.slos?.["SLO-EVAL"]?.status}
+            </li>
             <li>AI default: OFF (ADR-12)</li>
             <li>Execute routes: 0</li>
           </ul>

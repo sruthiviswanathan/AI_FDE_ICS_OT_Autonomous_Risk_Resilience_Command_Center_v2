@@ -162,13 +162,30 @@ def _all_vulnerabilities() -> tuple[dict, ...]:
     return derived_vulnerabilities()
 
 
-def rank_corpus(*, limit: int = 20) -> dict:
+def rank_corpus(
+    *,
+    limit: int = 20,
+    asset_id: str | None = None,
+    plant_id: str | None = None,
+) -> dict:
     findings = [dict(row) for row in _all_vulnerabilities()]
+    scope = {
+        "requested": {"asset_id": asset_id, "plant_id": plant_id},
+        "effective": {"asset_id": asset_id, "plant_id": plant_id},
+    }
+    if asset_id:
+        findings = [f for f in findings if f.get("asset_id") == asset_id]
+    elif plant_id:
+        assets_in_plant = {
+            aid for aid, asset in _assets_by_id().items() if asset.get("plant_id") == plant_id
+        }
+        findings = [f for f in findings if f.get("asset_id") in assets_in_plant]
     ranked = contextual_rank(findings)
     return {
         "count": len(ranked),
         "limit": limit,
         "rankings": ranked[:limit],
+        "scope": scope,
         "method": "contextual_operational_risk",
         "note": "legacy_rank remains CVSS-only for contrast; LLM must not re-rank",
     }

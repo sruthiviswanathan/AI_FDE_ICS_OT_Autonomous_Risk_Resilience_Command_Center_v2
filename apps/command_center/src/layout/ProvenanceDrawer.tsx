@@ -1,17 +1,30 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { api } from "../api/client";
 import { GraphCitationView } from "../components/GraphCitationView";
 import { GraphVisualView } from "../components/GraphVisualView";
+import { ProvenanceMemoryView } from "../components/ProvenanceMemoryView";
+import { ProvenancePolicyView } from "../components/ProvenancePolicyView";
+import { ProvenanceStructuredView } from "../components/ProvenanceStructuredView";
 import { ErrorBlock, LoadingBlock } from "../components/StateViews";
 import { useApp } from "../context/AppContext";
 import { usePersona } from "../hooks/usePersona";
 import { useFetch } from "../hooks/useFetch";
+import { deriveGraphQuery, graphQueryLabel } from "../utils/provenanceContext";
 
 const CHANNELS = ["STRUCTURED", "GRAPH", "VECTOR", "POLICY", "MEMORY"] as const;
 
 export function ProvenanceDrawer() {
-  const { provenancePin, lastPacket, plantId, assetId, alertId, lookupKey, personaId, provenanceOpen, setProvenanceOpen } =
-    useApp();
+  const {
+    provenancePin,
+    lastPacket,
+    plantId,
+    assetId,
+    alertId,
+    lookupKey,
+    personaId,
+    provenanceOpen,
+    setProvenanceOpen,
+  } = useApp();
   const { view } = usePersona();
   const [channel, setChannel] = useState<(typeof CHANNELS)[number]>(view.provenanceDefaultChannel);
 
@@ -20,21 +33,27 @@ export function ProvenanceDrawer() {
   }, [personaId, view.provenanceDefaultChannel]);
 
   const [graphView, setGraphView] = useState<"citations" | "visual">("visual");
+
+  const graphQuery = useMemo(
+    () => deriveGraphQuery({ alertId, assetId, plantId }),
+    [alertId, assetId, plantId],
+  );
+
   const graph = useFetch(
     () =>
-      channel === "GRAPH"
+      channel === "GRAPH" && plantId
         ? api.graphSlice({
-            query: "Q5",
+            query: graphQuery,
             plant_id: plantId,
             asset_id: assetId || undefined,
             alert_id: alertId || undefined,
           })
         : Promise.resolve(null),
-    [channel, plantId, assetId, alertId, lookupKey],
+    [channel, graphQuery, plantId, assetId, alertId, lookupKey],
   );
 
   const packet = (lastPacket?.recommendation || {}) as Record<string, unknown>;
-  const evidence = (packet.evidence || []) as Record<string, unknown>[];
+  const packetEvidence = (packet.evidence || []) as Record<string, unknown>[];
 
   if (!provenanceOpen && view.id === "executive") {
     return (
@@ -51,15 +70,26 @@ export function ProvenanceDrawer() {
   return (
     <aside className={`drawer${channel === "GRAPH" ? " drawer-graph-active" : ""}`}>
       <h3>Provenance &amp; Retrieval</h3>
+
+      <div className="provenance-context-strip mono">
+        {plantId && <span>{plantId}</span>}
+        {assetId && <span>{assetId}</span>}
+        {alertId && <span>{alertId}</span>}
+        {!plantId && !assetId && !alertId && (
+          <span className="ai-off-note">No context — set plant / asset / alert</span>
+        )}
+      </div>
+
       {provenancePin ? (
         <div className="card" style={{ marginBottom: "0.5rem" }}>
+          {provenancePin.label && <div>{provenancePin.label}</div>}
           <div className="mono">{provenancePin.source_path}</div>
           {provenancePin.record_id && <div>id: {provenancePin.record_id}</div>}
           {provenancePin.confidence !== undefined && <div>confidence: {provenancePin.confidence}</div>}
-          <div>freshness: {provenancePin.freshness || "workshop-static"}</div>
+          <div>freshness: {provenancePin.freshness || "—"}</div>
         </div>
       ) : (
-        <p className="ai-off-note">Click a source_path in tables to pin evidence.</p>
+        <p className="ai-off-note">Click a provenance link in tables to pin a source record here.</p>
       )}
 
       <div className="channel-tabs">
@@ -78,23 +108,25 @@ export function ProvenanceDrawer() {
       </div>
 
       {channel === "STRUCTURED" && (
-        <div>
-          {evidence.length ? (
-            <ul className="mono">
-              {evidence.slice(0, 8).map((e, i) => (
-                <li key={i}>{JSON.stringify(e)}</li>
-              ))}
-            </ul>
-          ) : (
-            <p className="ai-off-note">Structured evidence appears after recommendation packet.</p>
-          )}
-        </div>
+        <ProvenanceStructuredView
+          plantId={plantId}
+          assetId={assetId}
+          alertId={alertId}
+          lookupKey={lookupKey}
+          packetEvidence={packetEvidence}
+        />
       )}
+
       {channel === "GRAPH" && (
         <div>
-          {graph.loading && <LoadingBlock label="Loading Q5 graph slice…" />}
-          {graph.error && <ErrorBlock message={graph.error} />}
-          {graph.data && (
+          <p className="ai-off-note provenance-graph-label">
+            {graphQueryLabel(graphQuery)} ({graphQuery})
+            {!plantId && " — select a plant"}
+          </p>
+          {!plantId && <p className="ai-off-note">Graph slice requires plant context.</p>}
+          {plantId && graph.loading && <LoadingBlock label={`Loading ${graphQuery} graph slice…`} />}
+          {plantId && graph.error && <ErrorBlock message={graph.error} />}
+          {plantId && graph.data && (
             <>
               <div className="btn-row graph-view-toggle drawer-graph-toggle">
                 <button
@@ -124,18 +156,23 @@ export function ProvenanceDrawer() {
               )}
             </>
           )}
-          {!graph.loading && !graph.error && !graph.data && (
-            <p className="ai-off-note">Graph slice unavailable for current context.</p>
-          )}
         </div>
       )}
+
       {channel === "VECTOR" && (
         <p className="ai-off-note">VECTOR retrieval disabled. Cannot drive isolation or policy tiers.</p>
       )}
-      {channel === "POLICY" && (
-        <div className="mono">policy.py:ACTION_TIERS · tier 1 recommend · tier 3 requires human Authorize (OPEN-001)</div>
+
+      {channel === "POLICY" && <ProvenancePolicyView lookupKey={lookupKey} />}
+
+      {channel === "MEMORY" && (
+        <ProvenanceMemoryView
+          plantId={plantId}
+          assetId={assetId}
+          alertId={alertId}
+          lookupKey={lookupKey}
+        />
       )}
-      {channel === "MEMORY" && <p className="ai-off-note">Decision traces append-only — not hidden CoT authority.</p>}
     </aside>
   );
 }

@@ -219,6 +219,47 @@ def test_openapi_matches_registered_routes():
         assert required in paths
 
 
+def test_identity_conflicts_scoped_by_plant():
+    estate = client.get("/identity/conflicts")
+    plt01 = client.get("/identity/conflicts?plant_id=PLT-01")
+    assert estate.status_code == 200
+    assert plt01.status_code == 200
+    estate_body = estate.json()
+    plt_body = plt01.json()
+    assert plt_body["plant_id"] == "PLT-01"
+    assert plt_body["asset_state_conflicts"] < estate_body["asset_state_conflicts"]
+    assert len(plt_body["conflicts"]) == plt_body["conflict_count"]
+    assert plt_body["conflicts"][0]["asset_id"] if plt_body["conflicts"] else True
+
+
+def test_risk_contextual_scoped_by_asset():
+    scoped = client.get("/risk/contextual?asset_id=OT-00108&limit=10")
+    assert scoped.status_code == 200
+    body = scoped.json()
+    assert body["count"] == 1
+    assert len(body["rankings"]) == 1
+    assert body["rankings"][0]["asset_id"] == "OT-00108"
+    assert "factor_breakdown" in body["rankings"][0]
+
+    empty = client.get("/risk/contextual?asset_id=OT-00001&limit=10")
+    assert empty.status_code == 200
+    assert empty.json()["count"] == 0
+
+
+def test_graph_slice_q1_identity_neighborhood_with_aliases():
+    """Q1 must not crash when alias edges carry record provenance metadata."""
+    resp = client.get("/graph/slice?query=Q1&plant_id=PLT-02&asset_id=OT-00108")
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["query"] == "Q1"
+    assert len(body["nodes"]) >= 2
+    assert len(body["edges"]) >= 1
+    alias_edges = [e for e in body["edges"] if e["type"] == "ALIAS_OF"]
+    assert alias_edges
+    assert "source" in alias_edges[0]
+    assert "target" in alias_edges[0]
+
+
 def test_spa_fallback_serves_index_for_client_routes():
     """React Router paths must return index.html on refresh (Render / integrated deploy)."""
     for path in ("/", "/estate", "/incident", "/process", "/recovery"):

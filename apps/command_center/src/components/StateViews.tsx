@@ -10,8 +10,10 @@ export function EmptyBlock({ message }: { message: string }) {
   return <div className="state-block empty">{message}</div>;
 }
 
-export function StaleBadge() {
-  return <span className="badge amber">workshop-static</span>;
+export function FreshnessBadge({ freshness }: { freshness?: string | null }) {
+  if (!freshness) return null;
+  const tone = freshness.includes("static") || freshness.includes("PENDING") ? "amber" : "green";
+  return <span className={`badge ${tone}`}>{freshness}</span>;
 }
 
 export function UncertaintyBadge({ text = "UNKNOWN" }: { text?: string }) {

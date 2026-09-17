@@ -32,6 +32,17 @@ export function GraphCitationView({ data }: { data: Record<string, unknown> }) {
         <p className="ai-off-note">Unit join missing — abstain required.</p>
       )}
 
+      {Array.isArray(data.source_paths) && (data.source_paths as string[]).length > 0 && (
+        <>
+          <h4 className="graph-citation-heading">Source paths</h4>
+          <ul className="graph-citation-list mono">
+            {(data.source_paths as string[]).map((p) => (
+              <li key={p}>{p}</li>
+            ))}
+          </ul>
+        </>
+      )}
+
       <h4 className="graph-citation-heading">Nodes</h4>
       <ul className="graph-citation-list mono">
         {nodes.map((n) => (

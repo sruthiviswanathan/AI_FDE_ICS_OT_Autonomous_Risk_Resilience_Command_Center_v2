@@ -1551,6 +1551,87 @@ button:disabled {
   font-variant-numeric: tabular-nums;
 }
 
+.provenance-context-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.6rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.provenance-context-strip span {
+  padding: 0.1rem 0.35rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+}
+
+.provenance-graph-label {
+  margin-bottom: 0.35rem;
+}
+
+.provenance-structured,
+.provenance-policy {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.provenance-subheading {
+  margin: 0.65rem 0 0.25rem;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.provenance-evidence-block + .provenance-evidence-block {
+  margin-top: 0.35rem;
+}
+
+.provenance-evidence-list {
+  margin: 0;
+  padding-left: 1rem;
+  font-size: 0.68rem;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.provenance-evidence-list li + li {
+  margin-top: 0.2rem;
+}
+
+.provenance-policy-meta {
+  font-size: 0.72rem;
+  margin-bottom: 0.35rem;
+}
+
+.data-table tr.row-expanded td {
+  padding: 0.75rem;
+  background: var(--bg-elevated);
+  border-top: none;
+}
+
+.risk-finding-detail {
+  padding: 0.25rem 0;
+}
+
+.risk-finding-detail .card-grid {
+  margin-bottom: 0.75rem;
+}
+
+.identity-conflict-toolbar {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.65rem;
+}
+
+.identity-conflict-toolbar .drill-table-toolbar {
+  margin-bottom: 0;
+}
+
+.identity-filter-summary {
+  margin: 0;
+  flex: 1 1 220px;
+  align-self: center;
+}
+
 @media (max-width: 1100px) {
   .body-grid {
     grid-template-columns: var(--nav-w) 1fr;

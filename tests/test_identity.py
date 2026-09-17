@@ -35,3 +35,20 @@ def test_list_identity_conflicts_matches_diagnostics_order_of_magnitude():
     summary = identity.list_identity_conflicts()
     assert summary["alias_collisions"] >= 5
     assert summary["asset_state_conflicts"] >= 200
+    assert summary["conflict_count"] >= summary["asset_state_conflicts"]
+
+
+def test_list_identity_conflicts_scoped_by_plant():
+    estate = identity.list_identity_conflicts()
+    plt01 = identity.list_identity_conflicts(plant_id="PLT-01")
+    plt02 = identity.list_identity_conflicts(plant_id="PLT-02")
+
+    assert plt01["plant_id"] == "PLT-01"
+    assert plt01["asset_state_conflicts"] < estate["asset_state_conflicts"]
+    assert plt01["alias_collisions"] <= estate["alias_collisions"]
+    assert plt01["conflict_count"] == len(plt01["conflicts"])
+    assert all(row["plant_id"] == "PLT-01" for row in plt01["conflicts"])
+    state_row = next(r for r in plt01["conflicts"] if r["type"] == "REGISTERED_VS_OBSERVED")
+    assert state_row["registered_state"] == "ACTIVE"
+    assert state_row["observed_state"] in {"OFFLINE", "UNSEEN"}
+    assert plt01["asset_state_conflicts"] != plt02["asset_state_conflicts"] or plt01["plant_id"] != plt02["plant_id"]

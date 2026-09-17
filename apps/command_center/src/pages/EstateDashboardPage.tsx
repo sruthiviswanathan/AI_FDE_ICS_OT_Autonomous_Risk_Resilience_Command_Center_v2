@@ -12,7 +12,8 @@ import {
   postureComposite,
 } from "../components/PlantPostureBadges";
 import { GraphSliceView } from "../components/GraphSliceView";
-import { ErrorBlock, LoadingBlock, StaleBadge } from "../components/StateViews";
+import { ErrorBlock, LoadingBlock, FreshnessBadge } from "../components/StateViews";
+import { deriveGraphQuery } from "../utils/provenanceContext";
 import { useApp } from "../context/AppContext";
 import { useFetch } from "../hooks/useFetch";
 import {
@@ -150,7 +151,11 @@ export function EstateDashboardPage() {
     [localAssetId, ctx.lookupKey],
   );
 
-  const graphQuery = ctx.alertId ? "Q5" : localAssetId ? "Q1" : "Q4";
+  const graphQuery = deriveGraphQuery({
+    alertId: ctx.alertId,
+    assetId: localAssetId || ctx.assetId,
+    plantId: ctx.plantId,
+  });
   const graph = useFetch(
     () =>
       ctx.plantId
@@ -190,7 +195,7 @@ export function EstateDashboardPage() {
   return (
     <div>
       <h2 className="page-title">Estate Dashboard</h2>
-      <StaleBadge />
+      <FreshnessBadge freshness={estate.data?.freshness} />
       <p className="ai-off-note">
         <Link to="/">← Control Tower</Link>
         {" · "}

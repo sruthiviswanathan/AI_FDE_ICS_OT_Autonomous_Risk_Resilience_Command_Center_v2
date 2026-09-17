@@ -9,6 +9,7 @@ export function useFetch<T>(loader: () => Promise<T>, deps: unknown[] = []) {
     let alive = true;
     setLoading(true);
     setError(null);
+    setData(null);
     loader()
       .then((d) => {
         if (alive) setData(d);

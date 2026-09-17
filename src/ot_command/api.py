@@ -109,8 +109,8 @@ def asset_identity(id: str):
 
 
 @app.get("/identity/conflicts")
-def identity_conflicts():
-    return identity.list_identity_conflicts()
+def identity_conflicts(plant_id: str | None = None):
+    return identity.list_identity_conflicts(plant_id=plant_id)
 
 
 @app.get("/telemetry/quality")
@@ -138,8 +138,12 @@ def telemetry_timeline(
 
 
 @app.get("/risk/contextual")
-def risk_contextual(limit: int = 20):
-    return risk.rank_corpus(limit=limit)
+def risk_contextual(
+    limit: int = 20,
+    asset_id: str | None = None,
+    plant_id: str | None = None,
+):
+    return risk.rank_corpus(limit=limit, asset_id=asset_id, plant_id=plant_id)
 
 
 @app.get("/safety/conflicts")
