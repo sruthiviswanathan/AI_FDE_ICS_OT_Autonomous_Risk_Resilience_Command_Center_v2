@@ -246,6 +246,30 @@ def test_risk_contextual_scoped_by_asset():
     assert empty.json()["count"] == 0
 
 
+def test_graph_slice_q3_plant_scope_does_not_require_asset():
+    """Safety board is plant-scoped; Q3 must not 400 on plant_id alone."""
+    resp = client.get("/graph/slice?query=Q3&plant_id=PLT-04")
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["query"] == "Q3"
+    assert body["plant_id"] == "PLT-04"
+    assert any(n.get("id") == "PLT-04" and n.get("type") == "Plant" for n in body["nodes"])
+    barriers = [n for n in body["nodes"] if n.get("type") == "Barrier"]
+    assert 1 <= len(barriers) <= 8
+    assert all(str(n["id"]).startswith("PLT-04") for n in barriers)
+    assert body["hop_limit_enforced"] is True
+    assert body["hop_cap"] == 8
+
+    missing = client.get("/graph/slice?query=Q3")
+    assert missing.status_code == 400
+    assert "plant_id" in missing.json()["detail"]
+
+    asset = client.get("/graph/slice?query=Q3&asset_id=OT-01016")
+    assert asset.status_code == 200
+    assert asset.json()["query"] == "Q3"
+    assert asset.json().get("plant_id") is None
+
+
 def test_graph_slice_q1_identity_neighborhood_with_aliases():
     """Q1 must not crash when alias edges carry record provenance metadata."""
     resp = client.get("/graph/slice?query=Q1&plant_id=PLT-02&asset_id=OT-00108")

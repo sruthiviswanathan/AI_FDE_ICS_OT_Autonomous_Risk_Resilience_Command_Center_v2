@@ -132,13 +132,94 @@ def _q2_undocumented_paths(*, asset_id: str | None, plant_id: str | None, hop_ca
     }
 
 
-def _q3_safety_cyber(*, asset_id: str | None, alert_id: str | None) -> dict:
+def _barrier_priority(barrier: dict) -> tuple:
+    bypassed_unauthorized = barrier.get("state") == "BYPASSED" and barrier.get("bypass_authorized") == "NO"
+    degraded = barrier.get("state") != "ACTIVE" or barrier.get("bypass_authorized") not in {"NO", "YES"}
+    return (0 if bypassed_unauthorized else 1 if degraded else 2, barrier.get("barrier_id", ""))
+
+
+def _q3_plant_safety(*, plant_id: str, hop_cap: int) -> dict:
+    """Bounded plant-scoped safety–cyber join. Missing tag-to-unit joins stay missing."""
+    barriers = sorted(
+        (b for b in rows(BARRIERS_PATH) if b.get("plant_id") == plant_id),
+        key=_barrier_priority,
+    )
+    selected = barriers[:hop_cap]
+    nodes: dict[str, dict] = {plant_id: _node(plant_id, "Plant")}
+    edges: list[dict] = []
+    selected_units: set[str] = set()
+    unit_join_missing = False
+
+    for barrier in selected:
+        unit_id = barrier.get("unit_id")
+        if unit_id and unit_id not in nodes:
+            unit = _units_by_id().get(unit_id)
+            nodes[unit_id] = _node(unit_id, "Unit", safe_state=unit.get("safe_state") if unit else None)
+            edges.append(_edge("IN_PLANT", unit_id, plant_id))
+            selected_units.add(unit_id)
+        nodes[barrier["barrier_id"]] = _node(
+            barrier["barrier_id"],
+            "Barrier",
+            state=barrier.get("state"),
+            bypass_authorized=barrier.get("bypass_authorized"),
+        )
+        edges.append(_edge("PROTECTS", barrier["barrier_id"], unit_id or plant_id))
+
+    tagged_in_units = {
+        aid: tag for aid, tag in _tags_by_asset().items() if tag.get("unit_id") in selected_units
+    }
+    if selected_units and not tagged_in_units:
+        unit_join_missing = True
+
+    alert_slots = max(0, hop_cap - len(selected))
+    attached_alerts = 0
+    for alert in rows(ALERTS_PATH):
+        if attached_alerts >= max(1, alert_slots):
+            break
+        if alert.get("plant_id") != plant_id:
+            continue
+        if alert.get("severity") not in {"HIGH", "CRITICAL"}:
+            continue
+        if alert.get("process_context") != "UNKNOWN":
+            continue
+        asset_id = alert.get("asset_id")
+        tag = tagged_in_units.get(asset_id) if asset_id else None
+        if not tag:
+            continue
+        unit_id = tag["unit_id"]
+        if asset_id not in nodes:
+            nodes[asset_id] = _node(asset_id, "Asset")
+            edges.append(_edge("IN_UNIT", asset_id, unit_id))
+        if alert["alert_id"] not in nodes:
+            nodes[alert["alert_id"]] = _node(
+                alert["alert_id"],
+                "Alert",
+                severity=alert.get("severity"),
+                process_context=alert.get("process_context"),
+            )
+            edges.append(_edge("ALERT_ON", alert["alert_id"], asset_id))
+            attached_alerts += 1
+
+    return {
+        "query": "Q3",
+        "plant_id": plant_id,
+        "nodes": list(nodes.values()),
+        "edges": edges,
+        "unit_join_missing": unit_join_missing,
+        "safe_state": None,
+        "note": "Plant-scoped safety–cyber join — hop-capped; missing tag-to-unit joins stay missing",
+    }
+
+
+def _q3_safety_cyber(*, asset_id: str | None, alert_id: str | None, plant_id: str | None = None, hop_cap: int = MAX_HOP) -> dict:
     alert = None
     if alert_id:
         alert = next((a for a in rows(ALERTS_PATH) if a["alert_id"] == alert_id), None)
         asset_id = asset_id or (alert.get("asset_id") if alert else None)
     if not asset_id:
-        raise ValueError("Q3 requires asset_id or alert_id")
+        if plant_id:
+            return _q3_plant_safety(plant_id=plant_id, hop_cap=hop_cap)
+        raise ValueError("Q3 requires asset_id, alert_id, or plant_id")
     tag = _tags_by_asset().get(asset_id)
     unit_id = tag["unit_id"] if tag else None
     unit = _units_by_id().get(unit_id or "")
@@ -267,7 +348,12 @@ def get_slice(
     elif query == "Q2":
         payload = _q2_undocumented_paths(asset_id=asset_id, plant_id=plant_id, hop_cap=hop_cap)
     elif query == "Q3":
-        payload = _q3_safety_cyber(asset_id=asset_id, alert_id=alert_id)
+        payload = _q3_safety_cyber(
+            asset_id=asset_id,
+            alert_id=alert_id,
+            plant_id=plant_id,
+            hop_cap=hop_cap,
+        )
     elif query == "Q4":
         payload = _q4_recovery(plant_id=plant_id)
     else:

@@ -2,7 +2,7 @@ import { api } from "../api/client";
 import { DataTable } from "../components/DataTable";
 import { GraphSliceView } from "../components/GraphSliceView";
 import { PageLookup } from "../components/PageLookup";
-import { ErrorBlock, GraphAsyncContent, LoadingBlock, SafetyBadge, UncertaintyBadge } from "../components/StateViews";
+import { EmptyBlock, ErrorBlock, GraphAsyncContent, LoadingBlock, SafetyBadge, UncertaintyBadge } from "../components/StateViews";
 import { useApp } from "../context/AppContext";
 import { useFetch } from "../hooks/useFetch";
 import { fmt } from "../utils/format";
@@ -10,7 +10,13 @@ import { fmt } from "../utils/format";
 export function SafetyPage() {
   const { plantId, lookupKey } = useApp();
   const conflicts = useFetch(() => api.safetyConflicts(plantId), [plantId, lookupKey]);
-  const graph = useFetch(() => api.graphSlice({ query: "Q3", plant_id: plantId }), [plantId, lookupKey]);
+  const graph = useFetch(
+    () =>
+      plantId
+        ? api.graphSlice({ query: "Q3", plant_id: plantId })
+        : Promise.resolve(null),
+    [plantId, lookupKey],
+  );
 
   return (
     <div>
@@ -59,13 +65,18 @@ export function SafetyPage() {
       )}
       <div style={{ marginTop: "0.75rem" }}>
         <h3 className="section-title">Safety context (Q3)</h3>
-        <GraphAsyncContent
-          loading={graph.loading}
-          error={graph.error}
-          label="Loading safety context graph (Q3)…"
-        >
-          {graph.data && <GraphSliceView data={graph.data} showVisualToggle defaultView="visual" />}
-        </GraphAsyncContent>
+        {!plantId && <EmptyBlock message="Select a plant to load the safety–cyber join (Q3)." />}
+        {plantId && (
+          <GraphAsyncContent
+            loading={graph.loading}
+            error={graph.error}
+            label="Loading safety context graph (Q3)…"
+          >
+            {graph.data && (
+              <GraphSliceView data={graph.data} showVisualToggle defaultView="visual" expandable />
+            )}
+          </GraphAsyncContent>
+        )}
       </div>
     </div>
   );
