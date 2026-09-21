@@ -283,8 +283,12 @@ def get_scenario(scenario_id: str):
 
 
 @app.get("/data/shift-notes/untrusted")
-def shift_notes_untrusted():
-    """Untrusted shift handover — never treated as authoritative."""
+def shift_notes_untrusted(plant_id: str | None = None):
+    """Untrusted shift handover — never treated as authoritative.
+
+    The workshop corpus has one shadow email and no plant_id (OPEN-018).
+    plant_id is recorded as the request scope only — it does not bind the note.
+    """
     path = ROOT / "data" / "shadow" / "shift_handover_email.txt"
     if not path.is_file():
         raise HTTPException(status_code=404, detail="shift notes not found")
@@ -293,6 +297,11 @@ def shift_notes_untrusted():
         "trust": "UNTRUSTED",
         "content": path.read_text(encoding="utf-8"),
         "note": "Shift notes are operator narrative only — not permission to act.",
+        "requested_plant_id": plant_id,
+        "source_plant_id": None,
+        "bound_to_requested_plant": False,
+        "open_item": "OPEN-018",
+        "scope": "ESTATE_SHADOW_UNBOUND",
     }
 
 

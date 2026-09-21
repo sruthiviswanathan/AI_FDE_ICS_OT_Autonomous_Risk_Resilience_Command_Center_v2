@@ -175,7 +175,20 @@ export const api = {
   traces: (limit = 50) => request<{ traces: Record<string, unknown>[] }>(`/audit/traces?limit=${limit}`),
   scenarioCatalog: () => request<import("../scenarios/types").ScenarioCatalog>("/scenarios/catalog"),
   scenario: (id: string) => request<Record<string, unknown>>(`/scenarios/${id}`),
-  shiftNotes: () => request<{ content: string; trust: string; source_path: string }>("/data/shift-notes/untrusted"),
+  shiftNotes: (plantId?: string) =>
+    request<{
+      content: string;
+      trust: string;
+      source_path: string;
+      requested_plant_id?: string | null;
+      source_plant_id?: string | null;
+      bound_to_requested_plant?: boolean;
+      open_item?: string;
+      scope?: string;
+      note?: string;
+    }>(
+      `/data/shift-notes/untrusted${plantId ? `?plant_id=${encodeURIComponent(plantId)}` : ""}`,
+    ),
   vendorSessions: (limit = 50) => request<Record<string, unknown>>(`/data/views/vendor-sessions?limit=${limit}`),
   demoWorkflow: () => request<Record<string, unknown>>("/agent/workflow/demo"),
 };

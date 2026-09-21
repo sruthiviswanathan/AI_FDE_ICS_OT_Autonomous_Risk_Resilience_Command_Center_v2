@@ -172,6 +172,18 @@ def test_audit_traces_and_scenario_endpoints():
     notes = client.get("/data/shift-notes/untrusted")
     assert notes.status_code == 200
     assert notes.json()["trust"] == "UNTRUSTED"
+    assert notes.json()["source_plant_id"] is None
+    assert notes.json()["bound_to_requested_plant"] is False
+
+    scoped = client.get("/data/shift-notes/untrusted?plant_id=PLT-04")
+    assert scoped.status_code == 200
+    scoped_body = scoped.json()
+    assert scoped_body["trust"] == "UNTRUSTED"
+    assert scoped_body["requested_plant_id"] == "PLT-04"
+    assert scoped_body["source_plant_id"] is None
+    assert scoped_body["bound_to_requested_plant"] is False
+    assert scoped_body["content"] == notes.json()["content"]
+    assert scoped_body["open_item"] == "OPEN-018"
 
 
 def test_list_plants_and_cascade_catalog():

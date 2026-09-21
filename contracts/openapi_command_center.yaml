@@ -582,8 +582,14 @@ paths:
   /data/shift-notes/untrusted:
     get:
       summary: Shift Notes Untrusted
-      description: "Untrusted shift handover \u2014 never treated as authoritative."
+      description: "Untrusted shift handover \u2014 never treated as authoritative. Optional plant_id is request scope only; source has no plant_id (OPEN-018)."
       operationId: shift_notes_untrusted_data_shift_notes_untrusted_get
+      parameters:
+        - name: plant_id
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Successful Response
