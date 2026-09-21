@@ -199,12 +199,24 @@ export const api = {
     plantId?: string;
     assetId?: string;
     limit?: number;
+    offset?: number;
+    sortBy?: string;
+    sortDir?: "asc" | "desc";
+    quality?: string;
+    flag?: string;
+    q?: string;
   }) => {
     const q = new URLSearchParams({ order: "event_time" });
     if (params?.tagId) q.set("tag_id", params.tagId);
     if (params?.plantId) q.set("plant_id", params.plantId);
     if (params?.assetId) q.set("asset_id", params.assetId);
     if (params?.limit !== undefined) q.set("limit", String(params.limit));
+    if (params?.offset !== undefined) q.set("offset", String(params.offset));
+    if (params?.sortBy) q.set("sort_by", params.sortBy);
+    if (params?.sortDir) q.set("sort_dir", params.sortDir);
+    if (params?.quality) q.set("quality", params.quality);
+    if (params?.flag) q.set("flag", params.flag);
+    if (params?.q) q.set("q", params.q);
     return request<Record<string, unknown>>(`/telemetry/timeline?${q}`);
   },
   risk: (params?: { limit?: number; plantId?: string; assetId?: string }) => {

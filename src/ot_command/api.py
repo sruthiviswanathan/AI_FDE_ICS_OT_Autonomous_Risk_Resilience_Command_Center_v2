@@ -125,16 +125,32 @@ def telemetry_timeline(
     asset_id: str | None = None,
     order: str = "event_time",
     limit: int = 200,
+    offset: int = 0,
+    sort_by: str = "event_time",
+    sort_dir: str = "asc",
+    quality: str | None = None,
+    flag: str | None = None,
+    q: str | None = None,
 ):
     if order != "event_time":
         raise HTTPException(status_code=400, detail="only order=event_time is supported")
-    return telemetry.get_timeline(
-        tag_id=tag_id,
-        plant_id=plant_id,
-        asset_id=asset_id,
-        order=order,
-        limit=limit,
-    )
+    cap = min(max(limit, 1), 500)
+    try:
+        return telemetry.get_timeline(
+            tag_id=tag_id,
+            plant_id=plant_id,
+            asset_id=asset_id,
+            order=order,
+            limit=cap,
+            offset=max(offset, 0),
+            sort_by=sort_by,
+            sort_dir=sort_dir,
+            quality=quality,
+            flag=flag,
+            q=q,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @app.get("/risk/contextual")

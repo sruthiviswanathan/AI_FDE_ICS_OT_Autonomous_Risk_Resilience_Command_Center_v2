@@ -55,7 +55,28 @@ def test_telemetry_quality_falls_back_when_asset_untagged():
 def test_telemetry_timeline_scoped_by_plant():
     timeline = telemetry.get_timeline(plant_id="PLT-01", limit=20)
     assert timeline["count"] <= 20
+    assert timeline["total_count"] > timeline["count"]
     assert all(e["tag_id"].startswith("PLT-01-") for e in timeline["events"])
+
+
+def test_telemetry_timeline_pagination_walks_beyond_first_window():
+    page1 = telemetry.get_timeline(plant_id="PLT-01", limit=50, offset=0)
+    page2 = telemetry.get_timeline(plant_id="PLT-01", limit=50, offset=50)
+    assert page1["total_count"] > 50
+    assert page1["matched_count"] == page1["total_count"]
+    ids1 = {e["event_id"] for e in page1["events"]}
+    ids2 = {e["event_id"] for e in page2["events"]}
+    assert ids1 and ids2
+    assert ids1.isdisjoint(ids2)
+
+
+def test_telemetry_timeline_quality_filter_and_sort():
+    filtered = telemetry.get_timeline(plant_id="PLT-01", quality="not_GOOD", limit=25, sort_by="quality", sort_dir="asc")
+    assert filtered["matched_count"] <= filtered["total_count"]
+    assert filtered["events"]
+    assert all(e["quality"] != "GOOD" for e in filtered["events"])
+    qualities = [e["quality"] for e in filtered["events"]]
+    assert qualities == sorted(qualities)
 
 
 def test_tag_telemetry_preserves_dual_clock_fields():

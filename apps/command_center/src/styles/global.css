@@ -282,6 +282,64 @@ a {
   font-weight: 600;
 }
 
+.data-table th.sortable {
+  padding: 0;
+  white-space: nowrap;
+}
+
+.th-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.th-sort:hover,
+.th-sort:focus-visible {
+  color: var(--text);
+}
+
+.th-sort-indicator {
+  font-size: 0.65rem;
+  color: var(--accent);
+}
+
+.table-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.table-pager .chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.table-pager .estate-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.table-pager .estate-sort input {
+  width: 4.2rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.72rem;
+  padding: 0.2rem 0.35rem;
+}
+
 .data-table tr.row-highlight {
   background: rgba(240, 136, 62, 0.12);
 }

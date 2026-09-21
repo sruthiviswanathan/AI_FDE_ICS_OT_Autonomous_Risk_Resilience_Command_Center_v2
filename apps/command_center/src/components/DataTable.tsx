@@ -5,6 +5,7 @@ interface Col<T> {
   header: string;
   render: (row: T) => ReactNode;
   className?: string;
+  sortable?: boolean;
 }
 
 export function DataTable<T extends Record<string, unknown>>({
@@ -14,6 +15,9 @@ export function DataTable<T extends Record<string, unknown>>({
   highlight,
   expandedKey,
   renderExpanded,
+  sortKey,
+  sortDir,
+  onSort,
 }: {
   rows: T[];
   cols: Col<T>[];
@@ -21,6 +25,9 @@ export function DataTable<T extends Record<string, unknown>>({
   highlight?: (row: T) => boolean;
   expandedKey?: string | null;
   renderExpanded?: (row: T) => ReactNode;
+  sortKey?: string;
+  sortDir?: "asc" | "desc";
+  onSort?: (key: string) => void;
 }) {
   if (!rows.length) return null;
   return (
@@ -28,9 +35,27 @@ export function DataTable<T extends Record<string, unknown>>({
       <table className="data-table">
         <thead>
           <tr>
-            {cols.map((c) => (
-              <th key={c.key}>{c.header}</th>
-            ))}
+            {cols.map((c) => {
+              const active = sortKey === c.key;
+              const ariaSort =
+                !c.sortable || !onSort ? undefined : active ? (sortDir === "desc" ? "descending" : "ascending") : "none";
+              return (
+                <th
+                  key={c.key}
+                  className={c.sortable && onSort ? "sortable" : undefined}
+                  aria-sort={ariaSort}
+                >
+                  {c.sortable && onSort ? (
+                    <button type="button" className="th-sort" onClick={() => onSort(c.key)}>
+                      {c.header}
+                      <span className="th-sort-indicator">{active ? (sortDir === "desc" ? " ▼" : " ▲") : ""}</span>
+                    </button>
+                  ) : (
+                    c.header
+                  )}
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody>

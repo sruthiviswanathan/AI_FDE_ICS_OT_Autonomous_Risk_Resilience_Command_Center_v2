@@ -244,6 +244,23 @@ def test_identity_conflicts_scoped_by_plant():
     assert plt_body["conflicts"][0]["asset_id"] if plt_body["conflicts"] else True
 
 
+def test_telemetry_timeline_paginates_and_rejects_ingest_order():
+    first = client.get("/telemetry/timeline?plant_id=PLT-01&limit=25&offset=0")
+    second = client.get("/telemetry/timeline?plant_id=PLT-01&limit=25&offset=25")
+    assert first.status_code == 200
+    assert second.status_code == 200
+    body = first.json()
+    assert body["total_count"] > 25
+    assert body["count"] == 25
+    assert {e["event_id"] for e in body["events"]}.isdisjoint(
+        {e["event_id"] for e in second.json()["events"]}
+    )
+    forbidden = client.get("/telemetry/timeline?order=ingest_time")
+    assert forbidden.status_code == 400
+    bad_sort = client.get("/telemetry/timeline?sort_by=received_time")
+    assert bad_sort.status_code == 400
+
+
 def test_risk_contextual_scoped_by_asset():
     scoped = client.get("/risk/contextual?asset_id=OT-00108&limit=10")
     assert scoped.status_code == 200

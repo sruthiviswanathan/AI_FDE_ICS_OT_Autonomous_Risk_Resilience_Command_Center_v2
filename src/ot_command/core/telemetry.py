@@ -159,6 +159,64 @@ def telemetry_quality_summary(*, plant_id: str | None = None, asset_id: str | No
     }
 
 
+_TIMELINE_SORT_FIELDS = {
+    "event_time",
+    "ingest_time",
+    "ingest_lag_seconds",
+    "tag_id",
+    "asset_id",
+    "value",
+    "unit",
+    "quality",
+}
+
+
+def _sort_value(event: dict, field: str):
+    if field == "ingest_time":
+        return event.get("ingest_time") or event.get("received_time") or ""
+    if field == "ingest_lag_seconds":
+        lag = event.get("ingest_lag_seconds")
+        return lag if isinstance(lag, (int, float)) else float("-inf")
+    if field == "value":
+        try:
+            return float(event.get("value"))
+        except (TypeError, ValueError):
+            return float("-inf")
+    value = event.get(field)
+    return "" if value is None else value
+
+
+def _filter_timeline_rows(
+    events: list[dict],
+    *,
+    quality: str | None = None,
+    flag: str | None = None,
+    q: str | None = None,
+) -> list[dict]:
+    out = events
+    if quality == "not_GOOD":
+        out = [e for e in out if e.get("quality") != "GOOD"]
+    elif quality:
+        out = [e for e in out if e.get("quality") == quality]
+    if flag == "unit_mismatch":
+        out = [e for e in out if e.get("unit_mismatch")]
+    elif flag == "temporal_anomaly":
+        out = [e for e in out if e.get("temporal_anomaly") or e.get("uncertainty")]
+    if q:
+        needle = q.strip().lower()
+        if needle:
+            out = [
+                e
+                for e in out
+                if needle
+                in " ".join(
+                    str(e.get(k) or "")
+                    for k in ("event_id", "tag_id", "asset_id", "unit", "quality", "value")
+                ).lower()
+            ]
+    return out
+
+
 def get_timeline(
     *,
     tag_id: str | None = None,
@@ -166,14 +224,39 @@ def get_timeline(
     asset_id: str | None = None,
     order: str = "event_time",
     limit: int | None = None,
+    offset: int = 0,
+    sort_by: str = "event_time",
+    sort_dir: str = "asc",
+    quality: str | None = None,
+    flag: str | None = None,
+    q: str | None = None,
 ) -> dict:
+    if sort_by not in _TIMELINE_SORT_FIELDS:
+        raise ValueError(f"unsupported sort_by {sort_by}")
+    if sort_dir not in {"asc", "desc"}:
+        raise ValueError("sort_dir must be asc or desc")
+
     events, scope = _scoped_events(plant_id=plant_id, asset_id=asset_id, tag_id=tag_id)
     ordered = order_events(events, clock=order)
+    matched = _filter_timeline_rows(ordered, quality=quality, flag=flag, q=q)
+    if sort_by != "event_time" or sort_dir != "asc":
+        matched = sorted(matched, key=lambda e: _sort_value(e, sort_by), reverse=sort_dir == "desc")
+
+    start = max(offset, 0)
+    page = matched
     if limit is not None and limit > 0:
-        ordered = ordered[:limit]
+        page = matched[start : start + limit]
+    elif start:
+        page = matched[start:]
     return {
         "scope": scope,
         "order": order,
-        "count": len(ordered),
-        "events": ordered,
+        "sort_by": sort_by,
+        "sort_dir": sort_dir,
+        "offset": start,
+        "limit": limit,
+        "total_count": len(ordered),
+        "matched_count": len(matched),
+        "count": len(page),
+        "events": page,
     }
