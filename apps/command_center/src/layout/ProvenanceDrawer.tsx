@@ -1,19 +1,23 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { api } from "../api/client";
 import { GraphCitationView } from "../components/GraphCitationView";
 import { GraphVisualView } from "../components/GraphVisualView";
 import { ProvenanceMemoryView } from "../components/ProvenanceMemoryView";
 import { ProvenancePolicyView } from "../components/ProvenancePolicyView";
 import { ProvenanceStructuredView } from "../components/ProvenanceStructuredView";
-import { ErrorBlock, GraphAsyncContent, LoadingBlock } from "../components/StateViews";
+import { GraphAsyncContent } from "../components/StateViews";
 import { useApp } from "../context/AppContext";
 import { usePersona } from "../hooks/usePersona";
 import { useFetch } from "../hooks/useFetch";
+import { pageProvenanceFor } from "../utils/pageProvenance";
 import { deriveGraphQuery, graphQueryLabel } from "../utils/provenanceContext";
 
 const CHANNELS = ["STRUCTURED", "GRAPH", "VECTOR", "POLICY", "MEMORY"] as const;
 
 export function ProvenanceDrawer() {
+  const location = useLocation();
+  const page = useMemo(() => pageProvenanceFor(location.pathname), [location.pathname]);
   const {
     provenancePin,
     lastPacket,
@@ -24,19 +28,28 @@ export function ProvenanceDrawer() {
     personaId,
     provenanceOpen,
     setProvenanceOpen,
+    pinProvenance,
+    clearProvenancePin,
   } = useApp();
   const { view } = usePersona();
-  const [channel, setChannel] = useState<(typeof CHANNELS)[number]>(view.provenanceDefaultChannel);
+  const [channel, setChannel] = useState<(typeof CHANNELS)[number]>(page.preferredChannel);
 
   useEffect(() => {
-    setChannel(view.provenanceDefaultChannel);
-  }, [personaId, view.provenanceDefaultChannel]);
+    setChannel(page.preferredChannel);
+    clearProvenancePin();
+    // Pin from the previous screen is not evidence for this one.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page.route]);
+
+  useEffect(() => {
+    setChannel(page.preferredChannel);
+  }, [personaId, page.preferredChannel]);
 
   const [graphView, setGraphView] = useState<"citations" | "visual">("visual");
 
   const graphQuery = useMemo(
-    () => deriveGraphQuery({ alertId, assetId, plantId }),
-    [alertId, assetId, plantId],
+    () => page.graphQuery ?? deriveGraphQuery({ alertId, assetId, plantId }),
+    [page.graphQuery, alertId, assetId, plantId],
   );
 
   const graph = useFetch(
@@ -52,7 +65,7 @@ export function ProvenanceDrawer() {
     [channel, graphQuery, plantId, assetId, alertId, lookupKey],
   );
 
-  const packet = (lastPacket?.recommendation || {}) as Record<string, unknown>;
+  const packet = (lastPacket?.recommendation || lastPacket || {}) as Record<string, unknown>;
   const packetEvidence = (packet.evidence || []) as Record<string, unknown>[];
 
   if (!provenanceOpen && view.id === "executive") {
@@ -70,14 +83,14 @@ export function ProvenanceDrawer() {
   return (
     <aside className={`drawer${channel === "GRAPH" ? " drawer-graph-active" : ""}`}>
       <h3>Provenance &amp; Retrieval</h3>
+      <p className="provenance-screen-title">{page.title}</p>
 
       <div className="provenance-context-strip mono">
+        <span>{page.screenId}</span>
         {plantId && <span>{plantId}</span>}
         {assetId && <span>{assetId}</span>}
         {alertId && <span>{alertId}</span>}
-        {!plantId && !assetId && !alertId && (
-          <span className="ai-off-note">No context — set plant / asset / alert</span>
-        )}
+        {!plantId && !assetId && !alertId && <span className="ai-off-note">No plant / asset / alert pinned</span>}
       </div>
 
       {provenancePin ? (
@@ -89,7 +102,7 @@ export function ProvenanceDrawer() {
           <div>freshness: {provenancePin.freshness || "—"}</div>
         </div>
       ) : (
-        <p className="ai-off-note">Click a provenance link in tables to pin a source record here.</p>
+        <p className="ai-off-note">Click a source below, or a provenance link in the table, to pin it here.</p>
       )}
 
       <div className="channel-tabs">
@@ -109,18 +122,22 @@ export function ProvenanceDrawer() {
 
       {channel === "STRUCTURED" && (
         <ProvenanceStructuredView
+          page={page}
           plantId={plantId}
           assetId={assetId}
           alertId={alertId}
           lookupKey={lookupKey}
           packetEvidence={packetEvidence}
+          onPin={pinProvenance}
         />
       )}
 
       {channel === "GRAPH" && (
         <div>
           <p className="ai-off-note provenance-graph-label">
-            {graphQueryLabel(graphQuery)} ({graphQuery})
+            {page.graphQuery
+              ? `${graphQueryLabel(graphQuery)} (${graphQuery}) — graph for this screen`
+              : `${graphQueryLabel(graphQuery)} (${graphQuery}) — neighborhood of pinned context (this screen is not a graph workbench)`}
             {!plantId && " — select a plant"}
           </p>
           {!plantId && <p className="ai-off-note">Graph slice requires plant context.</p>}
@@ -169,7 +186,7 @@ export function ProvenanceDrawer() {
         <p className="ai-off-note">VECTOR retrieval disabled. Cannot drive isolation or policy tiers.</p>
       )}
 
-      {channel === "POLICY" && <ProvenancePolicyView lookupKey={lookupKey} />}
+      {channel === "POLICY" && <ProvenancePolicyView lookupKey={lookupKey} page={page} />}
 
       {channel === "MEMORY" && (
         <ProvenanceMemoryView
@@ -177,6 +194,7 @@ export function ProvenanceDrawer() {
           assetId={assetId}
           alertId={alertId}
           lookupKey={lookupKey}
+          page={page}
         />
       )}
     </aside>

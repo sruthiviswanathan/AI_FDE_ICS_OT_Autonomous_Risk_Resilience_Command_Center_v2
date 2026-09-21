@@ -55,6 +55,7 @@ interface AppState {
   triggerLookup: () => void;
   setProvenanceOpen: (v: boolean) => void;
   pinProvenance: (p: ProvenancePin) => void;
+  clearProvenancePin: () => void;
   setLastPacket: (p: Record<string, unknown> | null) => void;
 }
 
@@ -146,6 +147,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setProvenancePin(p);
         setProvenanceOpen(true);
       },
+      clearProvenancePin: () => setProvenancePin(null),
       setLastPacket,
     }),
     [

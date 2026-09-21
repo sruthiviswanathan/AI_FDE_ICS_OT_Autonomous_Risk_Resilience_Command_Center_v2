@@ -10,7 +10,7 @@ import { fmt } from "../utils/format";
 const PAGE_SIZES = [25, 50, 100, 200];
 
 export function TelemetryPage() {
-  const { plantId, assetId, lookupKey, activeBinding } = useApp();
+  const { plantId, assetId, lookupKey, activeBinding, pinProvenance } = useApp();
   const [tagFilter, setTagFilter] = useState("");
   const [searchTag, setSearchTag] = useState("");
   const [rowQuery, setRowQuery] = useState("");
@@ -227,7 +227,27 @@ export function TelemetryPage() {
             render: (r) => fmt(r.ingest_time || r.received_time),
           },
           { key: "ingest_lag_seconds", header: "Lag (s)", sortable: true, render: (r) => fmt(r.ingest_lag_seconds) },
-          { key: "tag_id", header: "Tag", sortable: true, render: (r) => fmt(r.tag_id) },
+          {
+            key: "tag_id",
+            header: "Tag",
+            sortable: true,
+            render: (r) => (
+              <button
+                type="button"
+                className="mono linkish"
+                onClick={() =>
+                  pinProvenance({
+                    source_path: "data/telemetry/tag_telemetry.jsonl",
+                    record_id: String(r.event_id || ""),
+                    freshness: "workshop-static",
+                    label: `${fmt(r.tag_id)} ${fmt(r.value)} ${fmt(r.unit)} · packet unit vs tags.csv engineering unit`,
+                  })
+                }
+              >
+                {fmt(r.tag_id)}
+              </button>
+            ),
+          },
           { key: "value", header: "Value", sortable: true, render: (r) => fmt(r.value) },
           { key: "unit", header: "Unit", sortable: true, render: (r) => fmt(r.unit) },
           { key: "quality", header: "Quality", sortable: true, render: (r) => fmt(r.quality) },

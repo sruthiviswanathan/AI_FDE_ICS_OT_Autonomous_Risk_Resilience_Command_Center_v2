@@ -65,7 +65,7 @@ function FindingDetails({ row }: { row: Record<string, unknown> }) {
 }
 
 export function RiskPage() {
-  const { plantId, assetId, lookupKey } = useApp();
+  const { plantId, assetId, lookupKey, pinProvenance } = useApp();
   const [mode, setMode] = useState<"contextual" | "cvss">("contextual");
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
   const { data, error, loading } = useFetch(
@@ -156,7 +156,26 @@ export function RiskPage() {
         )}
         cols={[
           { key: "rank", header: "#", render: (r) => fmt(r._rank) },
-          { key: "id", header: "Finding", render: (r) => fmt(r.finding_id || r.vuln_id) },
+          {
+            key: "id",
+            header: "Finding",
+            render: (r) => (
+              <button
+                type="button"
+                className="mono linkish"
+                onClick={() =>
+                  pinProvenance({
+                    source_path: "data/raw/vulnerabilities.csv",
+                    record_id: String(r.finding_id || r.vuln_id || ""),
+                    freshness: "workshop-static",
+                    label: `network_reachable=${fmt(r.network_reachable)} · cvss ${fmt(r.cvss)} (input only)`,
+                  })
+                }
+              >
+                {fmt(r.finding_id || r.vuln_id)}
+              </button>
+            ),
+          },
           { key: "asset", header: "Asset", render: (r) => fmt(r.asset_id) },
           { key: "cvss", header: "CVSS (input)", render: (r) => fmt(r.cvss) },
           { key: "reach", header: "Reach", render: (r) => reachOf(r) },

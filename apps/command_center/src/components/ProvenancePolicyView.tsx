@@ -1,9 +1,16 @@
 import { api } from "../api/client";
 import { useFetch } from "../hooks/useFetch";
-import { ErrorBlock, LoadingBlock } from "./StateViews";
 import { fmt } from "../utils/format";
+import type { PageProvenance } from "../utils/pageProvenance";
+import { ErrorBlock, LoadingBlock } from "./StateViews";
 
-export function ProvenancePolicyView({ lookupKey }: { lookupKey: number }) {
+export function ProvenancePolicyView({
+  lookupKey,
+  page,
+}: {
+  lookupKey: number;
+  page: PageProvenance;
+}) {
   const policy = useFetch(() => api.authority(), [lookupKey]);
 
   if (policy.loading) return <LoadingBlock label="Loading ACTION_TIERS…" />;
@@ -16,10 +23,12 @@ export function ProvenancePolicyView({ lookupKey }: { lookupKey: number }) {
 
   return (
     <div className="provenance-policy">
-      <p className="ai-off-note">{fmt(data.note)}</p>
+      <p className="ai-off-note">{page.policyNote}</p>
       <p className="mono provenance-policy-meta">
-        {fmt(data.policy_version)} · default unknown tier {fmt(data.unknown_action_default_tier)}
+        {fmt(data.policy_version)} · source_path src/ot_command/core/policy.py · default unknown tier{" "}
+        {fmt(data.unknown_action_default_tier)}
       </p>
+      <p className="ai-off-note">{fmt(data.note)}</p>
       <h4 className="provenance-subheading">Tier 3 — human authorize</h4>
       <ul className="provenance-evidence-list mono">
         {tier3.map((a) => (

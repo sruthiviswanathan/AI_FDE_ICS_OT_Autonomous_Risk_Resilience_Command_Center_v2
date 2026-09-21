@@ -1709,12 +1709,55 @@ button:disabled {
   font-variant-numeric: tabular-nums;
 }
 
+.provenance-screen-title {
+  margin: 0 0 0.4rem;
+  font-size: 0.82rem;
+  color: var(--text);
+}
+
 .provenance-context-strip {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem 0.6rem;
   margin-bottom: 0.5rem;
   font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.provenance-source-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.provenance-source-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: inherit;
+  padding: 0.4rem 0.5rem;
+  cursor: pointer;
+}
+
+.provenance-source-card:hover {
+  border-color: var(--accent);
+}
+
+.provenance-source-path {
+  font-size: 0.72rem;
+  word-break: break-all;
+}
+
+.provenance-source-used {
+  margin-top: 0.15rem;
+  font-size: 0.72rem;
+}
+
+.provenance-source-meta {
+  margin-top: 0.15rem;
+  font-size: 0.64rem;
   color: var(--text-dim);
 }
 
