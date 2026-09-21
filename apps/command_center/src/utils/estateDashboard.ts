@@ -98,7 +98,10 @@ export type RegionFilter = (typeof REGIONS)[number];
 export const REGION_ORDER = ["NA", "EU", "APAC", "LATAM", "MEA"] as const;
 
 export function assetConflict(row: Record<string, string>): boolean {
-  return row.registered_state === "ACTIVE" && (row.observed_state === "OFFLINE" || row.observed_state === "UNSEEN");
+  return (
+    (row.registered_state === "ACTIVE" && (row.observed_state === "OFFLINE" || row.observed_state === "UNSEEN")) ||
+    (row.registered_state === "RETIRED" && row.observed_state === "ONLINE")
+  );
 }
 
 export type AssetSortMode = "asset_id" | "alerts_desc" | "conflicts_first" | "type" | "zone";

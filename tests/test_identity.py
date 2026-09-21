@@ -31,11 +31,28 @@ def test_active_offline_state_conflict_visible():
     assert bundle.get("state_conflict") is True or "conflicts" in bundle
 
 
+def test_retired_online_state_conflict_visible_on_ot_00528():
+    bundle = identity.get_identity_bundle("OT-00528")
+    assert bundle["registered_state"] == "RETIRED"
+    assert bundle["observed_state"] == "ONLINE"
+    assert bundle["state_conflict"] is True
+    assert any(c["type"] == "REGISTERED_VS_OBSERVED" for c in bundle["conflicts"])
+
+
 def test_list_identity_conflicts_matches_diagnostics_order_of_magnitude():
     summary = identity.list_identity_conflicts()
     assert summary["alias_collisions"] >= 5
-    assert summary["asset_state_conflicts"] >= 200
-    assert summary["conflict_count"] >= summary["asset_state_conflicts"]
+    assert summary["asset_state_conflicts"] == 200
+    assert summary["retired_online_conflicts"] == 99
+    assert summary["conflict_count"] >= summary["asset_state_conflicts"] + summary["retired_online_conflicts"]
+    ot_00528 = next(
+        r
+        for r in summary["conflicts"]
+        if r["asset_id"] == "OT-00528" and r["type"] == "REGISTERED_VS_OBSERVED"
+    )
+    assert ot_00528["registered_state"] == "RETIRED"
+    assert ot_00528["observed_state"] == "ONLINE"
+    assert ot_00528["state_conflict"] is True
 
 
 def test_list_identity_conflicts_scoped_by_plant():
@@ -52,3 +69,14 @@ def test_list_identity_conflicts_scoped_by_plant():
     assert state_row["registered_state"] == "ACTIVE"
     assert state_row["observed_state"] in {"OFFLINE", "UNSEEN"}
     assert plt01["asset_state_conflicts"] != plt02["asset_state_conflicts"] or plt01["plant_id"] != plt02["plant_id"]
+
+
+def test_list_identity_conflicts_plt05_includes_ot_00528():
+    plt05 = identity.list_identity_conflicts(plant_id="PLT-05")
+    row = next(
+        r for r in plt05["conflicts"] if r["asset_id"] == "OT-00528" and r["type"] == "REGISTERED_VS_OBSERVED"
+    )
+    assert row["registered_state"] == "RETIRED"
+    assert row["observed_state"] == "ONLINE"
+    assert row["state_conflict"] is True
+    assert plt05["retired_online_conflicts"] >= 1

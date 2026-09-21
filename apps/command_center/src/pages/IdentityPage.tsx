@@ -68,18 +68,39 @@ export function IdentityPage() {
     [conflicts.data],
   );
 
+  const selectedBundleConflictRows = useMemo(() => {
+    if (!assetId || !bundle.data || String(bundle.data.asset_uid) !== assetId) return [];
+    const existing = new Set(plantConflictRows.map((row) => String(row.conflict_id)));
+    const extras = ((bundle.data.conflicts as Record<string, unknown>[] | undefined) ?? []).filter(
+      (row) => !existing.has(String(row.conflict_id)),
+    );
+    return extras.map((row) => ({
+      ...row,
+      asset_id: bundle.data!.asset_uid,
+      plant_id: bundle.data!.plant_id,
+      registered_state: bundle.data!.registered_state,
+      observed_state: bundle.data!.observed_state,
+      state_conflict: bundle.data!.state_conflict,
+    }));
+  }, [assetId, bundle.data, plantConflictRows]);
+
+  const conflictRows = useMemo(
+    () => [...selectedBundleConflictRows, ...plantConflictRows],
+    [selectedBundleConflictRows, plantConflictRows],
+  );
+
   useEffect(() => {
     setTypeFilter("all");
   }, [plantId, lookupKey]);
 
   const typeCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: plantConflictRows.length };
-    for (const row of plantConflictRows) {
+    const counts: Record<string, number> = { all: conflictRows.length };
+    for (const row of conflictRows) {
       const type = String(row.type || "UNKNOWN");
       counts[type] = (counts[type] || 0) + 1;
     }
     return counts;
-  }, [plantConflictRows]);
+  }, [conflictRows]);
 
   const conflictTypes = useMemo(
     () => ["all", ...Object.keys(typeCounts).filter((k) => k !== "all").sort()],
@@ -89,24 +110,24 @@ export function IdentityPage() {
   const filteredConflictRows = useMemo(
     () =>
       typeFilter === "all"
-        ? plantConflictRows
-        : plantConflictRows.filter((row) => String(row.type) === typeFilter),
-    [plantConflictRows, typeFilter],
+        ? conflictRows
+        : conflictRows.filter((row) => String(row.type) === typeFilter),
+    [conflictRows, typeFilter],
   );
 
   const selectedAssetConflictCount = useMemo(
-    () => (assetId ? plantConflictRows.filter((row) => conflictTouchesAsset(row, assetId)).length : 0),
-    [plantConflictRows, assetId],
+    () => (assetId ? conflictRows.filter((row) => conflictTouchesAsset(row, assetId)).length : 0),
+    [conflictRows, assetId],
   );
 
   const selectedAliasConflicts = useMemo(
     () =>
       assetId
-        ? plantConflictRows.filter(
+        ? conflictRows.filter(
             (row) => String(row.type) === "ALIAS_COLLISION" && conflictTouchesAsset(row, assetId),
           )
         : [],
-    [plantConflictRows, assetId],
+    [conflictRows, assetId],
   );
 
   return (
@@ -119,8 +140,11 @@ export function IdentityPage() {
       {conflicts.data && (
         <>
           <p className="ai-off-note">
-            Summary for {plantId ? `plant ${plantId}` : "estate-wide"} · {fmt(conflicts.data.conflict_count)} conflict
+            Summary for {plantId ? `plant ${plantId}` : "estate-wide"} · {fmt(conflictRows.length)} conflict
             row(s)
+            {selectedBundleConflictRows.length > 0
+              ? ` · includes selected asset ${assetId} outside this plant filter`
+              : ""}
           </p>
           <div className="card-grid">
             <div className="card">
@@ -136,8 +160,16 @@ export function IdentityPage() {
             </div>
             <div className="card">
               <h3>State conflicts</h3>
-              <div className="metric">{fmt(conflicts.data.asset_state_conflicts)}</div>
-              <p className="ai-off-note">ACTIVE registered vs OFFLINE/UNSEEN observed</p>
+              <div className="metric">
+                {fmt(
+                  Number(conflicts.data.asset_state_conflicts ?? 0) +
+                    Number(conflicts.data.retired_online_conflicts ?? 0),
+                )}
+              </div>
+              <p className="ai-off-note">
+                {fmt(conflicts.data.asset_state_conflicts)} ACTIVE vs OFFLINE/UNSEEN ·{" "}
+                {fmt(conflicts.data.retired_online_conflicts)} RETIRED vs ONLINE
+              </p>
             </div>
           </div>
         </>
@@ -239,7 +271,7 @@ export function IdentityPage() {
       )}
 
       <h3 className="section-title">Conflicts {plantId ? `· ${plantId}` : ""}</h3>
-      {plantConflictRows.length > 0 && (
+      {conflictRows.length > 0 && (
         <div className="card identity-conflict-toolbar">
           <div className="drill-table-toolbar">
             <label className="estate-sort">
@@ -258,7 +290,7 @@ export function IdentityPage() {
               </select>
             </label>
             <p className="identity-filter-summary ai-off-note">
-              Showing {filteredConflictRows.length} of {plantConflictRows.length} conflict rows
+              Showing {filteredConflictRows.length} of {conflictRows.length} conflict rows
               {typeFilter !== "all"
                 ? ` · ${CONFLICT_TYPE_LABELS[typeFilter] || typeFilter} only`
                 : " · use the dropdown to narrow by conflict type"}
@@ -266,16 +298,16 @@ export function IdentityPage() {
           </div>
         </div>
       )}
-      {assetId && selectedAssetConflictCount === 0 && plantConflictRows.length > 0 && (
+      {assetId && selectedAssetConflictCount === 0 && conflictRows.length > 0 && (
         <p className="ai-off-note">
           Selected asset <span className="mono">{assetId}</span> has no identity conflicts — table shows all{" "}
-          {plantConflictRows.length} plant conflict row(s). Matching rows would be highlighted.
+          {conflictRows.length} conflict row(s). Matching rows would be highlighted.
         </p>
       )}
       {assetId && selectedAssetConflictCount > 0 && (
         <p className="ai-off-note">
           Selected asset <span className="mono">{assetId}</span> — {selectedAssetConflictCount} matching row(s)
-          highlighted below ({plantConflictRows.length} total in plant).
+          highlighted below ({conflictRows.length} total).
         </p>
       )}
       {filteredConflictRows.length === 0 && !conflicts.loading && (

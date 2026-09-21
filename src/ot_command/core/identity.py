@@ -67,8 +67,28 @@ def _aliases_by_asset() -> dict[str, list[dict]]:
     return dict(by_asset)
 
 
-def _state_conflict(registered: str, observed: str) -> bool:
+def _diagnostic_active_offline_unseen(registered: str, observed: str) -> bool:
+    """Seeded diagnostic predicate (VERIFICATION `asset_state_conflicts` = 200).
+
+    Registered and observed use different vocabularies (ACTIVE vs ONLINE), so
+    string inequality is not a conflict. This collapse is documented in DATA.md
+    and must not be used as the identity board's full conflict set.
+    """
     return registered == "ACTIVE" and observed in {"OFFLINE", "UNSEEN"}
+
+
+def _retired_online(registered: str, observed: str) -> bool:
+    """Live observation of an asset still registered RETIRED (EVAL-028, OT-00528)."""
+    return registered == "RETIRED" and observed == "ONLINE"
+
+
+def _state_conflict(registered: str, observed: str) -> bool:
+    """Identity-visible operational conflict (BR-19, Q1 CONFLICTS).
+
+    Includes the diagnostic ACTIVE∩{OFFLINE,UNSEEN} set and RETIRED∩ONLINE.
+    INTERMITTENT remains unread (DATA.md diagnostic collapse).
+    """
+    return _diagnostic_active_offline_unseen(registered, observed) or _retired_online(registered, observed)
 
 
 def _alias_collision_asset_ids(alias: str) -> set[str]:
@@ -233,7 +253,10 @@ def list_identity_conflicts(*, plant_id: str | None = None) -> dict:
     asset_state_conflicts = sum(
         1
         for a in assets
-        if a["registered_state"] == "ACTIVE" and a["observed_state"] in {"OFFLINE", "UNSEEN"}
+        if _diagnostic_active_offline_unseen(a["registered_state"], a["observed_state"])
+    )
+    retired_online_conflicts = sum(
+        1 for a in assets if _retired_online(a["registered_state"], a["observed_state"])
     )
 
     conflict_rows: list[dict] = []
@@ -257,6 +280,7 @@ def list_identity_conflicts(*, plant_id: str | None = None) -> dict:
         "plant_id": plant_id,
         "alias_collisions": alias_collisions,
         "asset_state_conflicts": asset_state_conflicts,
+        "retired_online_conflicts": retired_online_conflicts,
         "collision_aliases": collision_aliases,
         "conflicts": conflict_rows,
         "conflict_count": len(conflict_rows),
