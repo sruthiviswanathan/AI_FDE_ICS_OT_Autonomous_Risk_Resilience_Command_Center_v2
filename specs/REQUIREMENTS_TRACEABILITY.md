@@ -34,6 +34,7 @@ Implementation path note: code lives in `src/ot_command/core/` (OPEN-030); CSV s
 | `docs/06_security_safety_assurance.md` | ADR-04, ADR-15 | NFR-SAFE | `core/guardrails.py` | EVAL-014, 027, 030 |
 | SDD-05 AI-disabled rules | ADR-12 | FR-009, NFR-DEG | `core/agent.py` | EVAL-016 |
 | `specs/14_delivery_spec.md` SLOs | ADR-11 | FR-013, SLO-* | `core/ops.py`, `api.py` | `test_api_readonly.py`, `test_ops_telemetry.py` |
+| `ops/` REL-01 pack | ADR-12, ADR-14 | SLO-*, NFR-SAFE | runbooks, RACI, recovery evidence | workshop ops; no OT execute |
 | `assurance/SBOM_FREEZE.md` | ADR-16 | ENH-10 | Dockerfile, requirements.txt | verify_repo |
 
 ---

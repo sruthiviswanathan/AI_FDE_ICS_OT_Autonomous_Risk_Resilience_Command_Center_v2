@@ -1,5 +1,7 @@
 # FinOps — Cost Dashboard Design
 
+**REL-01 companion.** Alert/panel placement: [dashboards_alerts.md](dashboards_alerts.md). Named latency SLO: [named_slos.md](named_slos.md).
+
 **KPI:** AI cost per analyzed incident / avoided escalation (`docs/05_kpis_baseline.md`)  
 **Status:** BASELINE_PENDING (OPEN-006) — meters implemented; dollar thresholds not set.
 

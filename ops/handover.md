@@ -1,53 +1,78 @@
-# Handover & Training Outline
+# Operational handover pack
 
-## Handover package (FDE → operations / product)
+**REL-01** · C83, C84  
+**From:** FDE / platform (this engagement)  
+**To:** shift lead + SOC + process + safety functions who will run the **synthetic** Command Center  
+Named people are **not** filled (OPEN-001). Use job functions.
 
-| Artifact | Location |
-|----------|----------|
+## What you are receiving
+
+A locally runnable advisory system over a messy 18-plant ICS/OT estate. It **recommends**; it does not operate the plant.
+
+## Artifact checklist (hand over these paths)
+
+| Item | Path |
+|------|------|
+| This pack | `ops/` (start at `README.md`) |
 | Specs freeze | `specs/` |
-| ADRs | `adrs/` |
-| Assurance case | `assurance/ASSURANCE_REPORT.md` |
-| Ops runbooks | `ops/*.md` |
-| Eval contract | `evals/golden_cases.jsonl` |
-| Gate record | `participant/work/enh_10/REPO_3_0_GATE.md` |
-| Open decisions | `traceability/OPEN_DECISIONS.md` |
+| ADRs | `adrs/` (do not invent new ADRs in ops) |
+| Traceability | `traceability/TRACEABILITY.csv`, `OPEN_DECISIONS.md` |
+| Assurance | `assurance/ASSURANCE_REPORT.md`, `SBOM_FREEZE.md`, `OWASP_MAPPING.md` |
+| Eval contract | `evals/golden_cases.jsonl`, `evals/harness.py` |
+| Policy | `src/ot_command/core/policy.py` |
+| API | `src/ot_command/api.py` · OpenAPI `contracts/` |
+| UI | `apps/command_center/` · `SCENARIO_BINDINGS.md` |
+| Bronze data | `data/` — contradictions are evidence |
+| Repo 3.0 gate | `participant/work/enh_10/REPO_3_0_GATE.md` |
+| Constraints | `AGENTS.md`, `00_SHARED_CONSTRAINTS.md` |
 
-## Training modules (4 hours workshop)
+## Day-0 (first shift on the synthetic system)
 
-### Module 1 — Five states (45 min)
-- Registered vs Observed vs Operational interpretation vs Safety vs Decision authority
-- Exercise: reconcile OT-00528 RETIRED vs ONLINE (EVAL-028)
-- **Anti-pattern:** treating CMDB or shadow spreadsheet as winner
+1. RB-01 start API; `GET /health`, `GET /diagnostics`.  
+2. Walk Control Tower → Estate (`ai=off`) → Identity OT-00528 → Risk (anti-CVSS) → Safety PLT-10 → Sessions → Recovery PLT-01 → CASCADE-001 recommend → Audit trace → scenario **ai_outage**.  
+3. Confirm Authorize disabled; no Execute Isolation.  
+4. `make eval` once if this host will be a demo box.  
+5. Read [named_slos.md](named_slos.md) and [recovery_evidence.md](recovery_evidence.md).
 
-### Module 2 — Telemetry & temporal (45 min)
-- Dual clock: event_time vs ingest_time
-- Unit mismatch (F vs C on TEMP tags)
-- Exercise: EVAL-004 / EVAL-022
+## Knowledge transfer (what must stick)
 
-### Module 3 — Contextual risk & safety (60 min)
-- Why CVSS alone fails (VUL-00706 vs VUL-00098)
-- Isolation packet CTQ-ISO fields; no execute
-- CASCADE-001 walkthrough (08:47 vs 08:50)
-- Exercise: assess ALT-002783 / OT-01016
+| Topic | One-liner |
+|-------|-----------|
+| Five states | Never collapse them |
+| CVSS | Input, not operational rank |
+| Isolation | Draft ≠ authorize ≠ execute |
+| Recovery | CURRENT ≠ ready |
+| AI | Optional; engines are the product |
+| Data | Do not tidy the brownfield |
+| UNKNOWN | Not permission |
 
-### Module 4 — Recovery & authority (45 min)
-- RecoveryReady ≠ backup CURRENT
-- ACTION_TIERS; tier 0 observe vs tier 4 refuse
-- Exercise: PLT-01 IDENTITY not ready (EVAL-005)
+Reusable IP for later REL-04: ADRs, C4, eval cases, guardrail tests, this ops pack. Do not treat ops prose as a new ADR.
 
-### Module 5 — Agent, evals, ops (45 min)
-- AI-disabled demo; `POST /recommend` trace review
-- Run `make eval`; read `GET /ops/slo`
-- Red-team examples (ignore safety, trip suppression)
+## Training pointer
 
-## Competency checks
+SOC / process / safety: [sops_and_training.md](sops_and_training.md).  
+FDE deep modules (4h) remain below for platform on-call.
 
-- Participant can explain why UNKNOWN process_context blocks execute-ready isolate
-- Participant can run diagnostics + recommend workflow without LLM
-- Participant identifies untrusted shift handover email in packet constraints
+### FDE modules (4 hours workshop)
 
-## Support model (production fork — not in repo)
+1. Five states (45 min) — OT-00528, EVAL-028  
+2. Telemetry dual clock (45 min) — EVAL-004 / EVAL-022  
+3. Contextual risk and safety (60 min) — CASCADE-001, ALT-002783  
+4. Recovery and ACTION_TIERS (45 min) — PLT-01 IDENTITY, EVAL-005  
+5. Agent, evals, ops (45 min) — AI-disabled, `GET /ops/slo`, red team
 
-- L1: SOC triage with deterministic tables
-- L2: FDE / platform on-call for harness regressions
-- L3: Safety / Process Engineering for authorization decisions (OPEN-001)
+## Support model (production fork — not implemented here)
+
+| Level | Function | Scope |
+|-------|----------|--------|
+| L1 | SOC | Tables, packet, vendor sessions |
+| L2 | FDE / platform | API, harness, traces, rollback |
+| L3 | Safety / Process / VP Ops | Authorization **out of band** (OPEN-001) |
+
+## Explicitly not handed over
+
+- Live OT credentials or connectors (none)  
+- Named Authorizer roster  
+- ISO certificate  
+- LLM API keys (OPEN-028 none)  
+- Right to isolate from software

@@ -1,5 +1,7 @@
 # Drift Management
 
+**REL-01 companion; REL-02 fillable report:** [adoption.md](adoption.md) §10.1. Change SOP: [sops_and_training.md](sops_and_training.md) SOP-CHG-01. AI IR: [ai_incident_response.md](ai_incident_response.md).
+
 **Goal:** Detect when **runtime behavior** or **deployed artifacts** diverge from Repo 3.0 baseline without silently cleaning brownfield evidence.
 
 ## Drift categories

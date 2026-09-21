@@ -10,9 +10,9 @@ C08,No-AI / conventional-automation alternative,4,SDD-05,Non-AI alternative,spec
 C09,AI intervention justification,4,SDD-05,Suitability + go/no-go,specced
 C10,Product judgement,4,"SDD-05, SDD-09, PRD-01",Use-case + selected solution + PRD,specced
 C11,User journey and service-design thinking,4,"SDD-05, PRD-01","**Journeys** (SOC, process, safety, exec)",specced
-C12,Business-value engineering,3,"SDD-04, SDD-09, REL-03",Value hypothesis + trade-off + benefits,specced
+C12,Business-value engineering,3,"SDD-04, SDD-09, REL-03",participant/work/release/BENEFITS.md + EXECUTIVE_DEFENSE.md,evidenced
 C13,Benefits hypothesis and value-tree design,3,SDD-04,KPI / value tree,specced
-C14,Process improvement / DMAIC,2,"SDD-02/04, REL-03/04",Define-Measure-Analyse-Improve-Control,specced
+C14,Process improvement / DMAIC,2,"SDD-02/04, REL-03/04",BENEFITS.md Improve + AIMS_LIFECYCLE.md Control,evidenced
 C15,Domain modelling / DDD,5,SDD-06,DOMAIN.md,specced
 C16,Requirements engineering,13,"SDD-14, PRD-01",Delivery spec + FR-###,specced
 C17,Requirements-to-evidence traceability,13,SDD-14,TRACEABILITY.csv,specced
@@ -26,7 +26,7 @@ C24,Context engineering,9,"SDD-10, SDD-11, SDD-12",Retrieval + context snapshots
 C25,Enterprise integration,2,"SDD-02, SDD-11",Landscape + integration patterns,specced
 C26,"API, event and data-contract engineering",9,"SDD-10, SDD-11, SDD-14",Contracts; read-only API,specced
 C27,Brownfield modernization,2,"SDD-02, ENH, REL-02",Preserve evidence; coexist with legacy_*,specced
-C28,"Migration, coexistence, cutover, rollback",10,"SDD-11, SDD-14, REL-02",Rollback + shadow/pilot **advisory only**,specced
+C28,"Migration, coexistence, cutover, rollback",10,"SDD-11, SDD-14, REL-02",ops/adoption.md shadow/pilot/advisory canary + rollback tree,evidenced
 C29,Architecture,2,"SDD-02, 09, 11, 14",As-is C4 → to-be C4 → approved C4,specced
 C30,ADRs,8,SDD-09 … SDD-14,Preliminary → final ADR register,specced
 C31,Software engineering,14,ENH-01…07,"Tests, source, CI, as-built C4",pending
@@ -46,52 +46,52 @@ C44,Software and AI supply-chain security,12,SDD-13,SBOM/AIBOM + component regis
 C45,Privacy-by-Design,4,"SDD-05, SDD-07, SDD-13",Impact + access matrix + controls,specced
 C46,Responsible AI,1,"SDD-01, 05, 08, ENH-09",Context → impact → RAI tests,specced
 C47,Human-factors and automation-bias,4,"SDD-05, SDD-08, SDD-12",Bias assessment + HITL forcing functions,specced
-C48,Governance,1,"SDD-01, 08, REL-01, REL-04",RACI → oversight → AIMS,specced
+C48,Governance,1,"SDD-01, 08, REL-01, REL-04",ops/RACI.md + AIMS_LIFECYCLE.md (methods not cert),evidenced
 C49,AI assurance case,7,"SDD-08, ENH-09",Claim–argument–evidence + report,specced
-C50,Regulatory and standards applicability,1,"SDD-01, 05, 08, REL","42001/42005/EU AI Act **as methods**, not certs",specced
-C51,"Legal, contractual, licensing and IP",4,"SDD-05, SDD-13, REL-04",Register + OPEN_DECISION,specced
+C50,Regulatory and standards applicability,1,"SDD-01, 05, 08, REL","AIMS_LIFECYCLE.md + ai_system_record.md methods; no cert/class",evidenced
+C51,"Legal, contractual, licensing and IP",4,"SDD-05, SDD-13, REL-04",OPEN_DECISIONS + AIMS reusable IP; legal class still OPEN-002,evidenced
 C52,Evaluation and TEVV,7,"SDD-08, ENH-09",Strategy then harness,specced
 C53,"Golden, edge, adversarial, failure datasets",7,"SDD-08, ENH-09",golden_cases + injects + cascade,specced
 C54,AI red teaming,15,"ENH-08, ENH-09","Injection, tool-misuse, loop tests",pending
-C55,Business-outcome evaluation,3,"SDD-04, SDD-08, REL-03",Criteria → thresholds → realisation,specced
-C56,Token efficiency,15,"ENH-09, REL-02",**Named eval metric** (not in PDF text),pending
-C57,Token economics,18,"REL-02, REL-03",Cost/availability reports,pending
-C58,AI FinOps,18,"ENH-10, REL-03",Cost dashboards + cost-to-value,pending
-C59,TCO,8,"SDD-09, REL-03",Build/buy + cost-to-value,specced
-C60,Cost-per-successful-business-outcome,19,"SDD-04, REL-03",KPI from docs/05 + after measurement,specced
+C55,Business-outcome evaluation,3,"SDD-04, SDD-08, REL-03",EVAL 31/31 + CTQs realised; plant MTT/thresholds OPEN-006,evidenced
+C56,Token efficiency,15,"ENH-09, REL-02",EVAL-026 + tokens=0 default (BENEFITS.md),evidenced
+C57,Token economics,18,"REL-02, REL-03",ops/adoption.md token economics + cost/availability templates,evidenced
+C58,AI FinOps,18,"ENH-10, REL-03",ops cost meters + BENEFITS.md cost-to-value; $ thresholds OPEN-006,evidenced
+C59,TCO,8,"SDD-09, REL-03",BENEFITS.md TCO sketch; unsafe isolate not monetized,evidenced
+C60,Cost-per-successful-business-outcome,19,"SDD-04, REL-03",BENEFITS.md formula; currency BASELINE_PENDING,gap
 C61,Performance and latency engineering,13,"SDD-11, SDD-14",NFRs; evals README latency,specced
 C62,Scalability and capacity engineering,13,"SDD-11, SDD-14",NFRs,specced
 C63,Reliability and resilience,10,"SDD-11, REL-01, REL-02",Failure-mode + chaos + recovery,specced
-C64,Graceful degradation and AI-disabled operation,10,"SDD-11, APP-02, REL-02",Failure-mode + UI fallback,specced
+C64,Graceful degradation and AI-disabled operation,10,"SDD-11, APP-02, REL-02",AI-disabled drill as adoption gate (ops/adoption.md),evidenced
 C65,Observability,13,"SDD-14, ENH-10",Telemetry spec + dashboards,specced
 C66,AI / agent observability and traceability,13,"SDD-14, ENH-07, ENH-10",Decision traces; no hidden CoT,specced
-C67,Service management,16,REL-01,"Runbooks, SOPs, dashboards",pending
-C68,SLO / SLA / error-budget engineering,13,"SDD-14, REL-01",**Named SLOs** in NFRs,specced
-C69,Incident response,16,REL-01,Incident/rollback plans,pending
-C70,AI-specific incident response,16,"REL-01, REL-02",Agent-loop alerts + AI IR runbook,pending
-C71,Business continuity and disaster recovery,16,"SDD-03, ENH-06, REL-01",Recovery graph + ops recovery evidence,specced
-C72,Change management,16,"REL-01, REL-02",Change + updated SOPs,pending
-C73,User adoption and behavioural change,17,REL-02,Adoption dashboard; override logs,pending
-C74,Training and enablement,16,REL-01,SOP/training outline,pending
+C67,Service management,16,REL-01,"Runbooks, SOPs, dashboards",evidenced
+C68,SLO / SLA / error-budget engineering,13,"SDD-14, REL-01",**Named SLOs** in NFRs,evidenced
+C69,Incident response,16,REL-01,Incident/rollback plans,evidenced
+C70,AI-specific incident response,16,"REL-01, REL-02",Agent-loop alerts + AI IR runbook,evidenced
+C71,Business continuity and disaster recovery,16,"SDD-03, ENH-06, REL-01",Recovery graph + ops recovery evidence,evidenced
+C72,Change management,16,"REL-01, REL-02",Change + updated SOPs,evidenced
+C73,User adoption and behavioural change,17,REL-02,ops/adoption.md override log + adoption metrics,evidenced
+C74,Training and enablement,16,REL-01,SOP/training outline,evidenced
 C75,Commercial judgement,8,"SDD-09, SDD-13",Trade-off + supplier,specced
 C76,Build-vs-buy-vs-partner analysis,8,SDD-09,Build/buy **+ partner**,specced
 C77,Vendor management,8,"SDD-09, SDD-13",Provider + supplier assessment,specced
 C78,Third-party risk management,12,SDD-13,Supply-chain + supplier risk,specced
-C79,Vendor concentration and exit strategy,12,"SDD-13, REL-04",Exit plan,specced
-C80,Operating-model design,1,"SDD-01, REL-01, REL-04",Mandate → ops RACI → AIMS,specced
-C81,"Roles, RACI and decision-rights design",1,"SDD-01, SDD-12, REL-01",Governance + HITL + ops RACI,specced
-C82,Operational ownership,5,"SDD-06, REL-01",Ownership map + ops RACI,specced
-C83,Operational handover,16,REL-01,Handover pack,pending
-C84,Knowledge transfer,16,"REL-01, REL-04",SOPs + reusable IP,pending
-C85,Production-readiness assessment,16,"ENH-10, REL-01, REL-02",Readiness checklist,pending
-C86,Deployment and release governance,17,REL-02,Release manifest (workshop),pending
-C87,Benefits-realisation measurement,19,REL-03,Benefits report,pending
-C88,Post-intervention KPI measurement (After),19,REL-03,After KPIs,pending
-C89,Before-vs-after KPI variance analysis,19,REL-03,Variance table,pending
-C90,Value leakage analysis,19,REL-03,Unintended effects **named leakage**,pending
-C91,Continuous improvement,18,"REL-02, REL-04",Continuous evals + CAPA,pending
-C92,Model / system drift management,18,"REL-02, REL-04",Drift reports,pending
-C93,Retirement and decommissioning strategy,21,REL-04,Retirement plan,pending
-C94,90-day / medium-term transformation roadmap,13,"SDD-14, REL-03",Backlog + 90-day roadmap,specced
-C95,Executive communication,19,REL-03,Executive SCQA + C4 exec view,pending
-C96,Elevator pitch and final defence,19,REL-03,**60–90s pitch** + 12-min defence,pending
+C79,Vendor concentration and exit strategy,12,"SDD-13, REL-04",AIMS_LIFECYCLE.md §10 + ADR-16 LLM-exit,evidenced
+C80,Operating-model design,1,"SDD-01, REL-01, REL-04",Mandate → ops RACI → AIMS,evidenced
+C81,"Roles, RACI and decision-rights design",1,"SDD-01, SDD-12, REL-01",Governance + HITL + ops RACI,evidenced
+C82,Operational ownership,5,"SDD-06, REL-01",Ownership map + ops RACI,evidenced
+C83,Operational handover,16,REL-01,Handover pack,evidenced
+C84,Knowledge transfer,16,"REL-01, REL-04",ops/handover.md + AIMS_LIFECYCLE.md §9 templates,evidenced
+C85,Production-readiness assessment,16,"ENH-10, REL-01, REL-02",Readiness checklist,evidenced
+C86,Deployment and release governance,17,REL-02,ops/adoption.md release manifest + promotion gates,evidenced
+C87,Benefits-realisation measurement,19,REL-03,participant/work/release/BENEFITS.md,evidenced
+C88,Post-intervention KPI measurement (After),19,REL-03,BENEFITS.md after table; clocks still BASELINE_PENDING,evidenced
+C89,Before-vs-after KPI variance analysis,19,REL-03,BENEFITS.md variance (counts held; decision quality moved),evidenced
+C90,Value leakage analysis,19,REL-03,BENEFITS.md named leakages + counter-metrics,evidenced
+C91,Continuous improvement,18,"REL-02, REL-04",adoption.md cadence + AIMS_LIFECYCLE.md CAPA,evidenced
+C92,Model / system drift management,18,"REL-02, REL-04",ops/adoption.md §10.1 + ops/drift_management.md templates,evidenced
+C93,Retirement and decommissioning strategy,21,REL-04,AIMS_LIFECYCLE.md §8 plan only — not executed,evidenced
+C94,90-day / medium-term transformation roadmap,13,"SDD-14, REL-03",participant/work/release/90_day_roadmap.md,evidenced
+C95,Executive communication,19,REL-03,participant/work/release/EXECUTIVE_DEFENSE.md,evidenced
+C96,Elevator pitch and final defence,19,REL-03,ELEVATOR_PITCH.md + DEMO_SCRIPT.md + 12-min outline,evidenced
