@@ -56,7 +56,7 @@ a {
   align-items: center;
   justify-content: flex-end;
   gap: 0.35rem 0.65rem;
-  max-width: min(720px, 70vw);
+  max-width: min(920px, 78vw);
 }
 
 .topbar-meta {
@@ -694,6 +694,37 @@ button:disabled {
   color: var(--text-dim);
   font-size: 0.72rem;
   margin-top: 0.25rem;
+}
+
+.ai-seg {
+  display: inline-flex;
+  gap: 0.15rem;
+}
+
+.ai-caption {
+  margin: 0.75rem 0;
+}
+
+.ai-caption-body {
+  margin: 0.35rem 0 0.5rem;
+  line-height: 1.45;
+  font-size: 0.88rem;
+}
+
+.moonshot-panel,
+.twin-lab {
+  margin: 0.75rem 0;
+}
+
+.moonshot-banner {
+  background: var(--bg);
+  border: 1px solid var(--orange);
+  color: var(--orange);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.4rem 0.55rem;
+  margin-bottom: 0.5rem;
 }
 
 .scenario-rail {

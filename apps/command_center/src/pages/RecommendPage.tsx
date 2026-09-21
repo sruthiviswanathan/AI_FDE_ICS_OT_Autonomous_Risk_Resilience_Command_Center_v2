@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { api } from "../api/client";
+import { AiCaption } from "../components/AiCaption";
 import { DetailGrid } from "../components/DetailGrid";
+import { MoonshotPanel } from "../components/MoonshotPanel";
 import { PageLookup } from "../components/PageLookup";
 import { ErrorBlock, LoadingBlock } from "../components/StateViews";
 import { useApp } from "../context/AppContext";
@@ -48,6 +50,7 @@ export function RecommendPage() {
     <div>
       <h2 className="page-title">Authority Gate / Recommendation</h2>
       <PageLookup />
+      <AiCaption />
       <div className="btn-row">
         <button type="button" className="primary" onClick={runRecommend} disabled={loading}>
           Request draft packet
@@ -96,7 +99,7 @@ export function RecommendPage() {
             )}
           </div>
           <div className="advisory-footer">
-            Advisory only — no Execute Isolation · Write PLC · Modify SIS.
+            Advisory only — no Execute Isolation · Write PLC · Modify SIS. Packet is the engine.
             <div className="btn-row">
               <button type="button" disabled={!ctqIsoComplete} title={!ctqIsoComplete ? "CTQ-ISO incomplete (CASCADE-001)" : undefined}>
                 Authorize (disabled — OPEN-001)
@@ -106,6 +109,7 @@ export function RecommendPage() {
         </>
       )}
       {!result && <p className="ai-off-note">Search for plant/asset, then request a draft packet.</p>}
+      <MoonshotPanel />
     </div>
   );
 }

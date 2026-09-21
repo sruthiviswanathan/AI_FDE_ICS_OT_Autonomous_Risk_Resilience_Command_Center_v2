@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
-from .core import agent, authority, containment, data_layer, graph_slice, identity, ops, recovery, risk, telemetry
+from .core import agent, authority, containment, data_layer, forecasts, graph_slice, identity, ops, recovery, risk, telemetry
 from .core.agent import AgentValidationError
 from .core.traces import read_traces
 from .diagnostics import run_diagnostics
@@ -303,6 +303,55 @@ def shift_notes_untrusted(plant_id: str | None = None):
         "open_item": "OPEN-018",
         "scope": "ESTATE_SHADOW_UNBOUND",
     }
+
+
+@app.get("/forecasts")
+def get_forecasts(
+    plant_id: str,
+    asset_id: str | None = None,
+    alert_id: str | None = None,
+    as_of: str = "workshop-static",
+):
+    """Deterministic Moonshot forecasts — advisory only, execute=false. No LLM ranker."""
+    try:
+        return forecasts.list_forecasts(
+            plant_id=plant_id,
+            asset_id=asset_id,
+            alert_id=alert_id,
+            as_of=as_of,
+        )
+    except KeyError:
+        raise HTTPException(status_code=404, detail=f"plant {plant_id} not found")
+
+
+@app.get("/explain")
+def get_explain(
+    plant_id: str,
+    asset_id: str | None = None,
+    alert_id: str | None = None,
+):
+    """AI ON template caption (4–8 sentences) from the same joins. Engines stay authoritative."""
+    try:
+        return forecasts.explain_slice(plant_id=plant_id, asset_id=asset_id, alert_id=alert_id)
+    except KeyError:
+        raise HTTPException(status_code=404, detail=f"plant {plant_id} not found")
+
+
+@app.get("/twin/preview")
+def twin_preview(
+    scenario_id: str | None = None,
+    forecast_id: str | None = None,
+    proposed_action: str = "do_nothing",
+):
+    """Read-only twin lab sketch. Never writes PLC/SIS/setpoint/interlock or applies to plant."""
+    try:
+        return forecasts.twin_preview(
+            scenario_id=scenario_id,
+            forecast_id=forecast_id,
+            proposed_action=proposed_action,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
 
 
 @app.get("/agent/workflow/demo")

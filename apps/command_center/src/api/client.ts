@@ -75,6 +75,67 @@ export interface EstateByPlantResponse {
   };
 }
 
+export interface AdvisoryForecast {
+  forecast_id: string;
+  plant_id: string;
+  asset_id?: string | null;
+  category: string;
+  layer: string;
+  horizon_days: number;
+  confidence: string;
+  recommended_action: string;
+  required_role: string;
+  action_tier: number;
+  twin_scenario_id: string;
+  evidence_ids: string[];
+  missing_evidence: string[];
+  abstain_reason?: string | null;
+  execute: boolean;
+  alert_id?: string;
+  session_id?: string;
+  barrier_id?: string;
+  component?: string;
+}
+
+export interface ForecastsResponse {
+  mode: string;
+  banner: string;
+  execute: boolean;
+  plant_id: string;
+  forecasts: AdvisoryForecast[];
+  note?: string;
+}
+
+export interface ExplainResponse {
+  mode: string;
+  plant_id: string;
+  asset_id?: string | null;
+  alert_id?: string | null;
+  caption: string;
+  sentence_count: number;
+  evidence_ids: string[];
+  source_files: string[];
+  engine_authoritative: boolean;
+  explainer: string;
+  execute: boolean;
+  note?: string;
+}
+
+export interface TwinPreviewResponse {
+  mode: string;
+  banner: string;
+  execute: boolean;
+  apply_to_plant: boolean;
+  scenario_id: string;
+  forecast_id?: string | null;
+  proposed_action: string;
+  lab_result: string;
+  detail: string;
+  create_approval_packet: { method: string; path: string; execute: boolean; note?: string };
+  forbidden: string[];
+  note?: string;
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     ...init,
@@ -191,4 +252,23 @@ export const api = {
     ),
   vendorSessions: (limit = 50) => request<Record<string, unknown>>(`/data/views/vendor-sessions?limit=${limit}`),
   demoWorkflow: () => request<Record<string, unknown>>("/agent/workflow/demo"),
+  forecasts: (params: { plantId: string; assetId?: string; alertId?: string }) => {
+    const q = new URLSearchParams({ plant_id: params.plantId, as_of: "workshop-static" });
+    if (params.assetId) q.set("asset_id", params.assetId);
+    if (params.alertId) q.set("alert_id", params.alertId);
+    return request<ForecastsResponse>(`/forecasts?${q}`);
+  },
+  explain: (params: { plantId: string; assetId?: string; alertId?: string }) => {
+    const q = new URLSearchParams({ plant_id: params.plantId });
+    if (params.assetId) q.set("asset_id", params.assetId);
+    if (params.alertId) q.set("alert_id", params.alertId);
+    return request<ExplainResponse>(`/explain?${q}`);
+  },
+  twinPreview: (params: { scenarioId?: string; forecastId?: string; proposedAction?: string }) => {
+    const q = new URLSearchParams();
+    if (params.scenarioId) q.set("scenario_id", params.scenarioId);
+    if (params.forecastId) q.set("forecast_id", params.forecastId);
+    q.set("proposed_action", params.proposedAction || "do_nothing");
+    return request<TwinPreviewResponse>(`/twin/preview?${q}`);
+  },
 };

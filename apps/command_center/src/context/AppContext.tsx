@@ -1,5 +1,14 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
-import { loadStoredPersona, persistPersona, PERSONA_VIEWS, type PersonaId } from "../personas/registry";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  clampAiMode,
+  loadStoredAiMode,
+  loadStoredPersona,
+  persistPersona,
+  persistSearch,
+  PERSONA_VIEWS,
+  type AiMode,
+  type PersonaId,
+} from "../personas/registry";
 import type { ScenarioBinding } from "../scenarios/types";
 
 export type ScenarioId =
@@ -12,6 +21,8 @@ export type ScenarioId =
   | "inject_05"
   | "inject_06"
   | "ai_outage";
+
+export type { AiMode };
 
 export interface ProvenancePin {
   source_path: string;
@@ -27,6 +38,8 @@ interface AppState {
   alertId: string;
   scenario: ScenarioId;
   personaId: PersonaId;
+  aiMode: AiMode;
+  aiControlDisabled: boolean;
   activeBinding: ScenarioBinding | null;
   provenanceOpen: boolean;
   provenancePin: ProvenancePin | null;
@@ -37,6 +50,7 @@ interface AppState {
   setAlertId: (v: string) => void;
   setScenario: (v: ScenarioId) => void;
   setPersonaId: (v: PersonaId) => void;
+  setAiMode: (v: AiMode) => void;
   applyScenario: (binding: ScenarioBinding) => void;
   triggerLookup: () => void;
   setProvenanceOpen: (v: boolean) => void;
@@ -53,11 +67,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [alertId, setAlertId] = useState("ALT-001744");
   const [scenario, setScenario] = useState<ScenarioId>("nominal");
   const [personaId, setPersonaIdState] = useState<PersonaId>(initialPersona);
+  const [aiMode, setAiModeState] = useState<AiMode>(() =>
+    clampAiMode(loadStoredAiMode(), initialPersona, "nominal"),
+  );
   const [activeBinding, setActiveBinding] = useState<ScenarioBinding | null>(null);
   const [provenanceOpen, setProvenanceOpen] = useState(PERSONA_VIEWS[initialPersona].drawerDefaultOpen);
   const [provenancePin, setProvenancePin] = useState<ProvenancePin | null>(null);
   const [lastPacket, setLastPacket] = useState<Record<string, unknown> | null>(null);
   const [lookupKey, setLookupKey] = useState(0);
+
+  useEffect(() => {
+    persistSearch({ ai: aiMode });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const triggerLookup = useCallback(() => setLookupKey((k) => k + 1), []);
 
@@ -65,16 +87,37 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setPersonaIdState(id);
     persistPersona(id);
     setProvenanceOpen(PERSONA_VIEWS[id].drawerDefaultOpen);
-  }, []);
+    setAiModeState((prev) => {
+      const next = clampAiMode(prev, id, scenario);
+      persistSearch({ ai: next });
+      return next;
+    });
+  }, [scenario]);
 
-  const applyScenario = useCallback((binding: ScenarioBinding) => {
-    setScenario(binding.id as ScenarioId);
-    setActiveBinding(binding);
-    if (binding.context.plant_id) setPlantId(binding.context.plant_id);
-    if (binding.context.asset_id) setAssetId(binding.context.asset_id);
-    setAlertId(binding.context.alert_id || "");
-    setLookupKey((k) => k + 1);
-  }, []);
+  const setAiMode = useCallback(
+    (mode: AiMode) => {
+      const next = clampAiMode(mode, personaId, scenario);
+      setAiModeState(next);
+      persistSearch({ ai: next });
+    },
+    [personaId, scenario],
+  );
+
+  const applyScenario = useCallback(
+    (binding: ScenarioBinding) => {
+      const nextScenario = binding.id as ScenarioId;
+      setScenario(nextScenario);
+      setActiveBinding(binding);
+      if (binding.context.plant_id) setPlantId(binding.context.plant_id);
+      if (binding.context.asset_id) setAssetId(binding.context.asset_id);
+      setAlertId(binding.context.alert_id || "");
+      setLookupKey((k) => k + 1);
+      const nextAi = clampAiMode(aiMode, personaId, nextScenario);
+      setAiModeState(nextAi);
+      persistSearch({ scenario: binding.id, ai: nextAi });
+    },
+    [aiMode, personaId],
+  );
 
   const value = useMemo(
     () => ({
@@ -83,6 +126,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       alertId,
       scenario,
       personaId,
+      aiMode,
+      aiControlDisabled: scenario === "ai_outage",
       activeBinding,
       provenanceOpen,
       provenancePin,
@@ -93,6 +138,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setAlertId,
       setScenario,
       setPersonaId,
+      setAiMode,
       applyScenario,
       triggerLookup,
       setProvenanceOpen,
@@ -108,6 +154,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       alertId,
       scenario,
       personaId,
+      aiMode,
       activeBinding,
       provenanceOpen,
       provenancePin,
@@ -116,6 +163,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       applyScenario,
       triggerLookup,
       setPersonaId,
+      setAiMode,
     ],
   );
 

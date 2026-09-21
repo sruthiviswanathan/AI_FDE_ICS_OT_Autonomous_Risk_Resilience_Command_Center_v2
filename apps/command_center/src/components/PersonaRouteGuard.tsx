@@ -13,7 +13,7 @@ export function PersonaRouteGuard() {
 
   useEffect(() => {
     if (!allowed) {
-      navigate(view.defaultRoute, { replace: true });
+      navigate({ pathname: view.defaultRoute, search: location.search }, { replace: true });
     }
   }, [allowed, navigate, view.defaultRoute]);
 
@@ -26,7 +26,7 @@ export function PersonaRouteGuard() {
           grant authority (OPEN-001).
         </p>
         <div className="btn-row">
-          <Link to={view.defaultRoute} className="primary">
+          <Link to={{ pathname: view.defaultRoute, search: location.search }} className="primary">
             Open {view.label} home
           </Link>
           <button type="button" onClick={() => setPersona("full")}>
@@ -36,8 +36,8 @@ export function PersonaRouteGuard() {
         {hasIncidentContext(ctx.alertId, ctx.scenario) && (
           <p className="ai-off-note" style={{ marginTop: "0.75rem" }}>
             Incident context is pinned —{" "}
-            <Link to="/incident">Open Incident Context Graph</Link> or{" "}
-            <Link to="/recommend">Recommendation Gate</Link>.
+            <Link to={{ pathname: "/incident", search: location.search }}>Open Incident Context Graph</Link> or{" "}
+            <Link to={{ pathname: "/recommend", search: location.search }}>Recommendation Gate</Link>.
           </p>
         )}
       </div>

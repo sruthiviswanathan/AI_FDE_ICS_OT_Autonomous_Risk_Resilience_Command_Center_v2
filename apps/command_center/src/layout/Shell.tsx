@@ -8,6 +8,7 @@ import { api } from "../api/client";
 import { useEffect } from "react";
 import { usePersona } from "../hooks/usePersona";
 import {
+  canUseMoonshot,
   hasIncidentContext,
   isRouteAllowed,
   PERSONA_LIST,
@@ -27,10 +28,12 @@ export function Shell() {
   const apiDown = Boolean(healthQuery.error || catalog.error);
 
   useEffect(() => {
-    if (catalog.data && !ctx.activeBinding) {
-      const nominal = catalog.data.scenarios.find((s) => s.id === "nominal");
-      if (nominal) ctx.applyScenario(nominal);
-    }
+    if (!catalog.data || ctx.activeBinding) return;
+    const fromUrl = new URLSearchParams(window.location.search).get("scenario");
+    const requested =
+      catalog.data.scenarios.find((s) => s.id === fromUrl) ||
+      catalog.data.scenarios.find((s) => s.id === "nominal");
+    if (requested) ctx.applyScenario(requested);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [catalog.data]);
 
@@ -40,9 +43,15 @@ export function Shell() {
     setPersona(next);
     const nextView = PERSONA_VIEWS[next];
     if (!isRouteAllowed(location.pathname, next, ctx.alertId, ctx.scenario)) {
-      navigate(nextView.defaultRoute, { replace: true });
+      navigate({ pathname: nextView.defaultRoute, search: location.search }, { replace: true });
     }
   }
+
+  const searchKeep = location.search;
+  const moonshotAllowed = canUseMoonshot(ctx.personaId);
+  const aiBadge =
+    ctx.aiMode === "moonshot" ? "MOONSHOT" : ctx.aiMode === "on" ? "AI-ON" : "AI-DISABLED";
+  const aiBadgeTone = ctx.aiMode === "moonshot" ? "orange" : ctx.aiMode === "on" ? "green" : "amber";
 
   return (
     <div className="shell">
@@ -56,9 +65,9 @@ export function Shell() {
       {incidentPinned && isFiltered && ctx.personaId !== "executive" && (
         <div className="advisory-footer incident-banner" style={{ margin: 0, borderRadius: 0 }}>
           Incident context loaded —{" "}
-          <Link to="/incident">Open Incident Graph</Link>
+          <Link to={{ pathname: "/incident", search: searchKeep }}>Open Incident Graph</Link>
           {" · "}
-          <Link to="/recommend">Recommendation Gate</Link>
+          <Link to={{ pathname: "/recommend", search: searchKeep }}>Recommendation Gate</Link>
         </div>
       )}
       <header className="topbar">
@@ -80,6 +89,35 @@ export function Shell() {
               ))}
             </select>
           </label>
+          <label className="topbar-control">
+            AI
+            <span className="ai-seg" role="group" aria-label="AI mode">
+              {(["off", "on"] as const).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  className={ctx.aiMode === mode ? "chip active" : "chip"}
+                  disabled={ctx.aiControlDisabled}
+                  onClick={() => ctx.setAiMode(mode)}
+                >
+                  {mode.toUpperCase()}
+                </button>
+              ))}
+              {moonshotAllowed && (
+                <button
+                  type="button"
+                  className={ctx.aiMode === "moonshot" ? "chip active" : "chip"}
+                  disabled={ctx.aiControlDisabled}
+                  onClick={() => ctx.setAiMode("moonshot")}
+                >
+                  MOONSHOT
+                </button>
+              )}
+            </span>
+          </label>
+          <span className={`badge ${aiBadgeTone}`} title={ctx.aiControlDisabled ? "ai_outage forces AI OFF (EVAL-016)" : undefined}>
+            {aiBadge}
+          </span>
           <span className="topbar-hint" title={view.description}>
             View filter only (OPEN-001)
           </span>
@@ -98,7 +136,7 @@ export function Shell() {
             <div key={g.group}>
               <div className="nav-group">{g.group}</div>
               {g.items.map((item) => (
-                <NavLink key={item.to} to={item.to} end={item.to === "/"}>
+                <NavLink key={item.to} to={{ pathname: item.to, search: searchKeep }} end={item.to === "/"}>
                   {item.label}
                 </NavLink>
               ))}

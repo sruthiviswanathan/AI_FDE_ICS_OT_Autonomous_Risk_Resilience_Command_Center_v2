@@ -5,6 +5,8 @@ import { DataTable } from "../components/DataTable";
 import { EstateDiagnosticsStrip } from "../components/EstateDiagnosticsStrip";
 import { EstateInventorySummary } from "../components/EstateInventorySummary";
 import { EstateOverviewGraph } from "../components/EstateOverviewGraph";
+import { AiCaption } from "../components/AiCaption";
+import { MoonshotPanel } from "../components/MoonshotPanel";
 import {
   CompositePostureBadge,
   PlantPostureBadges,
@@ -201,6 +203,8 @@ export function EstateDashboardPage() {
         {" · "}
         Interactive plant / asset / alert view — inventory signals, not contextual risk rank.
       </p>
+      <AiCaption />
+      <MoonshotPanel />
 
       {estate.loading && <LoadingBlock />}
       {estate.error && <ErrorBlock message={estate.error} />}

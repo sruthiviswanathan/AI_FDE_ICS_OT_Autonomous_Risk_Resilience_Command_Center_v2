@@ -49,9 +49,9 @@ paths:
               schema: {}
   /data/views/estate-by-plant:
     get:
-      summary: Estate By Plant View
-      description: Per-plant estate aggregates for Home dashboard. Alert counts are inventory
-        signals, not contextual risk rank.
+      summary: Data Estate By Plant
+      description: Per-plant estate aggregates for Home dashboard (inventory signals,
+        not risk rank).
       operationId: data_estate_by_plant_data_views_estate_by_plant_get
       parameters:
       - name: include_top_alerts
@@ -60,14 +60,14 @@ paths:
         schema:
           type: integer
           default: 3
-          maximum: 10
-          minimum: 0
           title: Include Top Alerts
       - name: severity_min
         in: query
         required: false
         schema:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Severity Min
       responses:
         '200':
@@ -75,10 +75,40 @@ paths:
           content:
             application/json:
               schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /data/views/vendor-sessions:
+    get:
+      summary: Data Vendor Sessions
+      description: Vendor/remote access sessions with anomaly flags.
+      operationId: data_vendor_sessions_data_views_vendor_sessions_get
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 50
+          title: Limit
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /plants:
     get:
       summary: List Plants
-      description: All workshop plants (18 rows) sorted by plant_id.
       operationId: list_plants_plants_get
       responses:
         '200':
@@ -103,22 +133,18 @@ paths:
         schema:
           type: integer
           default: 100
-          maximum: 500
           title: Limit
       - name: q
         in: query
         required: false
         schema:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Q
       responses:
         '200':
           description: Successful Response
-          content:
-            application/json:
-              schema: {}
-        '404':
-          description: Plant Not Found
           content:
             application/json:
               schema: {}
@@ -145,44 +171,15 @@ paths:
         schema:
           type: integer
           default: 50
-          maximum: 200
           title: Limit
       - name: severity
         in: query
         required: false
         schema:
-          type: string
+          anyOf:
+          - type: string
+          - type: 'null'
           title: Severity
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema: {}
-        '404':
-          description: Asset Not Found
-          content:
-            application/json:
-              schema: {}
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-  /data/views/vendor-sessions:
-    get:
-      summary: Data Vendor Sessions
-      description: Vendor/remote access sessions with anomaly flags.
-      operationId: data_vendor_sessions_data_views_vendor_sessions_get
-      parameters:
-      - name: limit
-        in: query
-        required: false
-        schema:
-          type: integer
-          default: 50
-          title: Limit
       responses:
         '200':
           description: Successful Response
@@ -222,12 +219,27 @@ paths:
     get:
       summary: Identity Conflicts
       operationId: identity_conflicts_identity_conflicts_get
+      parameters:
+      - name: plant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Plant Id
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
               schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /telemetry/quality:
     get:
       summary: Telemetry Quality
@@ -240,6 +252,7 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
+          title: Plant Id
       - name: asset_id
         in: query
         required: false
@@ -247,12 +260,19 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
+          title: Asset Id
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
               schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /telemetry/timeline:
     get:
       summary: Telemetry Timeline
@@ -273,6 +293,7 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
+          title: Plant Id
       - name: asset_id
         in: query
         required: false
@@ -280,6 +301,7 @@ paths:
           anyOf:
           - type: string
           - type: 'null'
+          title: Asset Id
       - name: order
         in: query
         required: false
@@ -293,6 +315,7 @@ paths:
         schema:
           type: integer
           default: 200
+          title: Limit
       responses:
         '200':
           description: Successful Response
@@ -317,6 +340,22 @@ paths:
           type: integer
           default: 20
           title: Limit
+      - name: asset_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Asset Id
+      - name: plant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Plant Id
       responses:
         '200':
           description: Successful Response
@@ -582,20 +621,162 @@ paths:
   /data/shift-notes/untrusted:
     get:
       summary: Shift Notes Untrusted
-      description: "Untrusted shift handover \u2014 never treated as authoritative. Optional plant_id is request scope only; source has no plant_id (OPEN-018)."
+      description: "Untrusted shift handover \u2014 never treated as authoritative.\n\
+        \nThe workshop corpus has one shadow email and no plant_id (OPEN-018).\nplant_id\
+        \ is recorded as the request scope only \u2014 it does not bind the note."
       operationId: shift_notes_untrusted_data_shift_notes_untrusted_get
       parameters:
-        - name: plant_id
-          in: query
-          required: false
-          schema:
-            type: string
+      - name: plant_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Plant Id
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
               schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /forecasts:
+    get:
+      summary: Get Forecasts
+      description: "Deterministic Moonshot forecasts \u2014 advisory only, execute=false.\
+        \ No LLM ranker."
+      operationId: get_forecasts_forecasts_get
+      parameters:
+      - name: plant_id
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Plant Id
+      - name: asset_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Asset Id
+      - name: alert_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Alert Id
+      - name: as_of
+        in: query
+        required: false
+        schema:
+          type: string
+          default: workshop-static
+          title: As Of
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /explain:
+    get:
+      summary: Get Explain
+      description: "AI ON template caption (4\u20138 sentences) from the same joins.\
+        \ Engines stay authoritative."
+      operationId: get_explain_explain_get
+      parameters:
+      - name: plant_id
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Plant Id
+      - name: asset_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Asset Id
+      - name: alert_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Alert Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /twin/preview:
+    get:
+      summary: Twin Preview
+      description: Read-only twin lab sketch. Never writes PLC/SIS/setpoint/interlock
+        or applies to plant.
+      operationId: twin_preview_twin_preview_get
+      parameters:
+      - name: scenario_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Scenario Id
+      - name: forecast_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Forecast Id
+      - name: proposed_action
+        in: query
+        required: false
+        schema:
+          type: string
+          default: do_nothing
+          title: Proposed Action
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /agent/workflow/demo:
     get:
       summary: Agent Workflow Demo
@@ -691,6 +872,11 @@ components:
         type:
           type: string
           title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
       type: object
       required:
       - loc

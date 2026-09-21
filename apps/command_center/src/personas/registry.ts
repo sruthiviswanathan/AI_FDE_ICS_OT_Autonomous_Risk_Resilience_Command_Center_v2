@@ -6,6 +6,10 @@ export type PersonaId =
   | "fde"
   | "full";
 
+export type AiMode = "off" | "on" | "moonshot";
+
+export const MOONSHOT_PERSONAS: PersonaId[] = ["full", "fde", "soc_analyst"];
+
 export type ProvenanceChannel = "STRUCTURED" | "GRAPH" | "POLICY" | "MEMORY";
 
 export interface ContextFieldVisibility {
@@ -206,12 +210,41 @@ export function loadStoredPersona(): PersonaId {
   return "full";
 }
 
+export function persistSearch(updates: Record<string, string | null>) {
+  if (typeof window === "undefined") return;
+  const url = new URL(window.location.href);
+  Object.entries(updates).forEach(([key, value]) => {
+    if (value === null || value === "") url.searchParams.delete(key);
+    else url.searchParams.set(key, value);
+  });
+  window.history.replaceState({}, "", url.toString());
+}
+
 export function persistPersona(id: PersonaId) {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(STORAGE_KEY, id);
-  const url = new URL(window.location.href);
-  url.searchParams.set("persona", id);
-  window.history.replaceState({}, "", url.toString());
+  persistSearch({ persona: id });
+}
+
+export function canUseMoonshot(id: PersonaId): boolean {
+  return MOONSHOT_PERSONAS.includes(id);
+}
+
+export function isAiMode(value: string | null | undefined): value is AiMode {
+  return value === "off" || value === "on" || value === "moonshot";
+}
+
+export function loadStoredAiMode(): AiMode {
+  if (typeof window === "undefined") return "off";
+  const fromUrl = new URLSearchParams(window.location.search).get("ai");
+  if (isAiMode(fromUrl)) return fromUrl;
+  return "off";
+}
+
+export function clampAiMode(mode: AiMode, personaId: PersonaId, scenario: string): AiMode {
+  if (scenario === "ai_outage") return "off";
+  if (mode === "moonshot" && !canUseMoonshot(personaId)) return "off";
+  return mode;
 }
 
 export function hasIncidentContext(alertId: string, scenario: string): boolean {

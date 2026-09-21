@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import type { ScenarioBinding } from "../scenarios/types";
 
@@ -9,6 +9,7 @@ function Badge({ badge }: { badge: ScenarioBinding["badges"][0] }) {
 
 export function ScenarioRail({ scenarios }: { scenarios: ScenarioBinding[] }) {
   const { scenario, applyScenario, activeBinding } = useApp();
+  const location = useLocation();
 
   return (
     <div className="scenario-rail">
@@ -38,7 +39,7 @@ export function ScenarioRail({ scenarios }: { scenarios: ScenarioBinding[] }) {
           )}
           <div className="route-chips">
             {activeBinding.primary_routes.map((r) => (
-              <Link key={r} to={r}>
+              <Link key={r} to={{ pathname: r, search: location.search }}>
                 {r}
               </Link>
             ))}
