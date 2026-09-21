@@ -172,6 +172,18 @@ def test_audit_traces_and_scenario_endpoints():
     notes = client.get("/data/shift-notes/untrusted")
     assert notes.status_code == 200
     assert notes.json()["trust"] == "UNTRUSTED"
+    assert notes.json()["source_plant_id"] is None
+    assert notes.json()["bound_to_requested_plant"] is False
+
+    scoped = client.get("/data/shift-notes/untrusted?plant_id=PLT-04")
+    assert scoped.status_code == 200
+    scoped_body = scoped.json()
+    assert scoped_body["trust"] == "UNTRUSTED"
+    assert scoped_body["requested_plant_id"] == "PLT-04"
+    assert scoped_body["source_plant_id"] is None
+    assert scoped_body["bound_to_requested_plant"] is False
+    assert scoped_body["content"] == notes.json()["content"]
+    assert scoped_body["open_item"] == "OPEN-018"
 
 
 def test_list_plants_and_cascade_catalog():
@@ -244,6 +256,30 @@ def test_risk_contextual_scoped_by_asset():
     empty = client.get("/risk/contextual?asset_id=OT-00001&limit=10")
     assert empty.status_code == 200
     assert empty.json()["count"] == 0
+
+
+def test_graph_slice_q3_plant_scope_does_not_require_asset():
+    """Safety board is plant-scoped; Q3 must not 400 on plant_id alone."""
+    resp = client.get("/graph/slice?query=Q3&plant_id=PLT-04")
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["query"] == "Q3"
+    assert body["plant_id"] == "PLT-04"
+    assert any(n.get("id") == "PLT-04" and n.get("type") == "Plant" for n in body["nodes"])
+    barriers = [n for n in body["nodes"] if n.get("type") == "Barrier"]
+    assert 1 <= len(barriers) <= 8
+    assert all(str(n["id"]).startswith("PLT-04") for n in barriers)
+    assert body["hop_limit_enforced"] is True
+    assert body["hop_cap"] == 8
+
+    missing = client.get("/graph/slice?query=Q3")
+    assert missing.status_code == 400
+    assert "plant_id" in missing.json()["detail"]
+
+    asset = client.get("/graph/slice?query=Q3&asset_id=OT-01016")
+    assert asset.status_code == 200
+    assert asset.json()["query"] == "Q3"
+    assert asset.json().get("plant_id") is None
 
 
 def test_graph_slice_q1_identity_neighborhood_with_aliases():

@@ -1,12 +1,12 @@
 import { api } from "../api/client";
 import { GraphSliceView } from "../components/GraphSliceView";
 import { PageLookup } from "../components/PageLookup";
-import { ErrorBlock, GraphAsyncContent, LoadingBlock, UntrustedBadge } from "../components/StateViews";
+import { EmptyBlock, ErrorBlock, GraphAsyncContent, LoadingBlock, UncertaintyBadge, UntrustedBadge } from "../components/StateViews";
 import { useApp } from "../context/AppContext";
 import { useFetch } from "../hooks/useFetch";
 
 export function IncidentPage() {
-  const { plantId, assetId, alertId, scenario, setScenario, lookupKey } = useApp();
+  const { plantId, assetId, alertId, scenario, setScenario, lookupKey, activeBinding } = useApp();
   const graph = useFetch(
     () => api.graphSlice({ query: "Q5", plant_id: plantId, asset_id: assetId, alert_id: alertId || undefined }),
     [plantId, assetId, alertId, lookupKey],
@@ -16,7 +16,8 @@ export function IncidentPage() {
     [scenario],
   );
   const timelineFixture = scenarioData.data?.timeline_fixture as { timeline?: { time: string; event: string }[] } | undefined;
-  const shift = useFetch(() => api.shiftNotes(), [lookupKey]);
+  const shift = useFetch(() => api.shiftNotes(plantId || undefined), [plantId, lookupKey]);
+  const showUntrustedBody = activeBinding?.show_untrusted_shift_notes === true || scenario === "cascade_001";
 
   const timeline = timelineFixture?.timeline || [];
 
@@ -44,12 +45,30 @@ export function IncidentPage() {
         </>
       )}
 
+      {shift.loading && <LoadingBlock />}
+      {shift.error && <ErrorBlock message={shift.error} />}
       {shift.data && (
         <div className="card untrusted-border">
           <h3>
-            Shift handover <UntrustedBadge />
+            Shift handover <UntrustedBadge /> <UncertaintyBadge text="OPEN-018" />
           </h3>
-          <div className="untrusted-panel">{shift.data.content}</div>
+          {plantId ? (
+            <p className="ai-off-note">
+              No plant-bound handover for <span className="mono">{plantId}</span>. The workshop
+              corpus has one Unit 04 night-shift email with no <span className="mono">plant_id</span>{" "}
+              (OPEN-018). It is not {plantId}&apos;s shift record.
+            </p>
+          ) : (
+            <EmptyBlock message="Select a plant. The estate shadow note is unbound (OPEN-018)." />
+          )}
+          {showUntrustedBody ? (
+            <div className="untrusted-panel">{shift.data.content}</div>
+          ) : (
+            <details>
+              <summary className="ai-off-note">Read unbound estate shadow note (Unit 04)</summary>
+              <div className="untrusted-panel">{shift.data.content}</div>
+            </details>
+          )}
         </div>
       )}
 
